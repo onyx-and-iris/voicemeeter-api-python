@@ -249,7 +249,7 @@ vm.vban.outstream[0].apply(on: true, name: 'streamname', bit: 24)
 
 ## Config Files
 
-`vm.apply_config('config')`
+`vm.apply_config(<configname>)`
 
 You may load config files in TOML format.
 Three example profiles have been included with the package. Remember to save
@@ -258,7 +258,7 @@ current settings before loading a profile. To set one you may do:
 ```python
 import voicemeeterlib
 with voicemeeterlib.api('banana') as vm:
-    vm.apply_config('config')
+    vm.apply_config('example')
 ```
 
 will load a config file at configs/banana/config.toml for Voicemeeter Banana.

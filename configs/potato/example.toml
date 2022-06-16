@@ -1,0 +1,70 @@
+[strip-0]
+label = "PhysStrip0"
+A1 = true
+gain = -8.8
+comp = 3.2
+
+[strip-1]
+label = "PhysStrip1"
+B1 = true
+gate = 4.1
+
+[strip-2]
+label = "PhysStrip2"
+gain = 1.1
+limit = -15
+
+[strip-3]
+label = "PhysStrip3"
+B2 = false
+
+[strip-4]
+label = "PhysStrip4"
+B3 = true
+gain = -8.8
+
+[strip-5]
+label = "VirtStrip0"
+A3 = true
+A5 = true
+bass = -3.2
+mid = 1.5
+treble = 2.1
+
+[strip-6]
+label = "VirtStrip1"
+limit = -12
+k = 3
+
+[strip-7]
+label = "VirtStrip2"
+mc = true
+
+[bus-0]
+label = "PhysBus0"
+mute = true
+
+[bus-1]
+label = "PhysBus1"
+mono = true
+
+[bus-2]
+label = "PhysBus2"
+eq = true
+
+[bus-3]
+label = "PhysBus3"
+
+[bus-4]
+label = "PhysBus4"
+
+[bus-5]
+label = "VirtBus0"
+eq_ab = true
+
+[bus-6]
+label = "VirtBus1"
+gain = -22.8
+
+[bus-7]
+label = "VirtBus2"

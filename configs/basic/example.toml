@@ -1,0 +1,23 @@
+[strip-0]
+label = "PhysStrip0"
+A1 = true
+gain = -8.8
+
+[strip-1]
+label = "PhysStrip1"
+B1 = true
+audibility = 3.2
+
+[strip-2]
+label = "VirtStrip0"
+bass = -3.2
+mid = 1.5
+treble = 2.1
+
+[bus-0]
+label = "PhysBus0"
+mute = true
+
+[bus-1]
+label = "PhysBus1"
+mono = true
