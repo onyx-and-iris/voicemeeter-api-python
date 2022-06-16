@@ -261,7 +261,7 @@ with voicemeeterlib.api('banana') as vm:
     vm.apply_config('example')
 ```
 
-will load a config file at configs/banana/config.toml for Voicemeeter Banana.
+will load a config file at configs/banana/example.toml for Voicemeeter Banana.
 
 ## `Base Module`
 
