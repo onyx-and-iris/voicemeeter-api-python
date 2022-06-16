@@ -30,7 +30,6 @@ Install voicemeeter-api package from your console
 
 `pip install voicemeeter-api`
 
-
 ## `Use`
 
 Simplest use case, use a context manager to request a Remote class of a kind.
@@ -248,6 +247,22 @@ vm.strip[0].apply(mute: true, gain: 3.2, A1: true)
 vm.vban.outstream[0].apply(on: true, name: 'streamname', bit: 24)
 ```
 
+## Config Files
+
+`vm.apply_config('config')`
+
+You may load config files in TOML format.
+Three example profiles have been included with the package. Remember to save
+current settings before loading a profile. To set one you may do:
+
+```python
+import voicemeeterlib
+with voicemeeterlib.api('banana') as vm:
+    vm.apply_config('config')
+```
+
+will load a config file at configs/banana/config.toml for Voicemeeter Banana.
+
 ## `Base Module`
 
 ### Remote class
@@ -270,22 +285,6 @@ vm.get('Strip[2].Mute')
 vm.set('Strip[4].Label', 'stripname')
 vm.set('Strip[0].Gain', -3.6)
 ```
-
-## Config Files
-
-`vm.apply_config('config')`
-
-You may load config files in TOML format.
-Three example profiles have been included with the package. Remember to save
-current settings before loading a profile. To set one you may do:
-
-```python
-import voicemeeterlib
-with voicemeeterlib.api('banana') as vm:
-    vm.apply_profile('config')
-```
-
-will load a config file at configs/banana/config.toml for Voicemeeter Banana.
 
 ### Run tests
 
