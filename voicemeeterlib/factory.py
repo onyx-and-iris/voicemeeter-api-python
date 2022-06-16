@@ -47,14 +47,14 @@ class FactoryBuilder:
 
     def make_strip(self) -> Self:
         self._factory.strip = tuple(
-            strip(self.kind.phys_in < i, self._factory, i)
+            strip(i < self.kind.phys_in, self._factory, i)
             for i in range(self.kind.num_strip)
         )
         return self
 
     def make_bus(self) -> Self:
         self._factory.bus = tuple(
-            bus(self.kind.phys_out < i, self._factory, i)
+            bus(i < self.kind.phys_out, self._factory, i)
             for i in range(self.kind.num_bus)
         )
         return self
