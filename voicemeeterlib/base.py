@@ -263,9 +263,9 @@ class Remote(CBindings):
         )
         try:
             self.apply(self.configs[name])
+            print(f"Profile '{name}' applied!")
         except KeyError as e:
             print(("\n").join(error_msg))
-        print(f"Profile '{name}' applied!")
 
     def logout(self) -> NoReturn:
         """Wait for dirty parameters to clear, then logout of the API"""
