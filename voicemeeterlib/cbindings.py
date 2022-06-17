@@ -67,7 +67,7 @@ class CBindings(metaclass=ABCMeta):
 
     vm_set_parameter_multi = libc.VBVMR_SetParameters
     vm_set_parameter_multi.restype = LONG
-    vm_set_parameter_multi.argtypes = [ct.POINTER(CHAR), ct.POINTER(CHAR)]
+    vm_set_parameter_multi.argtypes = [ct.POINTER(CHAR)]
 
     vm_get_level = libc.VBVMR_GetLevel
     vm_get_level.restype = LONG

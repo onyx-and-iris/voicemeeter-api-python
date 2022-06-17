@@ -233,8 +233,8 @@ class Remote(CBindings):
         """Sets many parameters from a script"""
         if len(script) > 48000:
             raise ValueError("Script too large, max size 48kB")
-        self.call(partial(self.vm_set_parameter_multi, script))
-        time.sleep(self.DELAY)
+        self.call(partial(self.vm_set_parameter_multi, script.encode()))
+        time.sleep(self.DELAY * 5)
 
     def apply(self, data: dict):
         """
