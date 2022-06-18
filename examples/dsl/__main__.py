@@ -44,8 +44,8 @@ class Parser:
             kls = "".join(kls)
             index = int(*index)
             target = getattr(self.vm, kls)[index]
-            if val in ["on", "off"]:
-                setattr(target, param, 1 if val == "on" else 0)
+            if val in ["off", "on"]:
+                setattr(target, param, bool(["off", "on"].index(val)))
             if param in ["gain", "comp", "gate", "limit", "audibility"]:
                 setattr(target, param, float(val))
             if param in ["label"]:
