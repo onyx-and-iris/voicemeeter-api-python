@@ -11,9 +11,6 @@ class TOMLStrBuilder:
 
     def __init__(self, kind):
         self.kind = kind
-        self.phys_in, self.virt_in = kind.ins
-        self.phys_out, self.virt_out = kind.outs
-
         self.higher = itertools.chain(
             [f"strip-{i}" for i in range(kind.num_strip)],
             [f"bus-{i}" for i in range(kind.num_bus)],
@@ -27,8 +24,8 @@ class TOMLStrBuilder:
                 "solo = false",
                 "gain = 0.0",
             ]
-            + [f"A{i} = false" for i in range(1, self.phys_out + 1)]
-            + [f"B{i} = false" for i in range(1, self.virt_out + 1)]
+            + [f"A{i} = false" for i in range(1, self.kind.phys_out + 1)]
+            + [f"B{i} = false" for i in range(1, self.kind.virt_out + 1)]
         )
         self.phys_strip_params = self.virt_strip_params + [
             "comp = 0.0",
@@ -61,7 +58,7 @@ class TOMLStrBuilder:
             case "strip":
                 toml_str += ("\n").join(
                     self.phys_strip_params
-                    if int(index) < self.phys_in
+                    if int(index) < self.kind.phys_in
                     else self.virt_strip_params
                 )
             case "bus":

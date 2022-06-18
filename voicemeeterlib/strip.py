@@ -282,7 +282,7 @@ def _make_channelout_mixin(kind):
     )
 
 
-__make_channelout_mixins = {
+_make_channelout_mixins = {
     kind.name: _make_channelout_mixin(kind) for kind in kinds_all
 }
 
@@ -296,7 +296,7 @@ def strip_factory(is_phys_strip, remote, i) -> Union[PhysicalStrip, VirtualStrip
     Returns a physical or virtual strip subclass
     """
     STRIP_cls = PhysicalStrip if is_phys_strip else VirtualStrip
-    CHANNELOUTMIXIN_cls = __make_channelout_mixins[remote.kind.name]
+    CHANNELOUTMIXIN_cls = _make_channelout_mixins[remote.kind.name]
 
     _kls = (STRIP_cls, CHANNELOUTMIXIN_cls)
     if remote.kind.name == "potato":

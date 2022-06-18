@@ -18,10 +18,10 @@ class Recorder(IRemote):
 
         Returns a Recorder class of a kind.
         """
-        ChannelMixin = _channel_mixins[remote.kind.name]
+        CHANNELOUTMIXIN_cls = _make_channelout_mixins[remote.kind.name]
         REC_cls = type(
             f"Recorder{remote.kind}",
-            (cls, ChannelMixin),
+            (cls, CHANNELOUTMIXIN_cls),
             {
                 **{
                     param: action_prop(param)
@@ -60,17 +60,18 @@ class Recorder(IRemote):
     loop = property(fset=set_loop)
 
 
-def _make_channel_mixin(kind):
+def _make_channelout_mixin(kind):
     """Creates a channel out property mixin"""
-    num_A, num_B = kind.outs
     return type(
-        f"ChannelMixin{kind.name}",
+        f"ChannelOutMixin{kind}",
         (),
         {
-            **{f"A{i}": bool_prop(f"A{i}") for i in range(1, num_A + 1)},
-            **{f"B{i}": bool_prop(f"B{i}") for i in range(1, num_B + 1)},
+            **{f"A{i}": bool_prop(f"A{i}") for i in range(1, kind.phys_out + 1)},
+            **{f"B{i}": bool_prop(f"B{i}") for i in range(1, kind.virt_out + 1)},
         },
     )
 
 
-_channel_mixins = {kind.name: _make_channel_mixin(kind) for kind in kinds_all}
+_make_channelout_mixins = {
+    kind.name: _make_channelout_mixin(kind) for kind in kinds_all
+}
