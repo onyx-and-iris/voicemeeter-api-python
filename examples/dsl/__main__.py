@@ -56,7 +56,9 @@ class Parser:
 
 
 def main(cmds=None):
-    with voicemeeterlib.api("banana") as vm:
+    kind_id = "banana"
+
+    with voicemeeterlib.api(kind_id) as vm:
         parser = Parser(vm)
         if cmds:
             parser.parse(cmds)
