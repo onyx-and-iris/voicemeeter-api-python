@@ -23,7 +23,7 @@ Function Get-TimeStamp {
 }
 
 if ($MyInvocation.InvocationName -ne ".") {
-    Invoke-Expression ".\venv\Scripts\Activate.ps1"
+    Invoke-Expression ".\.venv\Scripts\Activate.ps1"
 
     RunTests
 
