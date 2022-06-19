@@ -50,15 +50,7 @@ class Remote(CBindings):
             if self.ldirty:
                 self._strip_levels = self.strip_buf
                 self._bus_levels = self.bus_buf
-                self.subject.notify(
-                    "ldirty",
-                    (
-                        self._strip_levels,
-                        self._strip_comp,
-                        self._bus_levels,
-                        self._bus_comp,
-                    ),
-                )
+                self.subject.notify("ldirty")
             time.sleep(self.ratelimit)
 
     def login(self) -> NoReturn:
@@ -227,6 +219,14 @@ class Remote(CBindings):
         val = ct.c_float()
         self.vm_get_level(ct.c_long(type_), ct.c_long(index), ct.byref(val))
         return val.value
+
+    @property
+    def strip_levels(self):
+        return self._strip_levels
+
+    @property
+    def bus_levels(self):
+        return self._bus_levels
 
     @script
     def sendtext(self, script: str):

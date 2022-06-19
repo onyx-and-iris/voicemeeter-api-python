@@ -12,10 +12,10 @@ class Subject:
 
         return self._observers
 
-    def notify(self, modifier=None, data=None):
+    def notify(self, modifier=None):
         """run callbacks on update"""
 
-        [o.on_update(modifier, data) for o in self._observers]
+        [o.on_update(modifier) for o in self._observers]
 
     def add(self, observer):
         """adds an observer to _observers"""
