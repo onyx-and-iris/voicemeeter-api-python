@@ -8,11 +8,11 @@ class Adapter(IRemote):
     def identifier(self):
         pass
 
-    def getter(self, id, mode):
-        return self._remote.get_buttonstatus(id, mode)
+    def getter(self, mode):
+        return self._remote.get_buttonstatus(self.index, mode)
 
-    def setter(self, id, val, mode):
-        self._remote.set_buttonstatus(id, val, mode)
+    def setter(self, val, mode):
+        self._remote.set_buttonstatus(self.index, val, mode)
 
 
 class MacroButton(Adapter):
@@ -23,30 +23,30 @@ class MacroButton(Adapter):
 
     @property
     def state(self) -> bool:
-        return self.getter(self.index, 1) == 1
+        return self.getter(1) == 1
 
     @state.setter
     def state(self, val):
         if not isinstance(val, bool) and val not in (0, 1):
             raise VMError("state is a boolean parameter")
-        self.setter(self.index, 1 if val else 0, 1)
+        self.setter(1 if val else 0, 1)
 
     @property
     def stateonly(self) -> bool:
-        return self.getter(self.index, 2) == 1
+        return self.getter(2) == 1
 
     @stateonly.setter
     def stateonly(self, val):
         if not isinstance(val, bool) and val not in (0, 1):
             raise VMError("stateonly is a boolean parameter")
-        self.setter(self.index, 1 if val else 0, 2)
+        self.setter(1 if val else 0, 2)
 
     @property
     def trigger(self) -> bool:
-        return self.getter(self.index, 3) == 1
+        return self.getter(3) == 1
 
     @trigger.setter
     def trigger(self, val):
         if not isinstance(val, bool) and val not in (0, 1):
             raise VMError("trigger is a boolean parameter")
-        self.setter(self.index, 1 if val else 0, 3)
+        self.setter(1 if val else 0, 3)
