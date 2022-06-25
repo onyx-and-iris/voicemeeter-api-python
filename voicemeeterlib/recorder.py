@@ -32,7 +32,7 @@ class Recorder(IRemote):
                         "replay",
                         "record",
                         "ff",
-                        "rw",
+                        "rew",
                     ]
                 },
             },
