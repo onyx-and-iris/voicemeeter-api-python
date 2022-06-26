@@ -23,24 +23,24 @@ class Parser:
         self.value = Combine(
             Optional("-") + Word(nums) + Optional(".") + Optional(Word(nums))
         ) | Group(OneOrMore(Word(alphanums)))
-
-    def parse(self, cmds):
-        event = (
+        self.event = (
             self.kls
             + self.token
             + self.param
             + Optional(self.token)
             + Optional(self.value)
         )
+
+    def parse(self, cmds):
         res = list()
 
         for cmd in cmds:
-            if len(event.parseString(cmd)) == 2:
-                kls, param = event.parseString(cmd)
+            if len(self.event.parseString(cmd)) == 2:
+                kls, param = self.event.parseString(cmd)
                 target = getattr(self.vm, kls[0])[int(kls[-1])]
                 res.append(getattr(target, param))
-            elif len(event.parseString(cmd)) == 3:
-                kls, param, val = event.parseString(cmd)
+            elif len(self.event.parseString(cmd)) == 3:
+                kls, param, val = self.event.parseString(cmd)
                 target = getattr(self.vm, kls[0])[int(kls[-1])]
                 if "".join(val) in ["off", "on"]:
                     setattr(target, param, bool(["off", "on"].index("".join(val))))
