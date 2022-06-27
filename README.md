@@ -139,6 +139,7 @@ vm.strip[5].appgain("Spotify", 0.5)
 ```
 
 ##### Gainlayers
+
 -   `gain`: float, from -60.0 to 12.0
 
 example:
@@ -185,6 +186,20 @@ print(strip[0].label)
 vm.bus[4].mono = true
 ```
 
+##### Levels
+
+The following properties are available.
+
+-   `all`
+
+example:
+
+```python
+print(vm.bus[0].levels.all)
+```
+
+`levels.all` will return -200.0 if no audio detected.
+
 ### Strip | Bus
 
 The following methods are available.
@@ -228,6 +243,7 @@ The following methods are available
 -   `rew()`
 
 The following properties are available
+
 -   `loop`: boolean
 -   `A1 - A5`: boolean
 -   `B1 - A3`: boolean
@@ -270,6 +286,7 @@ The following properties are available.
 -   `route`: int, from 0 to 8
 
 `SR`, `channel` and `bit` are defined as:
+
 -   readonly for instreams.
 -   read and write for outstreams.
 
