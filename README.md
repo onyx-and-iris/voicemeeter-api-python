@@ -356,6 +356,20 @@ vm.command.showvbanchat = True
 
 `showvbanchat` and `lock` are write only.
 
+### Device
+
+-   `ins` `outs` : Returns the number of input/output devices
+-   `input(i)` `output(i)` : Returns a dict of device properties for device[i]
+
+example:
+
+```python
+import voicemeeterlib
+with voicemeeterlib.api(kind_id) as vm:
+    for i in range(vm.device.ins):
+        print(vm.device.input(i))
+```
+
 ### Multiple parameters
 
 -   `apply`
