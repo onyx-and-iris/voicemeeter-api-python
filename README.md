@@ -116,10 +116,17 @@ The following properties are available.
 -   `device`: string
 -   `sr`: int
 -   `mc`: boolean
--   `k`: boolean
--   `bass`: float from -12.0 to 12.0
--   `mid`: float from -12.0 to 12.0
--   `treble`: float from -12.0 to 12.0
+-   `k`: int, from 0 to 4
+-   `bass`: float, from -12.0 to 12.0
+-   `mid`: float, from -12.0 to 12.0
+-   `treble`: float, from -12.0 to 12.0
+
+example:
+
+```python
+vm.strip[3].gain = 3.7
+print(vm.strip[0].label)
+```
 
 The following methods are Available.
 
@@ -183,10 +190,30 @@ The following properties are available.
 example:
 
 ```python
-vm.strip[3].gain = 3.7
-print(strip[0].label)
+vm.bus[3].gain = 3.7
+print(vm.bus[0].label)
 
-vm.bus[4].mono = true
+vm.bus[4].mono = True
+```
+
+##### Modes
+
+-   `normal`: boolean
+-   `amix`: boolean
+-   `bmix`: boolean
+-   `composite`: boolean
+-   `tvmix`: boolean
+-   `upmix21`: boolean
+-   `upmix41`: boolean
+-   `upmix61`: boolean
+-   `centeronly`: boolean
+-   `lfeonly`: boolean
+-   `rearonly`: boolean
+
+example:
+
+```python
+vm.bus[4].mode.amix = True
 ```
 
 ##### Levels
@@ -230,8 +257,8 @@ The following properties are available.
 example:
 
 ```python
-vm.button[37].state = true
-vm.button[55].trigger = false
+vm.button[37].state = True
+vm.button[55].trigger = False
 ```
 
 ### Recorder
@@ -324,7 +351,7 @@ example:
 
 ```python
 vm.command.restart()
-vm.command.showvbanchat = true
+vm.command.showvbanchat = True
 ```
 
 `showvbanchat` and `lock` are write only.
@@ -349,8 +376,8 @@ vm.apply(
 Or for each class you may do:
 
 ```python
-vm.strip[0].apply(mute: true, gain: 3.2, A1: true)
-vm.vban.outstream[0].apply(on: true, name: 'streamname', bit: 24)
+vm.strip[0].apply(mute: True, gain: 3.2, A1: True)
+vm.vban.outstream[0].apply(on: True, name: 'streamname', bit: 24)
 ```
 
 ## Config Files
@@ -375,14 +402,14 @@ will load a user config file at configs/banana/example.toml for Voicemeeter Bana
 
 Access to lower level Getters and Setters are provided with these functions:
 
--   `vm.get(param, is_string=false)`: For getting the value of any parameter. Set string to true if getting a property value expected to return a string.
+-   `vm.get(param, is_string=False)`: For getting the value of any parameter. Set string to True if getting a property value expected to return a string.
 -   `vm.set(param, value)`: For setting the value of any parameter.
 
 Access to lower level polling functions are provided with these functions:
 
--   `vm.pdirty()`: Returns true if a parameter has been updated.
--   `vm.mdirty()`: Returns true if a macrobutton has been updated.
--   `vm.ldirty()`: Returns true if a level has been updated.
+-   `vm.pdirty()`: Returns True if a parameter has been updated.
+-   `vm.mdirty()`: Returns True if a macrobutton has been updated.
+-   `vm.ldirty()`: Returns True if a level has been updated.
 
 example:
 
