@@ -99,21 +99,82 @@ Pass the kind of Voicemeeter as an argument. kind_id may be:
 
 ## `Available commands`
 
-### Channels (strip/bus)
+### Strip
 
-The following properties exist for audio channels.
+The following properties are available.
 
 -   `mono`: boolean
+-   `solo`: boolean
 -   `mute`: boolean
--   `gain`: float, from -60 to 12
--   `mc`, `k`: boolean
--   `comp`, `gate`: float, from 0 to 10
+-   `gain`: float, from -60.0 to 12.0
+-   `comp`: float, from 0.0 to 10.0
+-   `gate`: float, from 0.0 to 10.0
+-   `audibility`: float, from 0.0 to 10.0
 -   `limit`: int, from -40 to 12
 -   `A1 - A5`, `B1 - B3`: boolean
--   `eq`: boolean
 -   `label`: string
 -   `device`: string
 -   `sr`: int
+-   `mc`: boolean
+-   `k`: boolean
+-   `bass`: float from -12.0 to 12.0
+-   `mid`: float from -12.0 to 12.0
+-   `treble`: float from -12.0 to 12.0
+
+The following methods are Available.
+
+-   `appgain(name, value)`: string, float, from 0.0 to 1.0
+
+Set the gain in db by value for the app matching name.
+
+-   `appmute(name, value)`: string, bool
+
+Set mute state as value for the app matching name.
+
+example:
+
+```python
+vm.strip[5].appmute("Spotify", True)
+vm.strip[5].appgain("Spotify", 0.5)
+```
+
+##### Gainlayers
+-   `gain`: float, from -60.0 to 12.0
+
+example:
+
+```python
+vm.strip[3].gainlayer[3].gain = 3.7
+```
+
+Gainlayers are defined for potato version only.
+
+##### Levels
+
+The following properties are available.
+
+-   `prefader`
+-   `postfader`
+-   `postmute`
+
+example:
+
+```python
+print(vm.strip[3].levels.prefader)
+```
+
+Level properties will return -200.0 if no audio detected.
+
+### Bus
+
+The following properties are available.
+
+-   `mono`: boolean
+-   `eq`: boolean
+-   `mute`: boolean
+-   `gain`: float, from -60.0 to 12.0
+-   `label`: string
+-   `device`: string
 
 example:
 
@@ -124,9 +185,25 @@ print(strip[0].label)
 vm.bus[4].mono = true
 ```
 
+### Strip | Bus
+
+The following methods are available.
+
+-   `fadeto(amount, time)`: float, int
+-   `fadeby(amount, time)`: float, int
+
+Modify gain to or by the selected amount in db over a time interval in ms.
+
+example:
+
+```python
+vm.strip[0].fadeto(-10.3, 1000)
+vm.bus[3].fadeby(-5.6, 500)
+```
+
 ### Macrobuttons
 
-Three modes defined: state, stateonly and trigger.
+The following properties are available.
 
 -   `state`: boolean
 -   `stateonly`: boolean
@@ -141,7 +218,7 @@ vm.button[55].trigger = false
 
 ### Recorder
 
-The following methods are Available
+The following methods are available
 
 -   `play()`
 -   `stop()`
@@ -149,12 +226,12 @@ The following methods are Available
 -   `record()`
 -   `ff()`
 -   `rew()`
-    The following properties accept boolean values.
+
+The following properties are available
 -   `loop`: boolean
 -   `A1 - A5`: boolean
 -   `B1 - A3`: boolean
-    Load accepts a string:
--   `load`: string
+-   `load(<filepath>)`: string
 
 example:
 
@@ -172,11 +249,15 @@ vm.recorder.B2 = False
 vm.recorder.load(r'C:\music\mytune.mp3')
 ```
 
+Recorder properties are defined as write only.
+
 ### VBAN
 
 -   `vm.vban.enable()` `vm.vban.disable()` Turn VBAN on or off
 
-For each vban in/out stream the following properties are defined:
+##### Instream | Outstream
+
+The following properties are available.
 
 -   `on`: boolean
 -   `name`: string
@@ -188,7 +269,9 @@ For each vban in/out stream the following properties are defined:
 -   `quality`: int, from 0 to 4
 -   `route`: int, from 0 to 8
 
-SR, channel and bit are defined as readonly for instreams. Attempting to write to those parameters will throw an error. They are read and write for outstreams.
+`SR`, `channel` and `bit` are defined as:
+-   readonly for instreams.
+-   read and write for outstreams.
 
 example:
 
@@ -205,13 +288,14 @@ vm.vban.outstream[3].bit = 24
 
 ### Command
 
-Certain 'special' commands are defined by the API as performing actions rather than setting values. The following methods are available:
+Certain 'special' commands are defined by the API as performing actions rather than setting values.
+The following methods are available:
 
 -   `show()` : Bring Voiceemeter GUI to the front
 -   `shutdown()` : Shuts down the GUI
 -   `restart()` : Restart the audio engine
 
-The following properties are write only and accept boolean values.
+The following properties are available.
 
 -   `showvbanchat`: boolean
 -   `lock`: boolean
@@ -222,6 +306,8 @@ example:
 vm.command.restart()
 vm.command.showvbanchat = true
 ```
+
+`showvbanchat` and `lock` are write only.
 
 ### Multiple parameters
 
