@@ -172,10 +172,13 @@ The following properties are available.
 
 -   `mono`: boolean
 -   `eq`: boolean
+-   `eq_ab`: boolean
 -   `mute`: boolean
+-   `sel`: boolean
 -   `gain`: float, from -60.0 to 12.0
 -   `label`: string
 -   `device`: string
+-   `sr`: int
 
 example:
 
