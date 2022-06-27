@@ -95,4 +95,4 @@ if __name__ == "__main__":
     )
 
     # pass cmds to parse cmds, otherwise simply run main() to test stdin parsing
-    main()
+    main(cmds)
