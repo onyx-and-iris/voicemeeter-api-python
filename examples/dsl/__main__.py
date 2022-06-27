@@ -63,16 +63,12 @@ def main(cmds=None):
             if res:
                 print(res)
         else:
-            try:
-                while True:
-                    cmd = input("please enter command (Return to exit)\n")
-                    if not cmd:
-                        break
-                    res = parser.parse((cmd,))
-                    if res:
-                        print(res)
-            except KeyboardInterrupt as e:
-                SystemExit(e)
+            while cmd := input("Please enter command (Press <Enter> to exit)\n"):
+                if not cmd:
+                    break
+                res = parser.parse((cmd,))
+                if res:
+                    print(res)
 
 
 if __name__ == "__main__":
@@ -99,4 +95,4 @@ if __name__ == "__main__":
     )
 
     # pass cmds to parse cmds, otherwise simply run main() to test stdin parsing
-    main(cmds)
+    main()

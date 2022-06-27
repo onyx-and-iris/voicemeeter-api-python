@@ -14,13 +14,9 @@ def main():
         obs = Observer(vm)
         vm.subject.add(obs)
 
-        try:
-            while True:
-                cmd = input("Press Return to exit\n")
-                if not cmd:
-                    break
-        except KeyboardInterrupt as e:
-            SystemExit(e)
+        while cmd := input("Press <Enter> to exit\n"):
+            if not cmd:
+                break
 
 
 if __name__ == "__main__":

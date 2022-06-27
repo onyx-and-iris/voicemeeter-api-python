@@ -47,6 +47,8 @@ class Remote(CBindings):
         while self.running:
             if self.pdirty:
                 self.subject.notify("pdirty")
+            if self.mdirty:
+                self.subject.notify("mdirty")
             if self.ldirty:
                 self._strip_levels = self.strip_buf
                 self._bus_levels = self.bus_buf
