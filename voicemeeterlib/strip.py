@@ -82,11 +82,11 @@ class Strip(IRemote):
 
     def fadeto(self, target: float, time_: int):
         self.setter("FadeTo", f"({target}, {time_})")
-        time.sleep(self.remote.delay)
+        time.sleep(self._remote.delay)
 
     def fadeby(self, change: float, time_: int):
         self.setter("FadeBy", f"({change}, {time_})")
-        time.sleep(self.remote.delay)
+        time.sleep(self._remote.delay)
 
 
 class PhysicalStrip(Strip):
