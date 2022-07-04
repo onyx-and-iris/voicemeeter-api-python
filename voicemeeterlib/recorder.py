@@ -53,8 +53,6 @@ class Recorder(IRemote):
             raise VMError("File full directory must be a raw string")
 
     def set_loop(self, val: bool):
-        if not isinstance(val, bool) and val not in (0, 1):
-            raise VMError("Error True or False expected")
         self.setter("mode.loop", 1 if val else 0)
 
     loop = property(fset=set_loop)

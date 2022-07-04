@@ -25,8 +25,6 @@ class VbanStream(IRemote):
 
     @on.setter
     def on(self, val: bool):
-        if not isinstance(val, bool) and val not in (0, 1):
-            raise VMError("True or False expected")
         self.setter("on", 1 if val else 0)
 
     @property

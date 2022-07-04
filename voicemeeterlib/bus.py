@@ -29,8 +29,6 @@ class Bus(IRemote):
 
     @mute.setter
     def mute(self, val: bool):
-        if not isinstance(val, bool) and val not in (0, 1):
-            raise VMError("mute is a boolean parameter")
         self.setter("mute", 1 if val else 0)
 
     @property
@@ -39,8 +37,6 @@ class Bus(IRemote):
 
     @mono.setter
     def mono(self, val: bool):
-        if not isinstance(val, bool) and val not in (0, 1):
-            raise VMError("mono is a boolean parameter")
         self.setter("mono", 1 if val else 0)
 
     @property
@@ -49,8 +45,6 @@ class Bus(IRemote):
 
     @eq.setter
     def eq(self, val: bool):
-        if not isinstance(val, bool) and val not in (0, 1):
-            raise VMError("eq is a boolean parameter")
         self.setter("eq.On", 1 if val else 0)
 
     @property
@@ -59,8 +53,6 @@ class Bus(IRemote):
 
     @eq_ab.setter
     def eq_ab(self, val: bool):
-        if not isinstance(val, bool) and val not in (0, 1):
-            raise VMError("eq_ab is a boolean parameter")
         self.setter("eq.ab", 1 if val else 0)
 
     @property
@@ -69,8 +61,6 @@ class Bus(IRemote):
 
     @sel.setter
     def sel(self, val: bool):
-        if not isinstance(val, bool) and val not in (0, 1):
-            raise VMError("sel is a boolean parameter")
         self.setter("sel", 1 if val else 0)
 
     @property
@@ -79,9 +69,7 @@ class Bus(IRemote):
 
     @label.setter
     def label(self, val: str):
-        if not isinstance(val, str):
-            raise VMError("label is a string parameter")
-        self.setter("Label", val)
+        self.setter("Label", str(val))
 
     @property
     def gain(self) -> float:

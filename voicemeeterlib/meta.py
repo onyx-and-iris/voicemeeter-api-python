@@ -8,8 +8,6 @@ def bool_prop(param):
         return self.getter(param) == 1
 
     def fset(self, val: bool):
-        if not isinstance(val, bool) and val not in (0, 1):
-            raise VMError(f"{param} is a boolean parameter")
         self.setter(param, 1 if val else 0)
 
     return property(fget, fset)
@@ -44,8 +42,6 @@ def bus_mode_prop(param):
         return self.getter(param) == 1
 
     def fset(self, val: bool):
-        if not isinstance(val, bool) and val not in (0, 1):
-            raise VMError(f"{param} is a boolean parameter")
         self.setter(param, 1 if val else 0)
 
     return property(fget, fset)

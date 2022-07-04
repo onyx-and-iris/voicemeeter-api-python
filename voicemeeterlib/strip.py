@@ -30,8 +30,6 @@ class Strip(IRemote):
 
     @mono.setter
     def mono(self, val: bool):
-        if not isinstance(val, bool) and val not in (0, 1):
-            raise VMError("mono is a boolean parameter")
         self.setter("mono", 1 if val else 0)
 
     @property
@@ -40,8 +38,6 @@ class Strip(IRemote):
 
     @solo.setter
     def solo(self, val: bool):
-        if not isinstance(val, bool) and val not in (0, 1):
-            raise VMError("solo is a boolean parameter")
         self.setter("solo", 1 if val else 0)
 
     @property
@@ -50,8 +46,6 @@ class Strip(IRemote):
 
     @mute.setter
     def mute(self, val: bool):
-        if not isinstance(val, bool) and val not in (0, 1):
-            raise VMError("mute is a boolean parameter")
         self.setter("mute", 1 if val else 0)
 
     @property
@@ -68,9 +62,7 @@ class Strip(IRemote):
 
     @label.setter
     def label(self, val: str):
-        if not isinstance(val, str):
-            raise VMError("label is a string parameter")
-        self.setter("Label", val)
+        self.setter("Label", str(val))
 
     @property
     def gain(self) -> float:
@@ -136,8 +128,6 @@ class VirtualStrip(Strip):
 
     @mc.setter
     def mc(self, val: bool):
-        if not isinstance(val, bool) and val not in (0, 1):
-            raise VMError("mc is a boolean parameter")
         self.setter("mc", 1 if val else 0)
 
     mono = mc
@@ -180,8 +170,6 @@ class VirtualStrip(Strip):
         self.setter("AppGain", f'("{name}", {gain})')
 
     def appmute(self, name: str, mute: bool = None):
-        if not isinstance(mute, bool) and mute not in (0, 1):
-            raise VMError("appmute is a boolean parameter")
         self.setter("AppMute", f'("{name}", {1 if mute else 0})')
 
 

@@ -38,15 +38,11 @@ class Command(IRemote):
         return "Command"
 
     def set_showvbanchat(self, val: bool):
-        if not isinstance(val, bool) and val not in (0, 1):
-            raise VMError("showvbanchat is a boolean parameter")
         self.setter("DialogShow.VBANCHAT", 1 if val else 0)
 
     showvbanchat = property(fset=set_showvbanchat)
 
     def set_lock(self, val: bool):
-        if not isinstance(val, bool) and val not in (0, 1):
-            raise VMError("lock is a boolean parameter")
         self.setter("lock", 1 if val else 0)
 
     lock = property(fset=set_lock)

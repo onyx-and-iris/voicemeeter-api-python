@@ -27,8 +27,6 @@ class MacroButton(Adapter):
 
     @state.setter
     def state(self, val):
-        if not isinstance(val, bool) and val not in (0, 1):
-            raise VMError("state is a boolean parameter")
         self.setter(1 if val else 0, 1)
 
     @property
@@ -37,8 +35,6 @@ class MacroButton(Adapter):
 
     @stateonly.setter
     def stateonly(self, val):
-        if not isinstance(val, bool) and val not in (0, 1):
-            raise VMError("stateonly is a boolean parameter")
         self.setter(1 if val else 0, 2)
 
     @property
@@ -47,6 +43,4 @@ class MacroButton(Adapter):
 
     @trigger.setter
     def trigger(self, val):
-        if not isinstance(val, bool) and val not in (0, 1):
-            raise VMError("trigger is a boolean parameter")
         self.setter(1 if val else 0, 3)
