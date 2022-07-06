@@ -113,15 +113,19 @@ class BusLevel(IRemote):
             (i, i + 8)
             for i in range(0, (remote.kind.phys_out + remote.kind.virt_out) * 8, 8)
         )
+        self.range = self.level_map[self.index]
 
-    def getter(self):
+    def getter(self, mode):
         """Returns a tuple of level values for the channel."""
 
         def fget(i):
-            return round(20 * log(i, 10), 1) if i > 0 else -200.0
+            if self._remote.running and "bus_level" in self._remote.cache:
+                res = self._remote.cache["bus_level"][i]
+            else:
+                res = self._remote.get_level(mode, i)
+            return round(20 * log(res, 10), 1) if res > 0 else -200.0
 
-        range_ = self.level_map[self.index]
-        return tuple(fget(i) for i in self._remote._bus_levels[range_[0] : range_[-1]])
+        return tuple(fget(i) for i in range(*self.range))
 
     @property
     def identifier(self) -> str:
@@ -129,11 +133,11 @@ class BusLevel(IRemote):
 
     @property
     def all(self) -> tuple:
-        return self.getter()
+        return self.getter(3)
 
     @property
-    def updated(self) -> tuple:
-        return self._remote._bus_comp
+    def is_updated(self) -> bool:
+        return any(self._remote._bus_comp[self.range[0] : self.range[-1]])
 
 
 def _make_bus_mode_mixin():

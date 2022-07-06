@@ -186,25 +186,19 @@ class StripLevel(IRemote):
             )
         )
         self.level_map = phys_map + virt_map
+        self.range = self.level_map[self.index]
 
     def getter(self, mode):
         """Returns a tuple of level values for the channel."""
 
         def fget(i):
-            res = self._remote.get_level(mode, i)
+            if self._remote.running and "strip_level" in self._remote.cache:
+                res = self._remote.cache["strip_level"][i]
+            else:
+                res = self._remote.get_level(mode, i)
             return round(20 * log(res, 10), 1) if res > 0 else -200.0
 
-        range_ = self.level_map[self.index]
-        return tuple(fget(i) for i in range(*range_))
-
-    def getter_prefader(self):
-        def fget(i):
-            return round(20 * log(i, 10), 1) if i > 0 else -200.0
-
-        range_ = self.level_map[self.index]
-        return tuple(
-            fget(i) for i in self._remote._strip_levels[range_[0] : range_[-1]]
-        )
+        return tuple(fget(i) for i in range(*self.range))
 
     @property
     def identifier(self) -> str:
@@ -212,19 +206,22 @@ class StripLevel(IRemote):
 
     @property
     def prefader(self) -> tuple:
-        return self.getter_prefader()
+        self._remote.strip_mode = 0
+        return self.getter(0)
 
     @property
     def postfader(self) -> tuple:
+        self._remote.strip_mode = 1
         return self.getter(1)
 
     @property
     def postmute(self) -> tuple:
+        self._remote.strip_mode = 2
         return self.getter(2)
 
     @property
-    def updated(self) -> tuple:
-        return self._remote._strip_comp
+    def is_updated(self) -> bool:
+        return any(self._remote._strip_comp[self.range[0] : self.range[-1]])
 
 
 class GainLayer(IRemote):

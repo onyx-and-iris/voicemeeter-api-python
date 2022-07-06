@@ -20,7 +20,8 @@ class Remote(CBindings):
     def __init__(self, **kwargs):
         self.cache = {}
         self.subject = Subject()
-        self._strip_levels, self._bus_levels = self.all_levels
+        self.strip_mode = 0
+        self.running = True
 
         for attr, val in kwargs.items():
             setattr(self, attr, val)
@@ -38,21 +39,23 @@ class Remote(CBindings):
 
     def init_thread(self):
         """Starts updates thread."""
-        self.running = True
         t = Thread(target=self._updates, daemon=True)
         t.start()
 
     def _updates(self):
         """Continously update observers of dirty states."""
+        self.cache["strip_level"], self.cache["bus_level"] = self._get_levels()
+
         while self.running:
             if self.pdirty:
                 self.subject.notify("pdirty")
             if self.mdirty:
                 self.subject.notify("mdirty")
             if self.ldirty:
-                self._strip_levels = self.strip_buf
-                self._bus_levels = self.bus_buf
+                self.cache["strip_level"] = self._strip_buf
+                self.cache["bus_level"] = self._bus_buf
                 self.subject.notify("ldirty")
+
             time.sleep(self.ratelimit)
 
     def login(self) -> NoReturn:
@@ -105,18 +108,17 @@ class Remote(CBindings):
     @property
     def ldirty(self) -> bool:
         """True iff levels have been updated."""
-        self.strip_buf, self.bus_buf = self.all_levels
+        self._strip_buf, self._bus_buf = self._get_levels()
         self._strip_comp, self._bus_comp = (
-            tuple(not a == b for a, b in zip(self.strip_buf, self._strip_levels)),
-            tuple(not a == b for a, b in zip(self.bus_buf, self._bus_levels)),
+            tuple(
+                not a == b
+                for a, b in zip(self.cache.get("strip_level"), self._strip_buf)
+            ),
+            tuple(
+                not a == b for a, b in zip(self.cache.get("bus_level"), self._bus_buf)
+            ),
         )
-        return any(
-            any(l)
-            for l in (
-                self._strip_comp,
-                self._bus_comp,
-            )
-        )
+        return any(any(l) for l in (self._strip_comp, self._bus_comp))
 
     def clear_dirty(self):
         while self.pdirty or self.mdirty:
@@ -198,16 +200,19 @@ class Remote(CBindings):
         )
         return (name.value, type_.value, hwid.value)
 
-    @property
-    def all_levels(self) -> Iterable:
+    def get_level(self, type_: int, index: int) -> float:
+        """Retrieves a single level value"""
+        val = ct.c_float()
+        self.vm_get_level(ct.c_long(type_), ct.c_long(index), ct.byref(val))
+        return val.value
+
+    def _get_levels(self) -> Iterable:
         """
         returns both level arrays (strip_levels, bus_levels) BEFORE math conversion
-
-        strip levels in PREFADER mode.
         """
         return (
             tuple(
-                self.get_level(0, i)
+                self.get_level(self.strip_mode, i)
                 for i in range(2 * self.kind.phys_in + 8 * self.kind.virt_in)
             ),
             tuple(
@@ -215,20 +220,6 @@ class Remote(CBindings):
                 for i in range(8 * (self.kind.phys_out + self.kind.virt_out))
             ),
         )
-
-    def get_level(self, type_: int, index: int) -> float:
-        """Retrieves a single level value"""
-        val = ct.c_float()
-        self.vm_get_level(ct.c_long(type_), ct.c_long(index), ct.byref(val))
-        return val.value
-
-    @property
-    def strip_levels(self):
-        return self._strip_levels
-
-    @property
-    def bus_levels(self):
-        return self._bus_levels
 
     @script
     def sendtext(self, script: str):

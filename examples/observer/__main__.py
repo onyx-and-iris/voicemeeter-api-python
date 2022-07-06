@@ -6,7 +6,20 @@ class Observer:
         self.vm = vm
 
     def on_update(self, subject):
-        print(subject)
+        if subject == "pdirty":
+            print("pdirty!")
+        if subject == "mdirty":
+            print("mdirty!")
+        if subject == "ldirty":
+            info = (
+                "levels changed:",
+                f"[strip 0 {self.vm.strip[0].levels.is_updated}]",
+                f"[strip 1 {self.vm.strip[1].levels.is_updated}]",
+                f"[strip 2 {self.vm.strip[2].levels.is_updated}]",
+                f"[strip 3 {self.vm.strip[3].levels.is_updated}]",
+                f"[strip 4 {self.vm.strip[4].levels.is_updated}]",
+            )
+            print(" ".join(info))
 
 
 def main():
