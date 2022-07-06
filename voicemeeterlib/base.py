@@ -21,7 +21,7 @@ class Remote(CBindings):
         self.cache = {}
         self.subject = Subject()
         self.strip_mode = 0
-        self.running = True
+        self.running = None
 
         for attr, val in kwargs.items():
             setattr(self, attr, val)
@@ -39,6 +39,7 @@ class Remote(CBindings):
 
     def init_thread(self):
         """Starts updates thread."""
+        self.running = True
         t = Thread(target=self._updates, daemon=True)
         t.start()
 
