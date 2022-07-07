@@ -49,7 +49,7 @@ class VbanStream(IRemote):
 
     @port.setter
     def port(self, val: int):
-        if val not in range(1024, 65536):
+        if not 1024 <= val <= 65535:
             raise VMError("Expected value from 1024 to 65535")
         self.setter("port", val)
 
@@ -70,7 +70,7 @@ class VbanStream(IRemote):
 
     @channel.setter
     def channel(self, val: int):
-        if val not in range(1, 9):
+        if not 1 <= val <= 8:
             raise VMError("Expected value from 1 to 8")
         self.setter("channel", val)
 
@@ -90,7 +90,7 @@ class VbanStream(IRemote):
 
     @quality.setter
     def quality(self, val: int):
-        if val not in range(5):
+        if not 0 <= val <= 4:
             raise VMError("Expected value from 0 to 4")
         self.setter("quality", val)
 
@@ -100,7 +100,7 @@ class VbanStream(IRemote):
 
     @route.setter
     def route(self, val: int):
-        if val not in range(9):
+        if not 0 <= val <= 8:
             raise VMError("Expected value from 0 to 8")
         self.setter("route", val)
 
