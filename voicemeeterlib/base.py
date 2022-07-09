@@ -9,7 +9,7 @@ from .cbindings import CBindings
 from .error import VMError
 from .kinds import KindId
 from .subject import Subject
-from .util import polling, script
+from .util import comp, polling, script
 
 
 class Remote(CBindings):
@@ -44,7 +44,13 @@ class Remote(CBindings):
         t.start()
 
     def _updates(self):
-        """Continously update observers of dirty states."""
+        """
+        Continously update observers of dirty states.
+
+        Generate _strip_comp, _bus_comp and update level cache if ldirty.
+
+        Runs updates at a rate of self.ratelimit.
+        """
         self.cache["strip_level"], self.cache["bus_level"] = self._get_levels()
 
         while self.running:
@@ -53,6 +59,12 @@ class Remote(CBindings):
             if self.mdirty:
                 self.subject.notify("mdirty")
             if self.ldirty:
+                self._strip_comp, self._bus_comp = (
+                    tuple(
+                        not x for x in comp(self.cache["strip_level"], self._strip_buf)
+                    ),
+                    tuple(not x for x in comp(self.cache["bus_level"], self._bus_buf)),
+                )
                 self.cache["strip_level"] = self._strip_buf
                 self.cache["bus_level"] = self._bus_buf
                 self.subject.notify("ldirty")
@@ -110,16 +122,10 @@ class Remote(CBindings):
     def ldirty(self) -> bool:
         """True iff levels have been updated."""
         self._strip_buf, self._bus_buf = self._get_levels()
-        self._strip_comp, self._bus_comp = (
-            tuple(
-                not a == b
-                for a, b in zip(self.cache.get("strip_level"), self._strip_buf)
-            ),
-            tuple(
-                not a == b for a, b in zip(self.cache.get("bus_level"), self._bus_buf)
-            ),
+        return not (
+            self.cache.get("strip_level") == self._strip_buf
+            and self.cache.get("bus_level") == self._bus_buf
         )
-        return any(any(l) for l in (self._strip_comp, self._bus_comp))
 
     def clear_dirty(self):
         while self.pdirty or self.mdirty:

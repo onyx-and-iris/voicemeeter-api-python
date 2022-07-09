@@ -189,16 +189,21 @@ class StripLevel(IRemote):
         self.range = self.level_map[self.index]
 
     def getter(self, mode):
-        """Returns a tuple of level values for the channel."""
+        """
+        Returns a tuple of level values for the channel.
+
+        If observables thread running fetch values from cache otherwise call CAPI func.
+        """
 
         def fget(i):
-            if self._remote.running and "strip_level" in self._remote.cache:
-                res = self._remote.cache["strip_level"][i]
-            else:
-                res = self._remote.get_level(mode, i)
-            return round(20 * log(res, 10), 1) if res > 0 else -200.0
+            return round(20 * log(i, 10), 1) if i > 0 else -200.0
 
-        return tuple(fget(i) for i in range(*self.range))
+        if self._remote.running and "strip_level" in self._remote.cache:
+            vals = self._remote.cache["strip_level"][self.range[0] : self.range[-1]]
+        else:
+            vals = [self._remote.get_level(mode, i) for i in range(*self.range)]
+
+        return tuple(fget(i) for i in vals)
 
     @property
     def identifier(self) -> str:
@@ -221,7 +226,13 @@ class StripLevel(IRemote):
 
     @property
     def is_updated(self) -> bool:
-        return any(self._remote._strip_comp[self.range[0] : self.range[-1]])
+        """
+        Returns dirty status for this specific channel.
+
+        Expected to be used in a callback only.
+        """
+        if self._remote.running:
+            return any(self._remote._strip_comp[self.range[0] : self.range[-1]])
 
 
 class GainLayer(IRemote):

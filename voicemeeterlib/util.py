@@ -1,4 +1,5 @@
 import functools
+from typing import Iterator
 
 
 def polling(func):
@@ -50,3 +51,13 @@ def script(func):
         return func(remote, script)
 
     return wrapper
+
+
+def comp(t0: tuple, t1: tuple) -> Iterator[bool]:
+    """
+    Generator function, accepts two tuples.
+
+    Evaluates equality of each member in both tuples.
+    """
+    for a, b in zip(t0, t1):
+        yield a == b
