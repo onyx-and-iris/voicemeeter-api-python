@@ -12,12 +12,11 @@ class Observer:
             print("mdirty!")
         if subject == "ldirty":
             info = (
-                "levels changed:",
-                f"[strip 0 {self.vm.strip[0].levels.is_updated}]",
-                f"[strip 1 {self.vm.strip[1].levels.is_updated}]",
-                f"[strip 2 {self.vm.strip[2].levels.is_updated}]",
-                f"[strip 3 {self.vm.strip[3].levels.is_updated}]",
-                f"[strip 4 {self.vm.strip[4].levels.is_updated}]",
+                f"[{self.vm.bus[0]} {self.vm.bus[0].levels.is_updated}]",
+                f"[{self.vm.bus[1]} {self.vm.bus[1].levels.is_updated}]",
+                f"[{self.vm.bus[2]} {self.vm.bus[2].levels.is_updated}]",
+                f"[{self.vm.bus[3]} {self.vm.bus[3].levels.is_updated}]",
+                f"[{self.vm.bus[4]} {self.vm.bus[4].levels.is_updated}]",
             )
             print(" ".join(info))
 
