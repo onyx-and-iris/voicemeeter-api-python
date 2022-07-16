@@ -5,11 +5,81 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Before any patch/minor/major bump all unit tests will be run to verify they pass.
+Before any major/minor/patch bump all unit tests will be run to verify they pass.
 
 ## [Unreleased]
 
 -   [x]
+
+## [0.3.0] - 2022-07-15
+
+### Added
+
+-   get() added to bus mode mixin. returns the current bus mode.
+-   support for all strip level modes in observable thread
+-   effects parameters mixed into physicalstrip, physicalbus, virtualbus classes
+-   fx class to potato remote kind (for toggling reverb, delay)
+-   test_configs to unit tests
+-   test_factory to unit tests
+-   fx, xy tests added to higher tests.
+
+### Changed
+
+-   observer example switched from strip to bus. easier to test a single input for several buses.
+
+### Fixed
+
+-   is_updated in strip/bus levels now returns a bool, is level dirty or not?
+-   range expressions in vban.
+-   for basic kind only, virtual bus now subclasses physical bus, since it is the only version you may
+    attach a physical device to a virtual out.
+
+### Removed
+
+-   type checks
+
+## [0.2.3] - 2022-07-09
+
+### Added
+
+-   obs added to examples
+
+### Fixed
+
+-   bug in strip fadeto/fadeby
+
+## [0.2.2] - 2022-06-27
+
+### Added
+
+-   Readme updated to reflect changes.
+-   device, gainlayers, levels, bus mode sections added.
+
+### Changed
+
+-   No longer passing data in ldirty notification.
+-   rw changed to rew in recorder class to match capi
+
+### Fixed
+
+-   mdirty added to observer updates
+
+## [0.2.1] - 2022-06-18
+
+### Added
+
+-   dsl added to examples
+-   pre-commit.ps1 added for use with git hook
+
+### Fixed
+
+-   Error in cbindings
+
+## [0.2.0] - 2022-06-16
+
+### Fixed
+
+-   Bug in factory builder
 
 ## [0.1.9] - 2022-06-21
 
@@ -19,13 +89,13 @@ Before any patch/minor/major bump all unit tests will be run to verify they pass
 -   script decorator added to util module.
 -   README initial commit
 
-### Fixed
-
--   bug fixed in FactoryBuilder strip, bus iterations.
-
 ### Changed
 
 -   minor macrobutton refactor
+
+### Fixed
+
+-   bug fixed in FactoryBuilder strip, bus iterations.
 
 ## [0.1.8] - 2022-06-20
 
@@ -131,3 +201,4 @@ Before any patch/minor/major bump all unit tests will be run to verify they pass
 -   factory classes added, one for each kind.
 -   inst module implemented (fetch vm path from registry)
 -   kind maps implemented as dataclasses
+-   project packaged with poetry and added to pypi.

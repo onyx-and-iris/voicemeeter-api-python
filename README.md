@@ -198,6 +198,8 @@ vm.bus[4].mono = True
 
 ##### Modes
 
+The following properties are available.
+
 -   `normal`: boolean
 -   `amix`: boolean
 -   `bmix`: boolean
@@ -210,10 +212,16 @@ vm.bus[4].mono = True
 -   `lfeonly`: boolean
 -   `rearonly`: boolean
 
+The following methods are available.
+
+-   `get()`: Returns the current bus mode
+
 example:
 
 ```python
 vm.bus[4].mode.amix = True
+
+print(vm.bus[2].mode.get())
 ```
 
 ##### Levels
@@ -271,13 +279,13 @@ The following methods are available
 -   `record()`
 -   `ff()`
 -   `rew()`
+-   `load(<filepath>)`: string
 
 The following properties are available
 
 -   `loop`: boolean
 -   `A1 - A5`: boolean
 -   `B1 - A3`: boolean
--   `load(<filepath>)`: string
 
 example:
 
@@ -341,6 +349,7 @@ The following methods are available:
 -   `show()` : Bring Voiceemeter GUI to the front
 -   `shutdown()` : Shuts down the GUI
 -   `restart()` : Restart the audio engine
+-   `reset()`: Applies the `reset` config. (phys strip B1, virt strip A1, gains, comp, gate 0.0, mute, mono, solo, eq false)
 
 The following properties are available.
 
