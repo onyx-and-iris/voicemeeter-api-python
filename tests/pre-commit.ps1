@@ -1,6 +1,6 @@
 Function RunTests {
     $coverage = "./tests/pytest_coverage.log"
-    $run_tests = "pytest -v --capture=tee-sys --junitxml=./tests/.coverage.xml"
+    $run_tests = "pytest --run-slow -v --capture=tee-sys --junitxml=./tests/.coverage.xml"
     $match_pattern = "^=|^\s*$|^Running|^Using|^plugins|^collecting|^tests"
 
     if ( Test-Path $coverage ) { Clear-Content $coverage }
@@ -11,7 +11,7 @@ Function RunTests {
             $line | Tee-Object -FilePath $coverage -Append
         }
     }
-    Write-Output "$(Get-TimeStamp)" | Out-file $coverage -Append
+    Write-Output "$(Get-TimeStamp)" | Out-File $coverage -Append
 
     Invoke-Expression "genbadge tests -t 90 -i ./tests/.coverage.xml -o ./tests/$kind.svg"
 }

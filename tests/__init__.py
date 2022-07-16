@@ -35,6 +35,7 @@ data = Data()
 def setup_module():
     print(f"\nRunning tests for kind [{data.name}]\n", file=sys.stdout)
     tests.login()
+    tests.command.reset()
 
 
 def teardown_module():

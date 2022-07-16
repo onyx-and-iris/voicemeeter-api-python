@@ -39,6 +39,27 @@ class TestSetAndGetBoolHigher:
 
     """  bus modes tests, physical and virtual """
 
+    @pytest.mark.skipif(
+        data.name != "basic",
+        reason="Skip test if kind is not basic",
+    )
+    @pytest.mark.parametrize(
+        "index,param",
+        [
+            (data.phys_out, "normal"),
+            (data.phys_out, "amix"),
+            (data.virt_out, "normal"),
+            (data.virt_out, "composite"),
+        ],
+    )
+    def test_it_sets_and_gets_busmode_basic_bool_params(self, index, param, value):
+        setattr(tests.bus[index].mode, param, value)
+        assert getattr(tests.bus[index].mode, param) == value
+
+    @pytest.mark.skipif(
+        data.name == "basic",
+        reason="Skip test if kind is basic",
+    )
     @pytest.mark.parametrize(
         "index,param",
         [
@@ -50,7 +71,7 @@ class TestSetAndGetBoolHigher:
             (data.virt_out, "composite"),
         ],
     )
-    def test_it_sets_and_gets_bus_bool_params(self, index, param, value):
+    def test_it_sets_and_gets_busmode_bool_params(self, index, param, value):
         setattr(tests.bus[index].mode, param, value)
         assert getattr(tests.bus[index].mode, param) == value
 
@@ -117,6 +138,21 @@ class TestSetAndGetBoolHigher:
     )
     def test_it_sets_recorder_bool_params(self, param, value):
         setattr(tests.recorder, param, value)
+
+    """ fx tests """
+
+    @pytest.mark.skipif(
+        data.name != "potato",
+        reason="Skip test if kind is basic",
+    )
+    @pytest.mark.parametrize(
+        "param",
+        [("reverb"), ("reverb_ab"), ("delay"), ("delay_ab")],
+    )
+    def test_it_sets_and_gets_fx_bool_params(self, param, value):
+        assert hasattr(tests, "fx")
+        setattr(tests.fx, param, value)
+        assert getattr(tests.fx, param) == value
 
 
 class TestSetAndGetIntHigher:
@@ -199,6 +235,38 @@ class TestSetAndGetFloatHigher:
         tests.strip[index].gainlayer[j].gain = value
         assert tests.strip[index].gainlayer[j].gain == value
 
+    """ strip tests, physical """
+
+    @pytest.mark.parametrize(
+        "index, param, value",
+        [
+            (data.phys_in, "pan_x", -0.6),
+            (data.phys_in, "pan_x", 0.6),
+            (data.phys_in, "color_y", 0.8),
+            (data.phys_in, "fx_x", -0.6),
+        ],
+    )
+    def test_it_sets_and_gets_strip_xy_params(self, index, param, value):
+        assert hasattr(tests.strip[index], param)
+        setattr(tests.strip[index], param, value)
+        assert getattr(tests.strip[index], param) == value
+
+    @pytest.mark.skipif(
+        data.name != "potato",
+        reason="Only test if logged into Potato version",
+    )
+    @pytest.mark.parametrize(
+        "index, param, value",
+        [
+            (data.phys_in, "reverb", -1.6),
+            (data.phys_in, "postfx1", True),
+        ],
+    )
+    def test_it_sets_and_gets_strip_effects_params(self, index, param, value):
+        assert hasattr(tests.strip[index], param)
+        setattr(tests.strip[index], param, value)
+        assert getattr(tests.strip[index], param) == value
+
     """ strip tests, virtual """
 
     @pytest.mark.parametrize(
@@ -214,6 +282,19 @@ class TestSetAndGetFloatHigher:
         assert getattr(tests.strip[index], param) == value
 
     """ bus tests, physical and virtual """
+
+    @pytest.mark.skipif(
+        data.name != "potato",
+        reason="Only test if logged into Potato version",
+    )
+    @pytest.mark.parametrize(
+        "index, param, value",
+        [(data.phys_out, "returnreverb", 3.6), (data.virt_out, "returnfx1", 5.8)],
+    )
+    def test_it_sets_and_gets_bus_effects_float_params(self, index, param, value):
+        assert hasattr(tests.bus[index], param)
+        setattr(tests.bus[index], param, value)
+        assert getattr(tests.bus[index], param) == value
 
     @pytest.mark.parametrize(
         "index, param, value",
