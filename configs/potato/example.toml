@@ -27,9 +27,6 @@ gain = -8.8
 label = "VirtStrip0"
 A3 = true
 A5 = true
-bass = -3.2
-mid = 1.5
-treble = 2.1
 
 [strip-6]
 label = "VirtStrip1"
@@ -38,6 +35,9 @@ k = 3
 
 [strip-7]
 label = "VirtStrip2"
+bass = -3.2
+mid = 1.5
+treble = 2.1
 mc = true
 
 [bus-0]
@@ -54,9 +54,11 @@ eq = true
 
 [bus-3]
 label = "PhysBus3"
+mode = "upmix61"
 
 [bus-4]
 label = "PhysBus4"
+mode = "composite"
 
 [bus-5]
 label = "VirtBus0"

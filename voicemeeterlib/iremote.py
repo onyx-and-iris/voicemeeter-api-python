@@ -27,9 +27,15 @@ class IRemote(metaclass=ABCMeta):
         pass
 
     def apply(self, data: dict) -> Self:
+        def fget(attr, val):
+            if attr == "mode":
+                return (getattr(self, attr), val, 1)
+            return (self, attr, val)
+
         for attr, val in data.items():
             if hasattr(self, attr):
-                setattr(self, attr, val)
+                target, attr, val = fget(attr, val)
+                setattr(target, attr, val)
         return self
 
     def then_wait(self):
