@@ -52,6 +52,7 @@ class TestRemoteFactories:
         assert hasattr(tests, "button")
         assert hasattr(tests, "vban")
         assert hasattr(tests, "device")
+        assert hasattr(tests, "recorder")
         assert hasattr(tests, "fx")
 
         assert len(tests.strip) == 8
