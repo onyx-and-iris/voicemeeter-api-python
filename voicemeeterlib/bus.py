@@ -1,11 +1,19 @@
 import time
 from abc import abstractmethod
+from enum import IntEnum
 from math import log
 from typing import Union
 
 from .error import VMError
 from .iremote import IRemote
-from .meta import bus_mode_prop
+from .kinds import kinds_all
+from .meta import bool_prop, bus_mode_prop, float_prop
+
+BusModes = IntEnum(
+    "BusModes",
+    "normal amix bmix repeat composite tvmix upmix21 upmix41 upmix61 centeronly lfeonly rearonly",
+    start=0,
+)
 
 
 class Bus(IRemote):
@@ -79,6 +87,14 @@ class Bus(IRemote):
     def gain(self, val: float):
         self.setter("gain", val)
 
+    @property
+    def monitor(self) -> bool:
+        return self.getter("monitor") == 1
+
+    @monitor.setter
+    def monitor(self, val: bool):
+        self.setter("monitor", 1 if val else 0)
+
     def fadeto(self, target: float, time_: int):
         self.setter("FadeTo", f"({target}, {time_})")
         time.sleep(self._remote.DELAY)
@@ -89,6 +105,19 @@ class Bus(IRemote):
 
 
 class PhysicalBus(Bus):
+    @classmethod
+    def make(cls, kind):
+        """
+        Factory method for PhysicalBus.
+
+        Returns a PhysicalBus class.
+        """
+        kls = (cls,)
+        if kind.name == "potato":
+            EFFECTS_cls = _make_effects_mixin()
+            kls += (EFFECTS_cls,)
+        return type(f"PhysicalBus", kls, {})
+
     def __str__(self):
         return f"{type(self).__name__}{self.index}"
 
@@ -102,6 +131,23 @@ class PhysicalBus(Bus):
 
 
 class VirtualBus(Bus):
+    @classmethod
+    def make(cls, kind):
+        """
+        Factory method for VirtualBus.
+
+        If basic kind subclass physical bus.
+
+        Returns a VirtualBus class.
+        """
+        kls = (cls,)
+        if kind.name == "basic":
+            kls += (PhysicalBus,)
+        elif kind.name == "potato":
+            EFFECTS_cls = _make_effects_mixin()
+            kls += (EFFECTS_cls,)
+        return type(f"VirtualBus", kls, {})
+
     def __str__(self):
         return f"{type(self).__name__}{self.index}"
 
@@ -157,39 +203,61 @@ def _make_bus_mode_mixin():
     def identifier(self) -> str:
         return f"Bus[{self.index}].mode"
 
+    def get(self) -> str:
+        time.sleep(0.01)
+        for i, val in enumerate(
+            [
+                self.amix,
+                self.bmix,
+                self.repeat,
+                self.composite,
+                self.tvmix,
+                self.upmix21,
+                self.upmix41,
+                self.upmix61,
+                self.centeronly,
+                self.lfeonly,
+                self.rearonly,
+            ]
+        ):
+            if val:
+                return BusModes(i + 1).name
+        return "normal"
+
     return type(
         "BusModeMixin",
         (IRemote,),
         {
             "identifier": property(identifier),
+            **{mode.name: bus_mode_prop(mode.name) for mode in BusModes},
+            "get": get,
+        },
+    )
+
+
+def _make_effects_mixin():
+    """creates an fx mixin"""
+    return type(
+        f"FX",
+        (),
+        {
             **{
-                mode: bus_mode_prop(mode)
-                for mode in [
-                    "normal",
-                    "amix",
-                    "bmix",
-                    "repeat",
-                    "composite",
-                    "tvmix",
-                    "upmix21",
-                    "upmix41",
-                    "upmix61",
-                    "centeronly",
-                    "lfeonly",
-                    "rearonly",
-                ]
+                f"return{param}": float_prop(f"return{param}")
+                for param in ["reverb", "delay", "fx1", "fx2"]
             },
         },
     )
 
 
-def bus_factory(phys_bus, remote, i) -> Union[PhysicalBus, VirtualBus]:
+def bus_factory(is_phys_bus, remote, i) -> Union[PhysicalBus, VirtualBus]:
     """
     Factory method for buses
 
     Returns a physical or virtual bus subclass
     """
-    BUS_cls = PhysicalBus if phys_bus else VirtualBus
+    BUS_cls = (
+        PhysicalBus.make(remote.kind) if is_phys_bus else VirtualBus.make(remote.kind)
+    )
     BUSMODEMIXIN_cls = _make_bus_mode_mixin()
     return type(
         f"{BUS_cls.__name__}{remote.kind}",

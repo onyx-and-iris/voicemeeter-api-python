@@ -6,7 +6,7 @@ from typing import Union
 from .error import VMError
 from .iremote import IRemote
 from .kinds import kinds_all
-from .meta import bool_prop
+from .meta import bool_prop, float_prop
 
 
 class Strip(IRemote):
@@ -82,6 +82,16 @@ class Strip(IRemote):
 
 
 class PhysicalStrip(Strip):
+    @classmethod
+    def make(cls, kind):
+        """
+        Factory method for PhysicalStrip.
+
+        Returns a PhysicalStrip class.
+        """
+        EFFECTS_cls = _make_effects_mixins[kind.name]
+        return type(f"PhysicalStrip", (cls, EFFECTS_cls), {})
+
     def __str__(self):
         return f"{type(self).__name__}{self.index}"
 
@@ -161,6 +171,8 @@ class VirtualStrip(Strip):
     @property
     def treble(self):
         return round(self.getter("EQGain3"), 1)
+
+    high = treble
 
     @treble.setter
     def treble(self, val: float):
@@ -283,6 +295,52 @@ _make_channelout_mixins = {
 }
 
 
+def _make_effects_mixin(kind):
+    """creates an effects mixin for a kind"""
+    XY_cls = type(
+        f"XY",
+        (),
+        {
+            param: float_prop(param)
+            for param in [
+                "pan_x",
+                "pan_y",
+                "color_x",
+                "color_y",
+                "fx_x",
+                "fx_y",
+            ]
+        },
+    )
+
+    FX_cls = type(
+        f"FX",
+        (),
+        {
+            **{
+                param: float_prop(param)
+                for param in [
+                    "reverb",
+                    "delay",
+                    "fx1",
+                    "fx2",
+                ]
+            },
+            **{
+                f"post{param}": bool_prop(f"post{param}")
+                for param in ["reverb", "delay", "fx1", "fx2"]
+            },
+        },
+    )
+
+    if kind.name == "potato":
+        return type(f"Effects{kind}", (XY_cls, FX_cls), {})
+    return type(f"Effects{kind}", (XY_cls,), {})
+
+
+_make_effects_mixins = {kind.name: _make_effects_mixin(kind) for kind in kinds_all}
+
+
 def strip_factory(is_phys_strip, remote, i) -> Union[PhysicalStrip, VirtualStrip]:
     """
     Factory method for strips
@@ -291,7 +349,7 @@ def strip_factory(is_phys_strip, remote, i) -> Union[PhysicalStrip, VirtualStrip
 
     Returns a physical or virtual strip subclass
     """
-    STRIP_cls = PhysicalStrip if is_phys_strip else VirtualStrip
+    STRIP_cls = PhysicalStrip.make(remote.kind) if is_phys_strip else VirtualStrip
     CHANNELOUTMIXIN_cls = _make_channelout_mixins[remote.kind.name]
 
     _kls = (STRIP_cls, CHANNELOUTMIXIN_cls)
