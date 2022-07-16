@@ -25,7 +25,7 @@ class TestRemoteFactories:
 
     @pytest.mark.skipif(
         data.name != "banana",
-        reason="Skip test if kind is not basic",
+        reason="Skip test if kind is not banana",
     )
     def test_it_tests_remote_attrs_for_banana(self):
         assert hasattr(tests, "strip")
@@ -43,7 +43,7 @@ class TestRemoteFactories:
 
     @pytest.mark.skipif(
         data.name != "potato",
-        reason="Skip test if kind is not basic",
+        reason="Skip test if kind is not potato",
     )
     def test_it_tests_remote_attrs_for_potato(self):
         assert hasattr(tests, "strip")

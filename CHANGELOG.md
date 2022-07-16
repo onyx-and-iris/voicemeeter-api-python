@@ -11,7 +11,7 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 
 -   [x]
 
-## [0.3.0] - 2022-07-15
+## [0.3.0] - 2022-07-16
 
 ### Added
 
@@ -30,7 +30,6 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 ### Fixed
 
 -   is_updated in strip/bus levels now returns a bool, is level dirty or not?
--   range expressions in vban.
 -   for basic kind only, virtual bus now subclasses physical bus, since it is the only version you may
     attach a physical device to a virtual out.
 
@@ -40,46 +39,41 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 
 ## [0.2.3] - 2022-07-09
 
-### Added
+### Changed
 
--   obs added to examples
+-   only compute strip_comp, bus_comp if ldirty.
+-   switch from strip to bus in obs example.
 
 ### Fixed
 
 -   bug in strip fadeto/fadeby
+-   comp added to util.
+-   range expressions in vban.
 
-## [0.2.2] - 2022-06-27
+## [0.2.0] - 2022-07-02
 
 ### Added
 
+-   obs added to examples
 -   Readme updated to reflect changes.
 -   device, gainlayers, levels, bus mode sections added.
+-   minor version bump (probably should have been major since changes to ldirty effect client code)
 
 ### Changed
 
 -   No longer passing data in ldirty notification.
 -   rw changed to rew in recorder class to match capi
 
-### Fixed
-
--   mdirty added to observer updates
-
-## [0.2.1] - 2022-06-18
+## [0.1.10] - 2022-06-28
 
 ### Added
 
--   dsl added to examples
 -   pre-commit.ps1 added for use with git hook
 
 ### Fixed
 
+-   mdirty added to observer updates
 -   Error in cbindings
-
-## [0.2.0] - 2022-06-16
-
-### Fixed
-
--   Bug in factory builder
 
 ## [0.1.9] - 2022-06-21
 
@@ -137,6 +131,10 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 -   float_prop, bus_mode_prop meta functions added to util module.
 -   bus mode mixin added to bus factory method
 -   type, version implemented into base class.
+
+### Fixed
+
+-   Bug in factory builder
 
 ## [0.1.5] - 2022-06-14
 

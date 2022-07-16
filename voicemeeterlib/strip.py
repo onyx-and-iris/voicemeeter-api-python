@@ -298,7 +298,7 @@ _make_channelout_mixins = {
 def _make_effects_mixin(kind):
     """creates an effects mixin for a kind"""
     XY_cls = type(
-        f"XY",
+        "XY",
         (),
         {
             param: float_prop(param)
@@ -314,7 +314,7 @@ def _make_effects_mixin(kind):
     )
 
     FX_cls = type(
-        f"FX",
+        "FX",
         (),
         {
             **{

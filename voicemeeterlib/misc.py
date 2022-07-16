@@ -4,7 +4,7 @@ from .iremote import IRemote
 class FX(IRemote):
     @property
     def identifier(self) -> str:
-        return f"FX"
+        return "FX"
 
     @property
     def reverb(self) -> bool:

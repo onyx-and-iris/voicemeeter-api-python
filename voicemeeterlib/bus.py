@@ -238,7 +238,7 @@ def _make_bus_mode_mixin():
 def _make_effects_mixin():
     """creates an fx mixin"""
     return type(
-        f"FX",
+        "FX",
         (),
         {
             **{
