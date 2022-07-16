@@ -3,6 +3,7 @@ from enum import IntEnum
 from functools import cached_property
 from typing import Iterable, NoReturn, Self
 
+from . import misc
 from .base import Remote
 from .bus import request_bus_obj as bus
 from .command import Command
@@ -24,7 +25,9 @@ class FactoryBuilder:
     """
 
     BuilderProgress = IntEnum(
-        "BuilderProgress", "strip bus command macrobutton vban device recorder", start=0
+        "BuilderProgress",
+        "strip bus command macrobutton vban device recorder fx",
+        start=0,
     )
 
     def __init__(self, factory, kind: KindMapClass):
@@ -38,6 +41,7 @@ class FactoryBuilder:
             f"Finished building vban in/out streams for {self._factory}",
             f"Finished building device for {self._factory}",
             f"Finished building recorder for {self._factory}",
+            f"Finished building fx for {self._factory}",
         )
 
     def _pinfo(self, name: str) -> NoReturn:
@@ -77,6 +81,10 @@ class FactoryBuilder:
 
     def make_recorder(self) -> Self:
         self._factory.recorder = Recorder.make(self._factory)
+        return self
+
+    def make_fx(self) -> Self:
+        self._factory.fx = misc.FX(self._factory)
         return self
 
 
@@ -176,7 +184,7 @@ class PotatoFactory(FactoryBase):
     @property
     def steps(self) -> Iterable:
         """steps required to build the interface for a kind"""
-        return self._steps + (self.builder.make_recorder,)
+        return self._steps + (self.builder.make_recorder, self.builder.make_fx)
 
 
 def remote_factory(kind_id: str, **kwargs) -> Remote:
