@@ -1,6 +1,3 @@
-from .error import VMError
-
-
 def bool_prop(param):
     """meta function for boolean parameters"""
 
