@@ -503,6 +503,7 @@ vm.option.buffer("wdm", 512)
 ```
 
 driver defined as one of ("mme", "wdm", "ks", "asio")
+
 buffer, from 128 to 2048
 
 ##### delay[i]
