@@ -448,7 +448,7 @@ i, from 0 to 10
 example:
 
 ```python
-vm.patch.A3[5].set(18)
+vm.patch.A3[5].set(3)
 ```
 
 i, from 0 to 8.
