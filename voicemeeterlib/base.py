@@ -6,7 +6,8 @@ from threading import Thread
 from typing import Iterable, NoReturn, Optional, Self, Union
 
 from .cbindings import CBindings
-from .error import VMError
+from .error import CAPIError, VMError
+from .inst import bits
 from .kinds import KindId
 from .subject import Subject
 from .util import comp, polling, script
@@ -74,16 +75,17 @@ class Remote(CBindings):
     def login(self) -> NoReturn:
         """Login to the API, initialize dirty parameters"""
         res = self.vm_login()
-        if res == 0:
-            print(f"Successfully logged into {self}")
-        elif res == 1:
+        if res == 1:
             self.run_voicemeeter(self.kind.name)
+        elif res != 0:
+            raise CAPIError(f"VBVMR_Login returned {res}")
+        print(f"Successfully logged into {self}")
         self.clear_dirty()
 
     def run_voicemeeter(self, kind_id: str) -> NoReturn:
         if kind_id not in (kind.name.lower() for kind in KindId):
             raise VMError(f"Unexpected Voicemeeter type: '{kind_id}'")
-        if kind_id == "potato" and ct.sizeof(ct.c_voidp) == 8:
+        if kind_id == "potato" and bits == 8:
             value = KindId[kind_id.upper()].value + 3
         else:
             value = KindId[kind_id.upper()].value
@@ -102,11 +104,12 @@ class Remote(CBindings):
         """Returns Voicemeeter's version as a string"""
         ver = ct.c_long()
         self.vm_get_version(ct.byref(ver))
-        v1 = (ver.value & 0xFF000000) >> 24
-        v2 = (ver.value & 0x00FF0000) >> 16
-        v3 = (ver.value & 0x0000FF00) >> 8
-        v4 = ver.value & 0x000000FF
-        return f"{v1}.{v2}.{v3}.{v4}"
+        return "{}.{}.{}.{}".format(
+            (ver.value & 0xFF000000) >> 24,
+            (ver.value & 0x00FF0000) >> 16,
+            (ver.value & 0x0000FF00) >> 8,
+            ver.value & 0x000000FF,
+        )
 
     @property
     def pdirty(self) -> bool:
@@ -250,8 +253,7 @@ class Remote(CBindings):
                 return getattr(self, obj)[index]
             elif obj == "vban":
                 return getattr(getattr(self, obj), f"{m2}stream")[index]
-            else:
-                raise ValueError(obj)
+            raise ValueError(obj)
 
         [param(key).apply(datum).then_wait() for key, datum in data.items()]
 
@@ -272,8 +274,9 @@ class Remote(CBindings):
         self.clear_dirty()
         time.sleep(0.1)
         res = self.vm_logout()
-        if res == 0:
-            print(f"Successfully logged out of {self}")
+        if res != 0:
+            raise CAPIError(f"VBVMR_Logout returned {res}")
+        print(f"Successfully logged out of {self}")
 
     def end_thread(self):
         self.running = False
