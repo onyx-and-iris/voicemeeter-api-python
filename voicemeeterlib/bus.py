@@ -155,11 +155,7 @@ class VirtualBus(Bus):
 class BusLevel(IRemote):
     def __init__(self, remote, index):
         super().__init__(remote, index)
-        self.level_map = tuple(
-            (i, i + 8)
-            for i in range(0, (remote.kind.phys_out + remote.kind.virt_out) * 8, 8)
-        )
-        self.range = self.level_map[self.index]
+        self.range = _make_bus_level_maps[remote.kind.name][self.index]
 
     def getter(self, mode):
         """
@@ -187,7 +183,7 @@ class BusLevel(IRemote):
         return self.getter(3)
 
     @property
-    def is_updated(self) -> bool:
+    def isdirty(self) -> bool:
         """
         Returns dirty status for this specific channel.
 
@@ -195,6 +191,15 @@ class BusLevel(IRemote):
         """
         if self._remote.running:
             return any(self._remote._bus_comp[self.range[0] : self.range[-1]])
+
+    is_updated = isdirty
+
+
+def make_bus_level_map(kind):
+    return tuple((i, i + 8) for i in range(0, (kind.phys_out + kind.virt_out) * 8, 8))
+
+
+_make_bus_level_maps = {kind.name: make_bus_level_map(kind) for kind in kinds_all}
 
 
 def _make_bus_mode_mixin():

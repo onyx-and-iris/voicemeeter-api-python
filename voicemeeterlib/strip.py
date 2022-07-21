@@ -3,7 +3,6 @@ from abc import abstractmethod
 from math import log
 from typing import Union
 
-from .error import VMError
 from .iremote import IRemote
 from .kinds import kinds_all
 from .meta import bool_prop, float_prop
@@ -188,17 +187,7 @@ class VirtualStrip(Strip):
 class StripLevel(IRemote):
     def __init__(self, remote, index):
         super().__init__(remote, index)
-        phys_map = tuple((i, i + 2) for i in range(0, remote.kind.phys_in * 2, 2))
-        virt_map = tuple(
-            (i, i + 8)
-            for i in range(
-                remote.kind.phys_in * 2,
-                remote.kind.phys_in * 2 + remote.kind.virt_in * 8,
-                8,
-            )
-        )
-        self.level_map = phys_map + virt_map
-        self.range = self.level_map[self.index]
+        self.range = _make_strip_level_maps[remote.kind.name][self.index]
 
     def getter(self, mode):
         """
@@ -237,7 +226,7 @@ class StripLevel(IRemote):
         return self.getter(2)
 
     @property
-    def is_updated(self) -> bool:
+    def isdirty(self) -> bool:
         """
         Returns dirty status for this specific channel.
 
@@ -245,6 +234,24 @@ class StripLevel(IRemote):
         """
         if self._remote.running:
             return any(self._remote._strip_comp[self.range[0] : self.range[-1]])
+
+    is_updated = isdirty
+
+
+def make_strip_level_map(kind):
+    phys_map = tuple((i, i + 2) for i in range(0, kind.phys_in * 2, 2))
+    virt_map = tuple(
+        (i, i + 8)
+        for i in range(
+            kind.phys_in * 2,
+            kind.phys_in * 2 + kind.virt_in * 8,
+            8,
+        )
+    )
+    return phys_map + virt_map
+
+
+_make_strip_level_maps = {kind.name: make_strip_level_map(kind) for kind in kinds_all}
 
 
 class GainLayer(IRemote):
