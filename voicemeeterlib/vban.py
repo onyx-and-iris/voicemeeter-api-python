@@ -61,7 +61,7 @@ class VbanStream(IRemote):
     def sr(self, val: int):
         opts = (11025, 16000, 22050, 24000, 32000, 44100, 48000, 64000, 88200, 96000)
         if val not in opts:
-            raise VMError("Expected one of: {opts}")
+            raise VMError(f"Expected one of: {opts}")
         self.setter("sr", val)
 
     @property
