@@ -401,12 +401,122 @@ with voicemeeterlib.api(kind_id) as vm:
 
 ### FX
 
-The following methods are available:
+The following properties are available:
 
 -   `reverb`: boolean
 -   `reverb_ab`: boolean
 -   `delay`: boolean
 -   `delay_ab`: boolean
+
+example:
+
+```python
+vm.fx.reverb_ab = True
+```
+
+### Patch
+
+The following properties are available:
+
+-   `postfadercomposite`: boolean
+-   `postfxinsert`: boolean
+
+example:
+
+```python
+vm.patch.postfxinsert = False
+```
+
+##### asio[i]
+
+-   `get()`: int
+-   `set(patch_in)`: int, valid range determined by connected device.
+
+example:
+
+```python
+vm.patch.asio[3].set(4)
+```
+
+i, from 0 to 10
+
+##### A2[i] - A5[i]
+
+-   `get()`: int
+-   `set(patch_out)`: int, valid range determined by connected device.
+
+example:
+
+```python
+vm.patch.A3[5].set(18)
+```
+
+i, from 0 to 8.
+
+##### composite[i]
+
+-   `get()`: int
+-   `set(channel)`: int, from 0 up to number of channels depending on version.
+
+example:
+
+```python
+vm.patch.composite[7].set = 4
+```
+
+i, from 0 to 8.
+
+##### insert[i]
+
+-   `on`: boolean
+
+example:
+
+```python
+vm.patch.insert[18].on = True
+```
+
+i, from 0 up to number of channels depending on version.
+
+### Option
+
+The following properties are available:
+
+-   `sr`: int
+-   `asiosr`: boolean
+-   `monitoronsel`: boolean
+
+example:
+
+```python
+vm.option.sr = 48000
+```
+
+The following methods are available:
+
+-   `buffer(driver, buffer)` : Set buffer size for particular audio driver.
+
+example:
+
+```python
+vm.option.buffer("wdm", 512)
+```
+
+driver defined as one of ("mme", "wdm", "ks", "asio")
+buffer, from 128 to 2048
+
+##### delay[i]
+
+-   `get()`: int
+-   `set(delay)`: int, from 0 to 500
+
+example:
+
+```python
+vm.option.delay[4].set(30)
+```
+
+i, from 0 up to 4.
 
 ### Multiple parameters
 

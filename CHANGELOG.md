@@ -9,7 +9,27 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 
 ## [Unreleased]
 
--   [x]
+-   [ ]
+
+## [0.4.0] - 2022-07-21
+
+### Added
+
+-   asio, insert added to kind maps (maps patching parameters)
+-   Patch added to misc
+-   Option added to misc
+-   Patch, option sections added to readme.
+-   Patch, option unit tests added
+-   alias property isdirty for is_updated in strip/bus levels
+
+### Changed
+
+-   make_strip_level_map, make_bus_level_map added.
+-   observer example using isdirty
+
+### Fixed
+
+-   error message for vban.sr setter
 
 ## [0.3.0] - 2022-07-16
 
