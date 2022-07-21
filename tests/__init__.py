@@ -20,13 +20,21 @@ class Data:
 
     name: str = kind.name
     phys_in: int = kind.ins[0] - 1
-    virt_in: int = kind.ins[0] + kind.ins[1] - 1
+    virt_in: int = kind.ins[0] + kind.ins[-1] - 1
     phys_out: int = kind.outs[0] - 1
-    virt_out: int = kind.outs[0] + kind.outs[1] - 1
+    virt_out: int = kind.outs[0] + kind.outs[-1] - 1
     vban_in: int = kind.vban[0] - 1
-    vban_out: int = kind.vban[1] - 1
+    vban_out: int = kind.vban[-1] - 1
     button_lower: int = 0
     button_upper: int = 79
+    asio_in: int = kind.asio[0] - 1
+    asio_out: int = kind.asio[-1] - 1
+    insert_lower: int = 0
+    insert_higher: int = kind.insert - 1
+
+    @property
+    def channels(self):
+        return (2 * self.phys_in) + (8 * self.virt_in)
 
 
 data = Data()

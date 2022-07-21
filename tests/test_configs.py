@@ -17,6 +17,8 @@ class TestUserConfigs:
     def test_it_tests_config_string(self):
         assert "PhysStrip" in tests.strip[data.phys_in].label
         assert "VirtStrip" in tests.strip[data.virt_in].label
+        assert "PhysBus" in tests.bus[data.phys_out].label
+        assert "VirtBus" in tests.bus[data.virt_out].label
 
     def test_it_tests_config_bool(self):
         assert tests.strip[0].A1 == True

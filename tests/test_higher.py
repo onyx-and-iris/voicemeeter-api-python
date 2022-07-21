@@ -143,16 +143,53 @@ class TestSetAndGetBoolHigher:
 
     @pytest.mark.skipif(
         data.name != "potato",
-        reason="Skip test if kind is basic",
+        reason="Skip test if kind is not potato",
     )
     @pytest.mark.parametrize(
         "param",
         [("reverb"), ("reverb_ab"), ("delay"), ("delay_ab")],
     )
     def test_it_sets_and_gets_fx_bool_params(self, param, value):
-        assert hasattr(tests, "fx")
         setattr(tests.fx, param, value)
         assert getattr(tests.fx, param) == value
+
+    """ patch tests """
+
+    @pytest.mark.skipif(
+        data.name == "basic",
+        reason="Skip test if kind is basic",
+    )
+    @pytest.mark.parametrize(
+        "param",
+        [("postfadercomposite")],
+    )
+    def test_it_sets_and_gets_patch_bool_params(self, param, value):
+        setattr(tests.patch, param, value)
+        assert getattr(tests.patch, param) == value
+
+    """ patch.insert tests """
+
+    @pytest.mark.skipif(
+        data.name == "basic",
+        reason="Skip test if kind is basic",
+    )
+    @pytest.mark.parametrize(
+        "index, param",
+        [(data.insert_lower, "on"), (data.insert_higher, "on")],
+    )
+    def test_it_sets_and_gets_patch_insert_bool_params(self, index, param, value):
+        setattr(tests.patch.insert[index], param, value)
+        assert getattr(tests.patch.insert[index], param) == value
+
+    """ option tests """
+
+    @pytest.mark.parametrize(
+        "param",
+        [("monitoronsel")],
+    )
+    def test_it_sets_and_gets_option_bool_params(self, param, value):
+        setattr(tests.option, param, value)
+        assert getattr(tests.option, param) == value
 
 
 class TestSetAndGetIntHigher:
@@ -182,6 +219,78 @@ class TestSetAndGetIntHigher:
     def test_it_sets_and_gets_vban_outstream_bool_params(self, index, param, value):
         setattr(tests.vban.outstream[index], param, value)
         assert getattr(tests.vban.outstream[index], param) == value
+
+    """ patch.asio tests """
+
+    @pytest.mark.skipif(
+        data.name == "basic",
+        reason="Skip test if kind is basic",
+    )
+    @pytest.mark.parametrize(
+        "index,value",
+        [
+            (0, 1),
+            (data.asio_in, 4),
+        ],
+    )
+    def test_it_sets_and_gets_patch_asio_in_int_params(self, index, value):
+        tests.patch.asio[index].set(value)
+        assert tests.patch.asio[index].get() == value
+
+    """ patch.A2[i]-A5[i] tests """
+
+    @pytest.mark.skipif(
+        data.name == "basic",
+        reason="Skip test if kind is basic",
+    )
+    @pytest.mark.parametrize(
+        "index,value",
+        [
+            (0, 1),
+            (data.asio_out, 4),
+        ],
+    )
+    def test_it_sets_and_gets_patch_asio_out_int_params(self, index, value):
+        tests.patch.A2[index].set(value)
+        assert tests.patch.A2[index].get() == value
+        tests.patch.A5[index].set(value)
+        assert tests.patch.A5[index].get() == value
+
+    """ patch.composite tests """
+
+    @pytest.mark.skipif(
+        data.name == "basic",
+        reason="Skip test if kind is basic",
+    )
+    @pytest.mark.parametrize(
+        "index,value",
+        [
+            (0, 3),
+            (0, data.channels),
+            (7, 8),
+            (7, data.channels),
+        ],
+    )
+    def test_it_sets_and_gets_patch_composite_int_params(self, index, value):
+        tests.patch.composite[index].set(value)
+        assert tests.patch.composite[index].get() == value
+
+    """ option tests """
+
+    @pytest.mark.skipif(
+        data.name == "basic",
+        reason="Skip test if kind is basic",
+    )
+    @pytest.mark.parametrize(
+        "index,value",
+        [
+            (data.phys_out, 30),
+            (data.phys_out, 500),
+        ],
+    )
+    def test_it_sets_and_gets_patch_delay_int_params(self, index, value):
+        tests.option.delay[index].set(value)
+        assert tests.option.delay[index].get() == value
 
 
 class TestSetAndGetFloatHigher:

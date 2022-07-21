@@ -17,6 +17,7 @@ class TestRemoteFactories:
         assert hasattr(tests, "button")
         assert hasattr(tests, "vban")
         assert hasattr(tests, "device")
+        assert hasattr(tests, "option")
 
         assert len(tests.strip) == 3
         assert len(tests.bus) == 2
@@ -34,7 +35,9 @@ class TestRemoteFactories:
         assert hasattr(tests, "button")
         assert hasattr(tests, "vban")
         assert hasattr(tests, "device")
+        assert hasattr(tests, "option")
         assert hasattr(tests, "recorder")
+        assert hasattr(tests, "patch")
 
         assert len(tests.strip) == 5
         assert len(tests.bus) == 5
@@ -52,7 +55,9 @@ class TestRemoteFactories:
         assert hasattr(tests, "button")
         assert hasattr(tests, "vban")
         assert hasattr(tests, "device")
+        assert hasattr(tests, "option")
         assert hasattr(tests, "recorder")
+        assert hasattr(tests, "patch")
         assert hasattr(tests, "fx")
 
         assert len(tests.strip) == 8
