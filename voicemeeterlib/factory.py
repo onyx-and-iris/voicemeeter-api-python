@@ -26,7 +26,7 @@ class FactoryBuilder:
 
     BuilderProgress = IntEnum(
         "BuilderProgress",
-        "strip bus command macrobutton vban device recorder fx",
+        "strip bus command macrobutton vban device option recorder patch fx",
         start=0,
     )
 
@@ -40,7 +40,9 @@ class FactoryBuilder:
             f"Finished building macrobuttons for {self._factory}",
             f"Finished building vban in/out streams for {self._factory}",
             f"Finished building device for {self._factory}",
+            f"Finished building option for {self._factory}",
             f"Finished building recorder for {self._factory}",
+            f"Finished building patch for {self._factory}",
             f"Finished building fx for {self._factory}",
         )
 
@@ -79,8 +81,16 @@ class FactoryBuilder:
         self._factory.device = Device.make(self._factory)
         return self
 
+    def make_option(self) -> Self:
+        self._factory.option = misc.Option.make(self._factory)
+        return self
+
     def make_recorder(self) -> Self:
         self._factory.recorder = Recorder.make(self._factory)
+        return self
+
+    def make_patch(self) -> Self:
+        self._factory.patch = misc.Patch.make(self._factory)
         return self
 
     def make_fx(self) -> Self:
@@ -104,6 +114,7 @@ class FactoryBase(Remote):
             self.builder.make_macrobutton,
             self.builder.make_vban,
             self.builder.make_device,
+            self.builder.make_option,
         )
         self._configs = None
 
@@ -162,7 +173,7 @@ class BananaFactory(FactoryBase):
     @property
     def steps(self) -> Iterable:
         """steps required to build the interface for a kind"""
-        return self._steps + (self.builder.make_recorder,)
+        return self._steps + (self.builder.make_recorder, self.builder.make_patch)
 
 
 class PotatoFactory(FactoryBase):
@@ -184,7 +195,11 @@ class PotatoFactory(FactoryBase):
     @property
     def steps(self) -> Iterable:
         """steps required to build the interface for a kind"""
-        return self._steps + (self.builder.make_recorder, self.builder.make_fx)
+        return self._steps + (
+            self.builder.make_recorder,
+            self.builder.make_patch,
+            self.builder.make_fx,
+        )
 
 
 def remote_factory(kind_id: str, **kwargs) -> Remote:

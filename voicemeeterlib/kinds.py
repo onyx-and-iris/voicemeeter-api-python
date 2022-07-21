@@ -26,6 +26,8 @@ class KindMapClass(metaclass=SingletonType):
     ins: tuple
     outs: tuple
     vban: tuple
+    asio: tuple
+    insert: int
 
     @property
     def phys_in(self):
@@ -61,6 +63,8 @@ class BasicMap(KindMapClass):
     ins: tuple = (2, 1)
     outs: tuple = (1, 1)
     vban: tuple = (4, 4)
+    asio: tuple = (0, 0)
+    insert: int = 0
 
 
 @dataclass
@@ -69,6 +73,8 @@ class BananaMap(KindMapClass):
     ins: tuple = (3, 2)
     outs: tuple = (3, 2)
     vban: tuple = (8, 8)
+    asio: tuple = (6, 8)
+    insert: int = 22
 
 
 @dataclass
@@ -77,6 +83,8 @@ class PotatoMap(KindMapClass):
     ins: tuple = (5, 3)
     outs: tuple = (5, 3)
     vban: tuple = (8, 8)
+    asio: tuple = (10, 8)
+    insert: int = 34
 
 
 def kind_factory(kind_id):
