@@ -461,7 +461,7 @@ i, from 0 to 8.
 example:
 
 ```python
-vm.patch.composite[7].set = 4
+vm.patch.composite[7].set(4)
 ```
 
 i, from 0 to 8.
