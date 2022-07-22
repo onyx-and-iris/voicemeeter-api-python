@@ -196,15 +196,15 @@ class StripLevel(IRemote):
         If observables thread running fetch values from cache otherwise call CAPI func.
         """
 
-        def fget(i):
-            return round(20 * log(i, 10), 1) if i > 0 else -200.0
+        def fget(x):
+            return round(20 * log(x, 10), 1) if x > 0 else -200.0
 
         if self._remote.running and "strip_level" in self._remote.cache:
             vals = self._remote.cache["strip_level"][self.range[0] : self.range[-1]]
         else:
             vals = [self._remote.get_level(mode, i) for i in range(*self.range)]
 
-        return tuple(fget(i) for i in vals)
+        return tuple(fget(val) for val in vals)
 
     @property
     def identifier(self) -> str:

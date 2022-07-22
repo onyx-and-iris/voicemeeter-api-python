@@ -96,10 +96,10 @@ class Asio(IRemote):
 
 class AsioIn(Asio):
     def get(self) -> int:
-        return int(self.getter(f"asio{[self.index]}"))
+        return int(self.getter(f"asio[{self.index}]"))
 
     def set(self, val: int):
-        self.setter(f"asio{[self.index]}", val)
+        self.setter(f"asio[{self.index}]", val)
 
 
 class AsioOut(Asio):
@@ -108,10 +108,10 @@ class AsioOut(Asio):
         self._param = param
 
     def get(self) -> int:
-        return int(self.getter(f"out{self._param}{[self.index]}"))
+        return int(self.getter(f"out{self._param}[{self.index}]"))
 
     def set(self, val: int):
-        self.setter(f"out{self._param}{[self.index]}", val)
+        self.setter(f"out{self._param}[{self.index}]", val)
 
 
 def _make_asio_mixin(remote, kind):
@@ -138,7 +138,7 @@ def _make_asio_mixins(remote):
 class Composite(IRemote):
     @property
     def identifier(self) -> str:
-        return f"patch"
+        return "patch"
 
     def get(self) -> int:
         return int(self.getter(f"composite[{self.index}]"))
@@ -150,7 +150,7 @@ class Composite(IRemote):
 class Insert(IRemote):
     @property
     def identifier(self) -> str:
-        return f"patch"
+        return "patch"
 
     @property
     def on(self) -> bool:
@@ -184,7 +184,7 @@ class Option(IRemote):
 
     @property
     def identifier(self) -> str:
-        return f"option"
+        return "option"
 
     @property
     def sr(self) -> int:
@@ -220,7 +220,7 @@ class Option(IRemote):
 class Delay(IRemote):
     @property
     def identifier(self) -> str:
-        return f"option"
+        return "option"
 
     def get(self) -> int:
         return int(self.getter(f"delay[{self.index}]"))
