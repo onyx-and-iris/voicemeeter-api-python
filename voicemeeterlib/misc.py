@@ -1,3 +1,5 @@
+from typing import Optional
+
 from .error import VMError
 from .iremote import IRemote
 from .kinds import kinds_all
@@ -227,3 +229,24 @@ class Delay(IRemote):
 
     def set(self, val: int):
         self.setter(f"delay[{self.index}]", val)
+
+
+class Midi:
+    def __init__(self):
+        self._channel = None
+        self.cache = {}
+        self._most_recent = None
+
+    @property
+    def channel(self) -> int:
+        return self._channel
+
+    @property
+    def current(self) -> int:
+        return self._most_recent
+
+    def get(self, key: int) -> Optional[int]:
+        return self.cache.get(key)
+
+    def _set(self, key: int, velocity: int):
+        self.cache[key] = velocity

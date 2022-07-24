@@ -12,7 +12,7 @@ class Subject:
 
         return self._observers
 
-    def notify(self, modifier=None):
+    def notify(self, modifier):
         """run callbacks on update"""
 
         [o.on_update(modifier) for o in self._observers]

@@ -519,6 +519,25 @@ vm.option.delay[4].set(30)
 
 i, from 0 up to 4.
 
+### Midi
+
+The following properties are available:
+
+-   `channel`: int, returns the midi channel
+-   `current`: int, returns the current (or most recently pressed) key
+
+The following methods are available:
+
+-   `get(key)`: int, returns most recent velocity value for a key
+
+example:
+
+```python
+print(vm.midi.get(12))
+```
+
+get() may return None if no value for requested key in midi cache
+
 ### Multiple parameters
 
 -   `apply`

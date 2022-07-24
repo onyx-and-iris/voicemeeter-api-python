@@ -19,6 +19,8 @@ class Observer:
                 f"[{self.vm.bus[4]} {self.vm.bus[4].levels.isdirty}]",
             )
             print(" ".join(info))
+        if subject == "midi":
+            print(self.vm.midi.cache)
 
 
 def main():

@@ -1,4 +1,5 @@
 import functools
+from itertools import zip_longest
 from typing import Iterator
 
 
@@ -61,3 +62,11 @@ def comp(t0: tuple, t1: tuple) -> Iterator[bool]:
     """
     for a, b in zip(t0, t1):
         yield a == b
+
+
+def grouper(n, iterable, fillvalue=None):
+    """
+    Group elements of an iterable by sets of n length
+    """
+    args = [iter(iterable)] * n
+    return zip_longest(fillvalue=fillvalue, *args)

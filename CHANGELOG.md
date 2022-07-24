@@ -11,6 +11,16 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 
 -   [ ]
 
+## [0.5.0] - 2022-07-24
+
+### Added
+
+-   Midi class added to misc.
+-   Midi added to observer notifications
+-   Midi example added.
+-   Midi section added to readme.
+-   Minor version bump.
+
 ## [0.4.0] - 2022-07-21
 
 ### Added

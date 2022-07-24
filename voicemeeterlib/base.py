@@ -9,8 +9,9 @@ from .cbindings import CBindings
 from .error import CAPIError, VMError
 from .inst import bits
 from .kinds import KindId
+from .misc import Midi
 from .subject import Subject
-from .util import comp, polling, script
+from .util import comp, grouper, polling, script
 
 
 class Remote(CBindings):
@@ -20,6 +21,7 @@ class Remote(CBindings):
 
     def __init__(self, **kwargs):
         self.cache = {}
+        self.midi = Midi()
         self.subject = Subject()
         self.strip_mode = 0
         self.running = None
@@ -69,6 +71,8 @@ class Remote(CBindings):
                 self.cache["strip_level"] = self._strip_buf
                 self.cache["bus_level"] = self._bus_buf
                 self.subject.notify("ldirty")
+            if self.get_midi_message():
+                self.subject.notify("midi")
 
             time.sleep(self.ratelimit)
 
@@ -230,6 +234,22 @@ class Remote(CBindings):
                 for i in range(8 * (self.kind.phys_out + self.kind.virt_out))
             ),
         )
+
+    def get_midi_message(self):
+        n = ct.c_long(1024)
+        buf = ct.create_string_buffer(1024)
+        res = self.vm_get_midi_message(ct.byref(buf), n)
+        if res > 0:
+            vals = tuple(grouper(3, (int.from_bytes(buf[i]) for i in range(res))))
+            for msg in vals:
+                ch, pitch, vel = msg
+                if not self.midi._channel or self.midi._channel != ch:
+                    self.midi._channel = ch
+                self.midi._most_recent = pitch
+                self.midi._set(pitch, vel)
+            return True
+        elif res == -1 or res == -2:
+            raise CAPIError(f"VBVMR_GetMidiMessage returned {res}")
 
     @script
     def sendtext(self, script: str):

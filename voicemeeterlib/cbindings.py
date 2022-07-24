@@ -99,6 +99,10 @@ class CBindings(metaclass=ABCMeta):
         ct.POINTER(WCHAR * 256),
     ]
 
+    vm_get_midi_message = libc.VBVMR_GetMidiMessage
+    vm_get_midi_message.restype = LONG
+    vm_get_midi_message.argtypes = [ct.POINTER(CHAR * 1024), LONG]
+
     def call(self, func):
         res = func()
         if res != 0:
