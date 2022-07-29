@@ -1,12 +1,5 @@
-import logging
-import sys
-
+import obsstudio_sdk as obs
 import voicemeeterlib
-
-logging.basicConfig(level=logging.INFO)
-
-sys.path.append("../")
-from obswebsocket import events, obsws
 
 
 def on_start():
@@ -38,8 +31,8 @@ def on_live():
     vm.vban.instream[0].on = True
 
 
-def on_switch(message):
-    scene = message.getSceneName()
+def on_current_program_scene_changed(data):
+    scene = data.scene_name
     print(f"Switched to scene {scene}")
 
     match scene:
@@ -55,10 +48,11 @@ def on_switch(message):
             pass
 
 
-with voicemeeterlib.api("potato") as vm:
-    with obsws() as ws:
-        ws.register(on_switch, events.SwitchScenes)
+if __name__ == "__main__":
+    with voicemeeterlib.api("potato") as vm:
+        cl = obs.EventClient()
+        cl.callback.register(on_current_program_scene_changed)
 
-        while cmd := input("Press <Enter> to exit\n"):
+        while cmd := input("<Enter> to exit\n"):
             if not cmd:
                 break
