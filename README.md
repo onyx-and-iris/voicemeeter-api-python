@@ -582,6 +582,58 @@ will load a user config file at configs/banana/example.toml for Voicemeeter Bana
 
 ### Remote class
 
+`voicemeeterlib.api(kind_id: str)`
+
+You may pass the following optional keyword arguments:
+
+-   `sync`: boolean=False, force the getters to wait for dirty parameters to clear. For most cases leave this as False.
+-   `ratelimit`: float=0.033, how often to check for updates in ms.
+-   `subs`: dict={"pdirty": True, "mdirty": True, "midi": True, "ldirty": False}, initialize which event updates to listen for.
+    -   `pdirty`: parameter updates
+    -   `mdirty`: macrobutton updates
+    -   `midi`: midi updates
+    -   `ldirty`: level updates
+
+#### Event updates
+
+To receive event updates you should do the following:
+
+-   register your app to receive updates using the `vm.subject.add(observer)` method, where observer is your app.
+-   define an `on_update(subject)` callback function in your app. The value of subject may be checked for the type of event.
+
+See `examples/observer` for a demonstration.
+
+Level updates are considered high volume, by default they are NOT listened for. However, polling them with strip.levels and bus.levels methods will still work.
+
+So if you don't wish to receive level updates, or you prefer to handle them yourself simply leave ldirty as default (False).
+
+Each of the update types may be enabled/disabled separately. Don't use a midi controller? You have the option to disable midi updates.
+
+example:
+
+```python
+import voicemeeterlib
+# Set updates to occur every 50ms
+# Listen for level updates but disable midi updates
+with voicemeeterlib.api('banana', ratelimit=0.05, subs={"ldirty": True, "midi": False}) as vm:
+    ...
+```
+
+#### `vm.event`
+
+You may also add/remove event subscriptions as necessary with the Event class.
+
+example:
+
+```python
+vm.event.add("ldirty")
+
+vm.event.remove("pdirty")
+
+# get a list of currently subscribed
+print(vm.event.get())
+```
+
 Access to lower level Getters and Setters are provided with these functions:
 
 -   `vm.get(param, is_string=False)`: For getting the value of any parameter. Set string to True if getting a property value expected to return a string.
