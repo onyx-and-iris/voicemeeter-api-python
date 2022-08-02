@@ -9,7 +9,20 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 
 ## [Unreleased]
 
--   [ ]
+-   [x]
+
+## [0.6.0] - 2022-08-02
+
+### Added
+
+-   Keyword argument subs for voicemeeterlib.api. Initialize which events to sub to.
+-   Event class added to misc. Toggle events, get list of currently subscribed.
+-   voicemeeterlib.api section added to README in Base Module section.
+-   observer example updated to reflect changes.
+
+### Changed
+
+-   By default no longer listen for level updates (high volume). Should be enabled explicitly.
 
 ## [0.5.0] - 2022-07-24
 
