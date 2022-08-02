@@ -9,7 +9,7 @@ from .cbindings import CBindings
 from .error import CAPIError, VMError
 from .inst import bits
 from .kinds import KindId
-from .misc import Midi
+from .misc import Event, Midi
 from .subject import Subject
 from .util import comp, grouper, polling, script
 
@@ -20,14 +20,17 @@ class Remote(CBindings):
     DELAY = 0.001
 
     def __init__(self, **kwargs):
+        self.strip_mode = 0
         self.cache = {}
+        self.cache["strip_level"], self.cache["bus_level"] = self._get_levels()
         self.midi = Midi()
         self.subject = Subject()
-        self.strip_mode = 0
         self.running = None
 
         for attr, val in kwargs.items():
             setattr(self, attr, val)
+
+        self.event = Event(self.subs)
 
     def __enter__(self) -> Self:
         """setup procedures"""
@@ -43,6 +46,7 @@ class Remote(CBindings):
     def init_thread(self):
         """Starts updates thread."""
         self.running = True
+        print(f"Listening for {', '.join(self.event.get())} events")
         t = Thread(target=self._updates, daemon=True)
         t.start()
 
@@ -54,14 +58,14 @@ class Remote(CBindings):
 
         Runs updates at a rate of self.ratelimit.
         """
-        self.cache["strip_level"], self.cache["bus_level"] = self._get_levels()
-
         while self.running:
-            if self.pdirty:
+            if self.event.pdirty and self.pdirty:
                 self.subject.notify("pdirty")
-            if self.mdirty:
+            if self.event.mdirty and self.mdirty:
                 self.subject.notify("mdirty")
-            if self.ldirty:
+            if self.event.midi and self.get_midi_message():
+                self.subject.notify("midi")
+            if self.event.ldirty and self.ldirty:
                 self._strip_comp, self._bus_comp = (
                     tuple(
                         not x for x in comp(self.cache["strip_level"], self._strip_buf)
@@ -71,10 +75,8 @@ class Remote(CBindings):
                 self.cache["strip_level"] = self._strip_buf
                 self.cache["bus_level"] = self._bus_buf
                 self.subject.notify("ldirty")
-            if self.get_midi_message():
-                self.subject.notify("midi")
 
-            time.sleep(self.ratelimit)
+            time.sleep(self.ratelimit if self.event.any() else 0.5)
 
     def login(self) -> NoReturn:
         """Login to the API, initialize dirty parameters"""

@@ -102,7 +102,10 @@ class FactoryBase(Remote):
     """Base class for factories, subclasses Remote."""
 
     def __init__(self, kind_id: str, **kwargs):
-        defaultkwargs = {"sync": False, "ratelimit": 0.033}
+        defaultevents = {"pdirty": True, "mdirty": True, "midi": True, "ldirty": False}
+        if "subs" in kwargs:
+            defaultevents = defaultevents | kwargs.pop("subs")
+        defaultkwargs = {"sync": False, "ratelimit": 0.033, "subs": defaultevents}
         kwargs = defaultkwargs | kwargs
         self.kind = kindmap(kind_id)
         super().__init__(**kwargs)
