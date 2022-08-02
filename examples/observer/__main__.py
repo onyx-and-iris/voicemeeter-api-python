@@ -4,13 +4,18 @@ import voicemeeterlib
 class Observer:
     def __init__(self, vm):
         self.vm = vm
+        # register your app as event observer
+        self.vm.subject.add(self)
+        # add level updates, since they are disabled by default.
+        self.vm.event.add("ldirty")
 
+    # define an 'on_update' callback function to receive event updates
     def on_update(self, subject):
         if subject == "pdirty":
             print("pdirty!")
-        if subject == "mdirty":
+        elif subject == "mdirty":
             print("mdirty!")
-        if subject == "ldirty":
+        elif subject == "ldirty":
             info = (
                 f"[{self.vm.bus[0]} {self.vm.bus[0].levels.isdirty}]",
                 f"[{self.vm.bus[1]} {self.vm.bus[1].levels.isdirty}]",
@@ -19,14 +24,14 @@ class Observer:
                 f"[{self.vm.bus[4]} {self.vm.bus[4].levels.isdirty}]",
             )
             print(" ".join(info))
-        if subject == "midi":
-            print(self.vm.midi.cache)
+        elif subject == "midi":
+            current = self.vm.midi.current
+            print(f"Value of midi button {current} is {self.vm.midi.get(current)}")
 
 
 def main():
     with voicemeeterlib.api(kind_id) as vm:
         obs = Observer(vm)
-        vm.subject.add(obs)
 
         while cmd := input("Press <Enter> to exit\n"):
             if not cmd:
