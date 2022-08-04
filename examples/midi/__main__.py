@@ -11,6 +11,11 @@ class Observer:
         self.vm.subject.add(self)
 
     def on_update(self, subject):
+        """
+        We expect to only receive midi updates.
+
+        We could skip subject check but check anyway, in case an event is added later.
+        """
         if subject == "midi":
             self.get_info()
             self.on_midi_press()
@@ -20,9 +25,14 @@ class Observer:
         print(f"Value of midi button {current} is {self.vm.midi.get(current)}")
 
     def on_midi_press(self):
+        """
+        checks if strip 3 level prefader mode is greater than -40
+
+        checks if midi button 48 velcity is 127 (full velocity for button press).
+        """
         if (
             max(self.vm.strip[3].levels.postfader) > -40
-            and self.vm.midi.get(self.midi_btn) != 0
+            and self.vm.midi.get(self.midi_btn) == 127
         ):
             print(
                 f"Strip 3 level is greater than -40 and midi button {self.midi_btn} is pressed"
@@ -34,7 +44,9 @@ class Observer:
 
 
 def main():
-    with voicemeeterlib.api(kind_id) as vm:
+    # we only care about midi events here.
+    subs = {ev: False for ev in ["pdirty", "mdirty", "ldirty"]}
+    with voicemeeterlib.api(kind_id, subs=subs) as vm:
         obs = Observer(vm, midi_btn, macrobutton)
         obs.register()
 
