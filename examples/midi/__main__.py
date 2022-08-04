@@ -26,7 +26,7 @@ class Observer:
 
     def on_midi_press(self):
         """
-        checks if strip 3 level prefader mode is greater than -40
+        checks if strip 3 level postfader mode is greater than -40
 
         checks if midi button 48 velcity is 127 (full velocity for button press).
         """
