@@ -28,7 +28,7 @@ class Observer:
         """
         checks if strip 3 level postfader mode is greater than -40
 
-        checks if midi button 48 velcity is 127 (full velocity for button press).
+        checks if midi button 48 velocity is 127 (full velocity for button press).
         """
         if (
             max(self.vm.strip[3].levels.postfader) > -40
