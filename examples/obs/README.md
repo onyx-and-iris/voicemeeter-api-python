@@ -17,3 +17,9 @@ host = "localhost"
 port = 4455
 password = "mystrongpass"
 ```
+
+## Notes
+
+For a similar example for streamlabs check:
+
+[Streamlabs example](https://github.com/onyx-and-iris/PySLOBS/blob/master/examples/scenerotate.py)
