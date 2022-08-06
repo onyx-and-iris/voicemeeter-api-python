@@ -9,7 +9,7 @@ class ManyThings:
         self.vm.strip[0].label = "podmic"
         self.vm.strip[0].mute = True
         print(
-            f"strip 0 ({self.vm.strip[0].label}) has been set to {self.vm.strip[0].mute}"
+            f"strip 0 ({self.vm.strip[0].label}) label has been set to {self.vm.strip[0].mute}"
         )
 
     def other_things(self):

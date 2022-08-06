@@ -1,3 +1,4 @@
+[![PyPI version](https://badge.fury.io/py/voicemeeter-api.svg)](https://badge.fury.io/py/voicemeeter-api)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/onyx-and-iris/voicemeeter-api-python/blob/dev/LICENSE)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
@@ -50,7 +51,7 @@ class ManyThings:
         self.vm.strip[0].label = "podmic"
         self.vm.strip[0].mute = True
         print(
-            f"strip 0 ({self.vm.strip[0].label}) has been set to {self.vm.strip[0].mute}"
+            f"strip 0 ({self.vm.strip[0].label}) label has been set to {self.vm.strip[0].mute}"
         )
 
     def other_things(self):
