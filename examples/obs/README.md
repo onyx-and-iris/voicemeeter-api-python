@@ -1,7 +1,6 @@
 ## Requirements
 
 -   [OBS Studio](https://obsproject.com/)
--   [OBS Websocket v5 Plugin](https://github.com/obsproject/obs-websocket/releases/tag/5.0.0)
 -   [OBS Python SDK for Websocket v5](https://github.com/aatikturk/obsstudio_sdk)
 
 ## About
