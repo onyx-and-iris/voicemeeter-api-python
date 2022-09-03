@@ -3,7 +3,7 @@ import time
 from abc import abstractmethod
 from functools import partial
 from threading import Thread
-from typing import Iterable, NoReturn, Optional, Self, Union
+from typing import Iterable, NoReturn, Optional, Union
 
 from .cbindings import CBindings
 from .error import CAPIError, VMError
@@ -32,7 +32,7 @@ class Remote(CBindings):
 
         self.event = Event(self.subs)
 
-    def __enter__(self) -> Self:
+    def __enter__(self):
         """setup procedures"""
         self.login()
         self.init_thread()
@@ -242,7 +242,9 @@ class Remote(CBindings):
         buf = ct.create_string_buffer(1024)
         res = self.vm_get_midi_message(ct.byref(buf), n)
         if res > 0:
-            vals = tuple(grouper(3, (int.from_bytes(buf[i]) for i in range(res))))
+            vals = tuple(
+                grouper(3, (int.from_bytes(buf[i], "little") for i in range(res)))
+            )
             for msg in vals:
                 ch, pitch, vel = msg
                 if not self.midi._channel or self.midi._channel != ch:

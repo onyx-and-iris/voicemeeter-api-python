@@ -1,7 +1,10 @@
 import itertools
 from pathlib import Path
 
-import tomllib
+try:
+    import tomllib
+except ModuleNotFoundError:
+    import tomli as tomllib
 
 from .kinds import request_kind_map as kindmap
 
@@ -70,7 +73,6 @@ class TOMLStrBuilder:
 
 class TOMLDataExtractor:
     def __init__(self, file):
-        self._data = dict()
         with open(file, "rb") as f:
             self._data = tomllib.load(f)
 

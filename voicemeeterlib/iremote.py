@@ -1,6 +1,5 @@
 import time
 from abc import ABCMeta, abstractmethod
-from typing import Self
 
 
 class IRemote(metaclass=ABCMeta):
@@ -26,7 +25,7 @@ class IRemote(metaclass=ABCMeta):
     def identifier(self):
         pass
 
-    def apply(self, data: dict) -> Self:
+    def apply(self, data: dict):
         def fget(attr, val):
             if attr == "mode":
                 return (getattr(self, attr), val, 1)

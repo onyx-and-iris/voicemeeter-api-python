@@ -11,6 +11,16 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 
 -   [x]
 
+## [0.6.0] - 2022-09-03
+
+### Added
+
+-   tomli/tomllib compatibility layer to support python 3.10
+
+### Removed
+
+-   3.10 branch
+
 ## [0.6.0] - 2022-08-02
 
 ### Added

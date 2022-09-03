@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from enum import IntEnum
 from functools import cached_property
-from typing import Iterable, NoReturn, Self
+from typing import Iterable, NoReturn
 
 from . import misc
 from .base import Remote
@@ -51,49 +51,49 @@ class FactoryBuilder:
         name = name.split("_")[1]
         print(self._info[int(getattr(self.BuilderProgress, name))])
 
-    def make_strip(self) -> Self:
+    def make_strip(self):
         self._factory.strip = tuple(
             strip(i < self.kind.phys_in, self._factory, i)
             for i in range(self.kind.num_strip)
         )
         return self
 
-    def make_bus(self) -> Self:
+    def make_bus(self):
         self._factory.bus = tuple(
             bus(i < self.kind.phys_out, self._factory, i)
             for i in range(self.kind.num_bus)
         )
         return self
 
-    def make_command(self) -> Self:
+    def make_command(self):
         self._factory.command = Command.make(self._factory)
         return self
 
-    def make_macrobutton(self) -> Self:
+    def make_macrobutton(self):
         self._factory.button = tuple(MacroButton(self._factory, i) for i in range(80))
         return self
 
-    def make_vban(self) -> Self:
+    def make_vban(self):
         self._factory.vban = vban(self._factory)
         return self
 
-    def make_device(self) -> Self:
+    def make_device(self):
         self._factory.device = Device.make(self._factory)
         return self
 
-    def make_option(self) -> Self:
+    def make_option(self):
         self._factory.option = misc.Option.make(self._factory)
         return self
 
-    def make_recorder(self) -> Self:
+    def make_recorder(self):
         self._factory.recorder = Recorder.make(self._factory)
         return self
 
-    def make_patch(self) -> Self:
+    def make_patch(self):
         self._factory.patch = misc.Patch.make(self._factory)
         return self
 
-    def make_fx(self) -> Self:
+    def make_fx(self):
         self._factory.fx = misc.FX(self._factory)
         return self
 

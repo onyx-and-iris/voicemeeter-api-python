@@ -21,7 +21,7 @@ For an outline of past/future changes refer to: [CHANGELOG](CHANGELOG.md)
 ## Requirements
 
 -   [Voicemeeter](https://voicemeeter.com/)
--   Python 3.11 or greater
+-   Python 3.10 or greater
 
 ## Installation
 
