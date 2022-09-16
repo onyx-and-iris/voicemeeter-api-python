@@ -21,4 +21,4 @@ password = "mystrongpass"
 
 For a similar Streamlabs Desktop example:
 
-[Streamlabs example](https://github.com/onyx-and-iris/PySLOBS/blob/add-voicemeeter-example/examples/scenerotate.py)
+[Streamlabs example](https://gist.github.com/onyx-and-iris/c864f07126eeae389b011dc49520a19b)
