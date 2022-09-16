@@ -1,7 +1,7 @@
 ## Requirements
 
 -   [OBS Studio](https://obsproject.com/)
--   [OBS Python SDK for Websocket v5](https://github.com/aatikturk/obsstudio_sdk)
+-   [OBS Python SDK for Websocket v5](https://github.com/aatikturk/obsws-python)
 
 ## About
 
@@ -19,6 +19,6 @@ password = "mystrongpass"
 
 ## Notes
 
-For a similar example for streamlabs check:
+For a similar Streamlabs Desktop example:
 
-[Streamlabs example](https://github.com/onyx-and-iris/PySLOBS/blob/master/examples/scenerotate.py)
+[Streamlabs example](https://github.com/onyx-and-iris/PySLOBS/blob/add-voicemeeter-example/examples/scenerotate.py)
