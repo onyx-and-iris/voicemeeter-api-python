@@ -2,7 +2,6 @@ import ctypes as ct
 import time
 from abc import abstractmethod
 from functools import partial
-from threading import Thread
 from typing import Iterable, NoReturn, Optional, Union
 
 from .cbindings import CBindings
@@ -11,7 +10,8 @@ from .inst import bits
 from .kinds import KindId
 from .misc import Event, Midi
 from .subject import Subject
-from .util import comp, grouper, polling, script
+from .util import grouper, polling, script
+from .worker import Updater
 
 
 class Remote(CBindings):
@@ -47,36 +47,8 @@ class Remote(CBindings):
         """Starts updates thread."""
         self.running = True
         print(f"Listening for {', '.join(self.event.get())} events")
-        t = Thread(target=self._updates, daemon=True)
-        t.start()
-
-    def _updates(self):
-        """
-        Continously update observers of dirty states.
-
-        Generate _strip_comp, _bus_comp and update level cache if ldirty.
-
-        Runs updates at a rate of self.ratelimit.
-        """
-        while self.running:
-            if self.event.pdirty and self.pdirty:
-                self.subject.notify("pdirty")
-            if self.event.mdirty and self.mdirty:
-                self.subject.notify("mdirty")
-            if self.event.midi and self.get_midi_message():
-                self.subject.notify("midi")
-            if self.event.ldirty and self.ldirty:
-                self._strip_comp, self._bus_comp = (
-                    tuple(
-                        not x for x in comp(self.cache["strip_level"], self._strip_buf)
-                    ),
-                    tuple(not x for x in comp(self.cache["bus_level"], self._bus_buf)),
-                )
-                self.cache["strip_level"] = self._strip_buf
-                self.cache["bus_level"] = self._bus_buf
-                self.subject.notify("ldirty")
-
-            time.sleep(self.ratelimit if self.event.any() else 0.5)
+        self.updater = Updater(self)
+        self.updater.start()
 
     def login(self) -> NoReturn:
         """Login to the API, initialize dirty parameters"""
