@@ -10,8 +10,8 @@ from .inst import bits
 from .kinds import KindId
 from .misc import Event, Midi
 from .subject import Subject
+from .updater import Updater
 from .util import grouper, polling, script
-from .worker import Updater
 
 
 class Remote(CBindings):
