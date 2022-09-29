@@ -1,4 +1,5 @@
 import itertools
+import logging
 from pathlib import Path
 
 try:
@@ -118,6 +119,8 @@ class Loader(metaclass=SingletonType):
     loads data into memory if not found
     """
 
+    logger = logging.getLogger("config.Loader")
+
     def __init__(self, kind):
         self._kind = kind
         self._configs = dict()
@@ -131,14 +134,16 @@ class Loader(metaclass=SingletonType):
 
     def parse(self, identifier, data):
         if identifier in self._configs:
-            print(f"config file with name {identifier} already in memory, skipping..")
+            self.logger.info(
+                f"config file with name {identifier} already in memory, skipping.."
+            )
             return False
         self.parser = dataextraction_factory(data)
         return True
 
     def register(self, identifier, data=None):
         self._configs[identifier] = data if data else self.parser.data
-        print(f"config {self.name}/{identifier} loaded into memory")
+        self.logger.info(f"config {self.name}/{identifier} loaded into memory")
 
     def deregister(self):
         self._configs.clear()
@@ -161,6 +166,7 @@ def loader(kind):
 
     returns configs loaded into memory
     """
+    logger = logging.getLogger("config.loader")
     loader = Loader(kind)
 
     for path in (
@@ -169,7 +175,7 @@ def loader(kind):
         Path.home() / "Documents/Voicemeeter" / "configs" / kind.name,
     ):
         if path.is_dir():
-            print(f"Checking [{path}] for TOML config files:")
+            logger.info(f"Checking [{path}] for TOML config files:")
             for file in path.glob("*.toml"):
                 identifier = file.with_suffix("").stem
                 if loader.parse(identifier, file):

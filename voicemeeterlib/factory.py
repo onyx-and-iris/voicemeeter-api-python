@@ -1,10 +1,10 @@
+import logging
 from abc import abstractmethod
 from enum import IntEnum
 from functools import cached_property
 from typing import Iterable, NoReturn
 
 from . import misc
-from .base import Remote
 from .bus import request_bus_obj as bus
 from .command import Command
 from .config import request_config as configs
@@ -13,6 +13,7 @@ from .kinds import KindMapClass
 from .kinds import request_kind_map as kindmap
 from .macrobutton import MacroButton
 from .recorder import Recorder
+from .remote import Remote
 from .strip import request_strip_obj as strip
 from .vban import request_vban_obj as vban
 
@@ -24,6 +25,7 @@ class FactoryBuilder:
     Separates construction from representation.
     """
 
+    logger = logging.getLogger("remote.factorybuilder")
     BuilderProgress = IntEnum(
         "BuilderProgress",
         "strip bus command macrobutton vban device option recorder patch fx",
@@ -49,7 +51,7 @@ class FactoryBuilder:
     def _pinfo(self, name: str) -> NoReturn:
         """prints progress status for each step"""
         name = name.split("_")[1]
-        print(self._info[int(getattr(self.BuilderProgress, name))])
+        self.logger.info(self._info[int(getattr(self.BuilderProgress, name))])
 
     def make_strip(self):
         self._factory.strip = tuple(
