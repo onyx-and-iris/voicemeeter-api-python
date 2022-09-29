@@ -18,6 +18,7 @@ class Updater(threading.Thread):
         Runs updates at a rate of self.ratelimit.
         """
         while self._remote.running:
+            start = time.time()
             if self._remote.event.pdirty and self._remote.pdirty:
                 self._remote.subject.notify("pdirty")
             if self._remote.event.mdirty and self._remote.mdirty:
@@ -43,4 +44,8 @@ class Updater(threading.Thread):
                 self._remote.cache["bus_level"] = self._remote._bus_buf
                 self._remote.subject.notify("ldirty")
 
-            time.sleep(self._remote.ratelimit if self._remote.event.any() else 0.1)
+            elapsed = time.time() - start
+            if self._remote.event.any() and self._remote.ratelimit - elapsed > 0:
+                time.sleep(self._remote.ratelimit - elapsed)
+            else:
+                time.sleep(0.1)
