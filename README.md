@@ -579,36 +579,9 @@ with voicemeeterlib.api('banana') as vm:
 
 will load a user config file at configs/banana/example.toml for Voicemeeter Banana.
 
-## `Base Module`
+## Events
 
-### Remote class
-
-`voicemeeterlib.api(kind_id: str)`
-
-You may pass the following optional keyword arguments:
-
--   `sync`: boolean=False, force the getters to wait for dirty parameters to clear. For most cases leave this as False.
--   `ratelimit`: float=0.033, how often to check for updates in ms.
--   `subs`: dict={"pdirty": True, "mdirty": True, "midi": True, "ldirty": False}, initialize which event updates to listen for.
-    -   `pdirty`: parameter updates
-    -   `mdirty`: macrobutton updates
-    -   `midi`: midi updates
-    -   `ldirty`: level updates
-
-#### Event updates
-
-To receive event updates you should do the following:
-
--   register your app to receive updates using the `vm.subject.add(observer)` method, where observer is your app.
--   define an `on_update(subject)` callback function in your app. The value of subject may be checked for the type of event.
-
-See `examples/observer` for a demonstration.
-
-Level updates are considered high volume, by default they are NOT listened for. However, polling them with strip.levels and bus.levels methods will still work.
-
-So if you don't wish to receive level updates, or you prefer to handle them yourself simply leave ldirty as default (False).
-
-Each of the update types may be enabled/disabled separately. Don't use a midi controller? You have the option to disable midi updates.
+Level updates are considered high volume, by default they are NOT listened for. Use subs keyword arg to initialize event updates.
 
 example:
 
@@ -618,6 +591,22 @@ import voicemeeterlib
 # Listen for level updates but disable midi updates
 with voicemeeterlib.api('banana', ratelimit=0.05, subs={"ldirty": True, "midi": False}) as vm:
     ...
+```
+
+#### `vm.subject`
+
+Use the Subject class to register an app as event observer.
+
+The following methods are available:
+
+-   `add`: registers an app as an event observer
+-   `remove`: deregisters an app as an event observer
+
+example:
+
+```python
+# register the app self as an event observer
+self.vm.subject.add(self)
 ```
 
 #### `vm.event`
@@ -634,6 +623,20 @@ vm.event.remove("pdirty")
 # get a list of currently subscribed
 print(vm.event.get())
 ```
+
+## Remote class
+
+`voicemeeterlib.api(kind_id: str)`
+
+You may pass the following optional keyword arguments:
+
+-   `sync`: boolean=False, force the getters to wait for dirty parameters to clear. For most cases leave this as False.
+-   `ratelimit`: float=0.033, how often to check for updates in ms.
+-   `subs`: dict={"pdirty": True, "mdirty": True, "midi": True, "ldirty": False}, initialize which event updates to listen for.
+    -   `pdirty`: parameter updates
+    -   `mdirty`: macrobutton updates
+    -   `midi`: midi updates
+    -   `ldirty`: level updates
 
 Access to lower level Getters and Setters are provided with these functions:
 

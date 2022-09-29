@@ -11,6 +11,23 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 
 -   [x]
 
+## [0.8.0] - 2022-09-29
+
+### Added
+
+-   Logging level INFO set on all examples.
+-   Minor version bump
+-   vm.subject subsection added to README
+
+### Changed
+
+-   Logging module used in place of print statements across the interface.
+-   time.time() now used to steady rate of updates in updater thread.
+
+### Fixed
+
+-   call to cache bug in updater thread
+
 ## [0.7.0] - 2022-09-03
 
 ### Added
