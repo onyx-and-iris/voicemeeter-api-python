@@ -29,16 +29,18 @@ class Updater(threading.Thread):
                     tuple(
                         not x
                         for x in comp(
-                            self.cache["strip_level"], self._remote._strip_buf
+                            self._remote.cache["strip_level"], self._remote._strip_buf
                         )
                     ),
                     tuple(
                         not x
-                        for x in comp(self.cache["bus_level"], self._remote._bus_buf)
+                        for x in comp(
+                            self._remote.cache["bus_level"], self._remote._bus_buf
+                        )
                     ),
                 )
                 self._remote.cache["strip_level"] = self._remote._strip_buf
                 self._remote.cache["bus_level"] = self._remote._bus_buf
                 self._remote.subject.notify("ldirty")
 
-            time.sleep(self._remote.ratelimit if self._remote.event.any() else 0.5)
+            time.sleep(self._remote.ratelimit if self._remote.event.any() else 0.1)
