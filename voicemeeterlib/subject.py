@@ -1,5 +1,10 @@
+import logging
+
+
 class Subject:
     """Adds support for observers"""
+
+    logger = logging.getLogger("subject.subject")
 
     def __init__(self):
         """list of current observers"""
@@ -22,16 +27,22 @@ class Subject:
 
         if observer not in self._observers:
             self._observers.append(observer)
+            self.logger.info(f"{type(observer).__name__} added to event observers")
         else:
-            print(f"Failed to add: {observer}")
+            self.logger.error(
+                f"Failed to add {type(observer).__name__} to event observers"
+            )
 
     def remove(self, observer):
         """removes an observer from _observers"""
 
         try:
             self._observers.remove(observer)
+            self.logger.info(f"{type(observer).__name__} removed from event observers")
         except ValueError:
-            print(f"Failed to remove: {observer}")
+            self.logger.error(
+                f"Failed to remove {type(observer).__name__} from event observers"
+            )
 
     def clear(self):
         """clears the _observers list"""
