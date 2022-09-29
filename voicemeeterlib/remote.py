@@ -1,4 +1,5 @@
 import ctypes as ct
+import logging
 import time
 from abc import abstractmethod
 from functools import partial
@@ -6,9 +7,10 @@ from typing import Iterable, NoReturn, Optional, Union
 
 from .cbindings import CBindings
 from .error import CAPIError, VMError
+from .event import Event
 from .inst import bits
 from .kinds import KindId
-from .misc import Event, Midi
+from .misc import Midi
 from .subject import Subject
 from .updater import Updater
 from .util import grouper, polling, script
@@ -17,6 +19,7 @@ from .util import grouper, polling, script
 class Remote(CBindings):
     """Base class responsible for wrapping the C Remote API"""
 
+    logger = logging.getLogger("remote.remote")
     DELAY = 0.001
 
     def __init__(self, **kwargs):
@@ -46,7 +49,8 @@ class Remote(CBindings):
     def init_thread(self):
         """Starts updates thread."""
         self.running = True
-        print(f"Listening for {', '.join(self.event.get())} events")
+        self.event.info()
+
         self.updater = Updater(self)
         self.updater.start()
 
@@ -57,7 +61,7 @@ class Remote(CBindings):
             self.run_voicemeeter(self.kind.name)
         elif res != 0:
             raise CAPIError(f"VBVMR_Login returned {res}")
-        print(f"Successfully logged into {self}")
+        self.logger.info(f"{type(self).__name__}: Successfully logged into {self}")
         self.clear_dirty()
 
     def run_voicemeeter(self, kind_id: str) -> NoReturn:
@@ -261,9 +265,9 @@ class Remote(CBindings):
         )
         try:
             self.apply(self.configs[name])
-            print(f"Profile '{name}' applied!")
+            self.logger.info(f"Profile '{name}' applied!")
         except KeyError as e:
-            print(("\n").join(error_msg))
+            self.logger.error(("\n").join(error_msg))
 
     def logout(self) -> NoReturn:
         """Wait for dirty parameters to clear, then logout of the API"""
@@ -272,7 +276,7 @@ class Remote(CBindings):
         res = self.vm_logout()
         if res != 0:
             raise CAPIError(f"VBVMR_Logout returned {res}")
-        print(f"Successfully logged out of {self}")
+        self.logger.info(f"{type(self).__name__}: Successfully logged out of {self}")
 
     def end_thread(self):
         self.running = False
