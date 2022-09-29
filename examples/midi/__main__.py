@@ -1,3 +1,5 @@
+import logging
+
 import voicemeeterlib
 
 
@@ -45,7 +47,7 @@ class Observer:
 
 def main():
     # we only care about midi events here.
-    subs = {ev: False for ev in ["pdirty", "mdirty", "ldirty"]}
+    subs = {ev: False for ev in ["pdirty", "mdirty"]}
     with voicemeeterlib.api(kind_id, subs=subs) as vm:
         obs = Observer(vm, midi_btn, macrobutton)
         obs.register()
@@ -56,6 +58,7 @@ def main():
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     kind_id = "banana"
     # leftmost M on korg nanokontrol2 in CC mode
     midi_btn = 48

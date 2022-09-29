@@ -1,3 +1,5 @@
+import logging
+
 import voicemeeterlib
 
 
@@ -31,7 +33,7 @@ class Observer:
 
 def main():
     with voicemeeterlib.api(kind_id) as vm:
-        obs = Observer(vm)
+        Observer(vm)
 
         while cmd := input("Press <Enter> to exit\n"):
             if not cmd:
@@ -39,6 +41,7 @@ def main():
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     kind_id = "banana"
 
     main()

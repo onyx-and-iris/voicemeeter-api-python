@@ -1,3 +1,5 @@
+import logging
+
 import obsws_python as obs
 import voicemeeterlib
 
@@ -49,7 +51,10 @@ def on_current_program_scene_changed(data):
 
 
 if __name__ == "__main__":
-    with voicemeeterlib.api("potato") as vm:
+    logging.basicConfig(level=logging.INFO)
+
+    subs = {ev: False for ev in ["pdirty", "mdirty", "midi"]}
+    with voicemeeterlib.api("potato", subs=subs) as vm:
         cl = obs.EventClient()
         cl.callback.register(on_current_program_scene_changed)
 

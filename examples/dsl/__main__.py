@@ -1,3 +1,4 @@
+import logging
 import time
 
 import voicemeeterlib
@@ -55,8 +56,9 @@ class Parser:
 
 def main(cmds=None):
     kind_id = "banana"
+    subs = {ev: False for ev in ["pdirty", "mdirty", "ldirty", "midi"]}
 
-    with voicemeeterlib.api(kind_id) as vm:
+    with voicemeeterlib.api(kind_id, subs=subs) as vm:
         parser = Parser(vm)
         if cmds:
             res = parser.parse(cmds)
@@ -72,6 +74,7 @@ def main(cmds=None):
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     cmds = (
         "strip 0 -> mute -> on",
         "strip 0 -> mute",
