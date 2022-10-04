@@ -18,14 +18,9 @@ class Observer:
         elif subject == "mdirty":
             print("mdirty!")
         elif subject == "ldirty":
-            info = (
-                f"[{self.vm.bus[0]} {self.vm.bus[0].levels.isdirty}]",
-                f"[{self.vm.bus[1]} {self.vm.bus[1].levels.isdirty}]",
-                f"[{self.vm.bus[2]} {self.vm.bus[2].levels.isdirty}]",
-                f"[{self.vm.bus[3]} {self.vm.bus[3].levels.isdirty}]",
-                f"[{self.vm.bus[4]} {self.vm.bus[4].levels.isdirty}]",
-            )
-            print(" ".join(info))
+            for bus in self.vm.bus:
+                if bus.levels.isdirty:
+                    print(bus, bus.levels.all)
         elif subject == "midi":
             current = self.vm.midi.current
             print(f"Value of midi button {current} is {self.vm.midi.get(current)}")
