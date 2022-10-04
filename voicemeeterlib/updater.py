@@ -8,6 +8,16 @@ class Updater(threading.Thread):
     def __init__(self, remote):
         super().__init__(name="updater", target=self.update, daemon=True)
         self._remote = remote
+        self._remote._strip_comp = [False] * (
+            2 * self._remote.kind.phys_in + 8 * self._remote.kind.virt_in
+        )
+        self._remote._bus_comp = [False] * (self._remote.kind.num_bus * 8)
+
+    def _update_comps(self, strip_level, bus_level):
+        self._remote._strip_comp, self._remote._bus_comp = (
+            tuple(not x for x in comp(self._remote.cache["strip_level"], strip_level)),
+            tuple(not x for x in comp(self._remote.cache["bus_level"], bus_level)),
+        )
 
     def update(self):
         """
@@ -26,20 +36,7 @@ class Updater(threading.Thread):
             if self._remote.event.midi and self._remote.get_midi_message():
                 self._remote.subject.notify("midi")
             if self._remote.event.ldirty and self._remote.ldirty:
-                self._remote._strip_comp, self._remote._bus_comp = (
-                    tuple(
-                        not x
-                        for x in comp(
-                            self._remote.cache["strip_level"], self._remote._strip_buf
-                        )
-                    ),
-                    tuple(
-                        not x
-                        for x in comp(
-                            self._remote.cache["bus_level"], self._remote._bus_buf
-                        )
-                    ),
-                )
+                self._update_comps(self._remote._strip_buf, self._remote._bus_buf)
                 self._remote.cache["strip_level"] = self._remote._strip_buf
                 self._remote.cache["bus_level"] = self._remote._bus_buf
                 self._remote.subject.notify("ldirty")
