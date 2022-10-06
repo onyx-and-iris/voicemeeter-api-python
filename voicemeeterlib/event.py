@@ -1,4 +1,5 @@
 import logging
+from typing import Iterable, Union
 
 
 class Event:
@@ -59,8 +60,14 @@ class Event:
     def any(self) -> bool:
         return any(self.subs.values())
 
-    def add(self, event):
-        setattr(self, event, True)
+    def add(self, events: Union[str, Iterable[str]]):
+        if isinstance(events, str):
+            events = [events]
+        for event in events:
+            setattr(self, event, True)
 
-    def remove(self, event):
-        setattr(self, event, False)
+    def remove(self, events: Union[str, Iterable[str]]):
+        if isinstance(events, str):
+            events = [events]
+        for event in events:
+            setattr(self, event, False)

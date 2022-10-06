@@ -629,6 +629,20 @@ example:
 vm.event.ldirty = True
 
 vm.event.pdirty = False
+```
+
+Or add, remove a list of events.
+
+The following methods are available:
+
+-   `add()`
+-   `remove()`
+-   `get()`
+
+example:
+
+```python
+vm.event.remove(["pdirty", "mdirty", "midi"])
 
 # get a list of currently subscribed
 print(vm.event.get())
