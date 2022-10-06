@@ -605,20 +605,30 @@ The following methods are available:
 example:
 
 ```python
-# register the app self as an event observer
-self.vm.subject.add(self)
+# register an app to receive updates
+class App():
+    def __init__(self, vm):
+        vm.subject.add(self)
+        ...
 ```
 
 #### `vm.event`
 
-You may also add/remove event subscriptions as necessary with the Event class.
+Use the event class to toggle updates as necessary.
+
+The following properties are available:
+
+-   `pdirty`: boolean
+-   `mdirty`: boolean
+-   `midi`: boolean
+-   `ldirty`: boolean
 
 example:
 
 ```python
-vm.event.add("ldirty")
+vm.event.ldirty = True
 
-vm.event.remove("pdirty")
+vm.event.pdirty = False
 
 # get a list of currently subscribed
 print(vm.event.get())

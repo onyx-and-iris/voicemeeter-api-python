@@ -56,7 +56,7 @@ class Parser:
 
 def main(cmds=None):
     kind_id = "banana"
-    subs = {ev: False for ev in ["pdirty", "mdirty", "ldirty", "midi"]}
+    subs = {ev: False for ev in ["pdirty", "mdirty", "midi"]}
 
     with voicemeeterlib.api(kind_id, subs=subs) as vm:
         parser = Parser(vm)

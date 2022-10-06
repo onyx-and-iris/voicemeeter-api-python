@@ -8,8 +8,8 @@ class Observer:
         self.vm = vm
         # register your app as event observer
         self.vm.subject.add(self)
-        # add level updates, since they are disabled by default.
-        self.vm.event.add("ldirty")
+        # enable level updates, since they are disabled by default.
+        self.vm.event.ldirty = True
 
     # define an 'on_update' callback function to receive event updates
     def on_update(self, subject):
