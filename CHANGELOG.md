@@ -11,6 +11,28 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 
 -   [x]
 
+## [0.9.0] - 2022-10-11
+
+### Added
+
+-   StripDevice and BusDevice mixins.
+-   README updated to reflect changes.
+-   Minor version bump
+
+### Removed
+
+-   device, sr properties for physical strip, bus moved into mixin classes
+
+### Changed
+
+-   Event class property setters added.
+-   Event add/remove methods now accept multiple events.
+-   bus levels now printed in observer example.
+
+### Fixed
+
+-   initialize channel comps in updater thread. Fixes bug when switching to a kind before any level updates have occurred.
+
 ## [0.8.0] - 2022-09-29
 
 ### Added

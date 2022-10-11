@@ -5,7 +5,7 @@ from typing import Union
 
 from .iremote import IRemote
 from .kinds import kinds_all
-from .meta import bool_prop, float_prop
+from .meta import bool_prop, device_prop, float_prop
 
 
 class Strip(IRemote):
@@ -82,14 +82,20 @@ class Strip(IRemote):
 
 class PhysicalStrip(Strip):
     @classmethod
-    def make(cls, kind):
+    def make(cls, remote, i, kind):
         """
         Factory method for PhysicalStrip.
 
         Returns a PhysicalStrip class.
         """
         EFFECTS_cls = _make_effects_mixins[kind.name]
-        return type(f"PhysicalStrip", (cls, EFFECTS_cls), {})
+        return type(
+            f"PhysicalStrip",
+            (cls, EFFECTS_cls),
+            {
+                "device": StripDevice.make(remote, i),
+            },
+        )
 
     def __str__(self):
         return f"{type(self).__name__}{self.index}"
@@ -118,13 +124,43 @@ class PhysicalStrip(Strip):
     def audibility(self, val: float):
         self.setter("audibility", val)
 
+
+class StripDevice(IRemote):
+    @classmethod
+    def make(cls, remote, i):
+        """
+        Factory function for strip.device.
+
+        Returns a StripDevice class of a kind.
+        """
+        DEVICE_cls = type(
+            f"StripDevice{remote.kind}",
+            (cls,),
+            {
+                **{
+                    param: device_prop(param)
+                    for param in [
+                        "wdm",
+                        "ks",
+                        "mme",
+                        "asio",
+                    ]
+                },
+            },
+        )
+        return DEVICE_cls(remote, i)
+
     @property
-    def device(self):
-        return self.getter("device.name", is_string=True)
+    def identifier(self) -> str:
+        return f"Strip[{self.index}].device"
+
+    @property
+    def name(self):
+        return self.getter("name", is_string=True)
 
     @property
     def sr(self):
-        return int(self.getter("device.sr"))
+        return int(self.getter("sr"))
 
 
 class VirtualStrip(Strip):
@@ -358,7 +394,9 @@ def strip_factory(is_phys_strip, remote, i) -> Union[PhysicalStrip, VirtualStrip
 
     Returns a physical or virtual strip subclass
     """
-    STRIP_cls = PhysicalStrip.make(remote.kind) if is_phys_strip else VirtualStrip
+    STRIP_cls = (
+        PhysicalStrip.make(remote, i, remote.kind) if is_phys_strip else VirtualStrip
+    )
     CHANNELOUTMIXIN_cls = _make_channelout_mixins[remote.kind.name]
 
     _kls = (STRIP_cls, CHANNELOUTMIXIN_cls)

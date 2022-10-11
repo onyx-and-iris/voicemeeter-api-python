@@ -42,3 +42,12 @@ def bus_mode_prop(param):
         self.setter(param, 1 if val else 0)
 
     return property(fget, fset)
+
+
+def device_prop(param):
+    """meta function for strip device parameters"""
+
+    def fset(self, val: str):
+        self.setter(param, val)
+
+    return property(fset=fset)

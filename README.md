@@ -114,8 +114,6 @@ The following properties are available.
 -   `limit`: int, from -40 to 12
 -   `A1 - A5`, `B1 - B3`: boolean
 -   `label`: string
--   `device`: string
--   `sr`: int
 -   `mc`: boolean
 -   `k`: int, from 0 to 4
 -   `bass`: float, from -12.0 to 12.0
@@ -199,8 +197,6 @@ The following properties are available.
 -   `sel`: boolean
 -   `gain`: float, from -60.0 to 12.0
 -   `label`: string
--   `device`: string
--   `sr`: int
 -   `returnreverb`: float, from 0.0 to 10.0
 -   `returndelay`: float, from 0.0 to 10.0
 -   `returnfx1`: float, from 0.0 to 10.0
@@ -273,6 +269,27 @@ example:
 vm.strip[0].fadeto(-10.3, 1000)
 vm.bus[3].fadeby(-5.6, 500)
 ```
+
+#### Strip.Device | Bus.Device
+
+The following properties are available
+
+-   `name`: str
+-   `sr`: int
+-   `wdm`: str
+-   `ks`: str
+-   `mme`: str
+-   `asio`: str
+
+example:
+
+```python
+print(vm.strip[0].device.name)
+vm.bus[0].device.asio = "Audient USB Audio ASIO Driver"
+```
+
+strip|bus device parameters are defined for physical channels only.
+name, sr are read only. wdm, ks, mme, asio are write only.
 
 ### Macrobuttons
 

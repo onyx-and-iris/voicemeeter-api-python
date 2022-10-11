@@ -4,10 +4,9 @@ from enum import IntEnum
 from math import log
 from typing import Union
 
-from .error import VMError
 from .iremote import IRemote
 from .kinds import kinds_all
-from .meta import bool_prop, bus_mode_prop, float_prop
+from .meta import bus_mode_prop, device_prop, float_prop
 
 BusModes = IntEnum(
     "BusModes",
@@ -106,7 +105,7 @@ class Bus(IRemote):
 
 class PhysicalBus(Bus):
     @classmethod
-    def make(cls, kind):
+    def make(cls, remote, i, kind):
         """
         Factory method for PhysicalBus.
 
@@ -116,18 +115,54 @@ class PhysicalBus(Bus):
         if kind.name == "potato":
             EFFECTS_cls = _make_effects_mixin()
             kls += (EFFECTS_cls,)
-        return type("PhysicalBus", kls, {})
+        return type(
+            "PhysicalBus",
+            kls,
+            {
+                "device": BusDevice.make(remote, i),
+            },
+        )
 
     def __str__(self):
         return f"{type(self).__name__}{self.index}"
 
-    @property
-    def device(self) -> str:
-        return self.getter("device.name", is_string=True)
+
+class BusDevice(IRemote):
+    @classmethod
+    def make(cls, remote, i):
+        """
+        Factory function for bus.device.
+
+        Returns a BusDevice class of a kind.
+        """
+        DEVICE_cls = type(
+            f"BusDevice{remote.kind}",
+            (cls,),
+            {
+                **{
+                    param: device_prop(param)
+                    for param in [
+                        "wdm",
+                        "ks",
+                        "mme",
+                        "asio",
+                    ]
+                },
+            },
+        )
+        return DEVICE_cls(remote, i)
 
     @property
-    def sr(self) -> int:
-        return int(self.getter("device.sr"))
+    def identifier(self) -> str:
+        return f"Bus[{self.index}].device"
+
+    @property
+    def name(self):
+        return self.getter("name", is_string=True)
+
+    @property
+    def sr(self):
+        return int(self.getter("sr"))
 
 
 class VirtualBus(Bus):
@@ -263,7 +298,9 @@ def bus_factory(is_phys_bus, remote, i) -> Union[PhysicalBus, VirtualBus]:
     Returns a physical or virtual bus subclass
     """
     BUS_cls = (
-        PhysicalBus.make(remote.kind) if is_phys_bus else VirtualBus.make(remote.kind)
+        PhysicalBus.make(remote, i, remote.kind)
+        if is_phys_bus
+        else VirtualBus.make(remote.kind)
     )
     BUSMODEMIXIN_cls = _make_bus_mode_mixin()
     return type(
