@@ -155,11 +155,11 @@ class StripDevice(IRemote):
         return f"Strip[{self.index}].device"
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self.getter("name", is_string=True)
 
     @property
-    def sr(self):
+    def sr(self) -> int:
         return int(self.getter("sr"))
 
 
