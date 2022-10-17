@@ -289,6 +289,7 @@ vm.bus[0].device.asio = "Audient USB Audio ASIO Driver"
 ```
 
 strip|bus device parameters are defined for physical channels only.
+
 name, sr are read only. wdm, ks, mme, asio are write only.
 
 ### Macrobuttons
