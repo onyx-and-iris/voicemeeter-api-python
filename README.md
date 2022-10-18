@@ -25,10 +25,6 @@ For an outline of past/future changes refer to: [CHANGELOG](CHANGELOG.md)
 
 ## Installation
 
-### `Pip`
-
-Install voicemeeter-api package from your console
-
 `pip install voicemeeter-api`
 
 ## `Use`
@@ -141,7 +137,7 @@ vm.strip[3].gain = 3.7
 print(vm.strip[0].label)
 ```
 
-The following methods are Available.
+The following methods are available.
 
 -   `appgain(name, value)`: string, float, from 0.0 to 1.0
 
