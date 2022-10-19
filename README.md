@@ -51,12 +51,12 @@ class ManyThings:
         )
 
     def other_things(self):
+        self.vm.bus[3].gain = -6.3
+        self.vm.bus[4].eq = True
         info = (
             f"bus 3 gain has been set to {self.vm.bus[3].gain}",
             f"bus 4 eq has been set to {self.vm.bus[4].eq}",
         )
-        self.vm.bus[3].gain = -6.3
-        self.vm.bus[4].eq = True
         print("\n".join(info))
 
 
