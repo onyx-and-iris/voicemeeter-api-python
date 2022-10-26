@@ -167,9 +167,9 @@ class VirtualStrip(Strip):
     @classmethod
     def make(cls, remote, i, is_phys):
         """
-        Factory method for PhysicalStrip.
+        Factory method for VirtualStrip.
 
-        Returns a PhysicalStrip class.
+        Returns a VirtualStrip class.
         """
         EFFECTS_cls = _make_effects_mixins(is_phys)[remote.kind.name]
         return type(
