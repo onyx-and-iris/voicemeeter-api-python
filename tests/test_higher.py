@@ -381,6 +381,8 @@ class TestSetAndGetFloatHigher:
     @pytest.mark.parametrize(
         "index, param, value",
         [
+            (data.virt_in, "pan_x", -0.6),
+            (data.virt_in, "pan_x", 0.6),
             (data.virt_in, "treble", -1.6),
             (data.virt_in, "mid", 5.8),
             (data.virt_in, "bass", -8.1),

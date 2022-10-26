@@ -82,13 +82,13 @@ class Strip(IRemote):
 
 class PhysicalStrip(Strip):
     @classmethod
-    def make(cls, remote, i, kind):
+    def make(cls, remote, i, is_phys):
         """
         Factory method for PhysicalStrip.
 
         Returns a PhysicalStrip class.
         """
-        EFFECTS_cls = _make_effects_mixins[kind.name]
+        EFFECTS_cls = _make_effects_mixins(is_phys)[remote.kind.name]
         return type(
             f"PhysicalStrip",
             (cls, EFFECTS_cls),
@@ -164,6 +164,20 @@ class StripDevice(IRemote):
 
 
 class VirtualStrip(Strip):
+    @classmethod
+    def make(cls, remote, i, is_phys):
+        """
+        Factory method for PhysicalStrip.
+
+        Returns a PhysicalStrip class.
+        """
+        EFFECTS_cls = _make_effects_mixins(is_phys)[remote.kind.name]
+        return type(
+            f"VirtualStrip",
+            (cls, EFFECTS_cls),
+            {},
+        )
+
     def __str__(self):
         return f"{type(self).__name__}{self.index}"
 
@@ -340,23 +354,30 @@ _make_channelout_mixins = {
 }
 
 
-def _make_effects_mixin(kind):
+def _make_effects_mixin(kind, is_phys):
     """creates an effects mixin for a kind"""
-    XY_cls = type(
-        "XY",
-        (),
-        {
-            param: float_prop(param)
-            for param in [
-                "pan_x",
-                "pan_y",
-                "color_x",
-                "color_y",
-                "fx_x",
-                "fx_y",
-            ]
-        },
-    )
+
+    def _make_xy_cls():
+        pan = {param: float_prop(param) for param in ["pan_x", "pan_y"]}
+        color = {param: float_prop(param) for param in ["color_x", "color_y"]}
+        fx = {param: float_prop(param) for param in ["fx_x", "fx_y"]}
+        if is_phys:
+            return type(
+                "XYPhys",
+                (),
+                {
+                    **pan,
+                    **color,
+                    **fx,
+                },
+            )
+        return type(
+            "XYVirt",
+            (),
+            {**pan},
+        )
+
+    XY_cls = _make_xy_cls()
 
     FX_cls = type(
         "FX",
@@ -383,7 +404,8 @@ def _make_effects_mixin(kind):
     return type(f"Effects{kind}", (XY_cls,), {})
 
 
-_make_effects_mixins = {kind.name: _make_effects_mixin(kind) for kind in kinds_all}
+def _make_effects_mixins(is_phys):
+    return {kind.name: _make_effects_mixin(kind, is_phys) for kind in kinds_all}
 
 
 def strip_factory(is_phys_strip, remote, i) -> Union[PhysicalStrip, VirtualStrip]:
@@ -395,7 +417,9 @@ def strip_factory(is_phys_strip, remote, i) -> Union[PhysicalStrip, VirtualStrip
     Returns a physical or virtual strip subclass
     """
     STRIP_cls = (
-        PhysicalStrip.make(remote, i, remote.kind) if is_phys_strip else VirtualStrip
+        PhysicalStrip.make(remote, i, is_phys_strip)
+        if is_phys_strip
+        else VirtualStrip.make(remote, i, is_phys_strip)
     )
     CHANNELOUTMIXIN_cls = _make_channelout_mixins[remote.kind.name]
 
