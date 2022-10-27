@@ -377,31 +377,31 @@ def _make_effects_mixin(kind, is_phys):
             {**pan},
         )
 
-    XY_cls = _make_xy_cls()
+    def _make_fx_cls():
+        if is_phys:
+            return type(
+                "FX",
+                (),
+                {
+                    **{
+                        param: float_prop(param)
+                        for param in ["reverb", "delay", "fx1", "fx2"]
+                    },
+                    **{
+                        f"post{param}": bool_prop(f"post{param}")
+                        for param in ["reverb", "delay", "fx1", "fx2"]
+                    },
+                },
+            )
+        return type("FX", (), {})
 
-    FX_cls = type(
-        "FX",
-        (),
-        {
-            **{
-                param: float_prop(param)
-                for param in [
-                    "reverb",
-                    "delay",
-                    "fx1",
-                    "fx2",
-                ]
-            },
-            **{
-                f"post{param}": bool_prop(f"post{param}")
-                for param in ["reverb", "delay", "fx1", "fx2"]
-            },
-        },
-    )
-
-    if kind.name == "potato":
-        return type(f"Effects{kind}", (XY_cls, FX_cls), {})
-    return type(f"Effects{kind}", (XY_cls,), {})
+    if kind.name == "basic":
+        steps = (_make_xy_cls,)
+    elif kind.name == "banana":
+        steps = (_make_xy_cls,)
+    elif kind.name == "potato":
+        steps = (_make_xy_cls, _make_fx_cls)
+    return type(f"Effects{kind}", tuple(step() for step in steps), {})
 
 
 def _make_effects_mixins(is_phys):
