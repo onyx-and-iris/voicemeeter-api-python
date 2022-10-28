@@ -1,3 +1,4 @@
+import argparse
 import logging
 import time
 
@@ -13,6 +14,11 @@ from pyparsing import (
     alphas,
     nums,
 )
+
+logging.basicConfig(level=logging.INFO)
+argparser = argparse.ArgumentParser(description="creates a basic dsl")
+argparser.add_argument("-i", action="store_true")
+args = argparser.parse_args()
 
 
 class Parser:
@@ -54,48 +60,41 @@ class Parser:
         return res
 
 
-def main(cmds=None):
+def interactive_mode(parser):
+    while cmd := input("Please enter command (Press <Enter> to exit)\n"):
+        if not cmd:
+            break
+        res = parser.parse((cmd,))
+        if res:
+            print(res)
+
+
+def main():
+    # fmt: off
+    cmds = (
+        "strip 0 -> mute -> on", "strip 0 -> mute", "bus 0 -> mute -> on",
+        "strip 0 -> mute -> off", "bus 0 -> mute -> on", "strip 3 -> solo -> on",
+        "strip 3 -> solo -> off", "strip 1 -> A1 -> on", "strip 1 -> A1",
+        "strip 1 -> A1 -> off", "strip 1 -> A1", "bus 3 -> eq -> on",
+        "bus 3 -> eq -> off", "strip 4 -> gain -> 1.2", "strip 0 -> gain -> -8.2",
+        "strip 0 -> gain", "strip 1 -> label -> rode podmic", "strip 2 -> limit -> -28",
+        "strip 2 -> limit",
+    )
+    # fmt: on
+
     kind_id = "banana"
     subs = {ev: False for ev in ["pdirty", "mdirty", "midi"]}
 
     with voicemeeterlib.api(kind_id, subs=subs) as vm:
         parser = Parser(vm)
-        if cmds:
-            res = parser.parse(cmds)
-            if res:
-                print(res)
-        else:
-            while cmd := input("Please enter command (Press <Enter> to exit)\n"):
-                if not cmd:
-                    break
-                res = parser.parse((cmd,))
-                if res:
-                    print(res)
+        if args.i:
+            interactive_mode(parser)
+            return
+
+        res = parser.parse(cmds)
+        if res:
+            print(res)
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    cmds = (
-        "strip 0 -> mute -> on",
-        "strip 0 -> mute",
-        "bus 0 -> mute -> on",
-        "strip 0 -> mute -> off",
-        "bus 0 -> mute -> on",
-        "strip 3 -> solo -> on",
-        "strip 3 -> solo -> off",
-        "strip 1 -> A1 -> on",
-        "strip 1 -> A1",
-        "strip 1 -> A1 -> off",
-        "strip 1 -> A1",
-        "bus 3 -> eq -> on",
-        "bus 3 -> eq -> off",
-        "strip 4 -> gain -> 1.2",
-        "strip 0 -> gain -> -8.2",
-        "strip 0 -> gain",
-        "strip 1 -> label -> rode podmic",
-        "strip 2 -> limit -> -28",
-        "strip 2 -> limit",
-    )
-
-    # pass cmds to parse cmds, otherwise simply run main() to test stdin parsing
-    main(cmds)
+    main()

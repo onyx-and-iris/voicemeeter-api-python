@@ -25,3 +25,9 @@ isort = "^5.10.1"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+dsl = "examples.dsl.__main__:main"
+midi = "examples.midi.__main__:main"
+obs = "examples.obs.__main__:main"
+observer = "examples.observer.__main__:main"

@@ -2,14 +2,16 @@ import logging
 
 import voicemeeterlib
 
+logging.basicConfig(level=logging.INFO)
+
 
 class Observer:
-    def __init__(self, vm, midi_btn, macrobutton):
-        self.vm = vm
-        self.midi_btn = midi_btn
-        self.macrobutton = macrobutton
+    # leftmost M on korg nanokontrol2 in CC mode
+    MIDI_BUTTON = 48
+    MACROBUTTON = 0
 
-    def register(self):
+    def __init__(self, vm):
+        self.vm = vm
         self.vm.subject.add(self)
 
     def on_update(self, subject):
@@ -34,23 +36,24 @@ class Observer:
         """
         if (
             max(self.vm.strip[3].levels.postfader) > -40
-            and self.vm.midi.get(self.midi_btn) == 127
+            and self.vm.midi.get(self.MIDI_BUTTON) == 127
         ):
             print(
-                f"Strip 3 level is greater than -40 and midi button {self.midi_btn} is pressed"
+                f"Strip 3 level is greater than -40 and midi button {self.MIDI_BUTTON} is pressed"
             )
-            self.vm.button[self.macrobutton].trigger = True
+            self.vm.button[self.MACROBUTTON].trigger = True
         else:
-            self.vm.button[self.macrobutton].trigger = False
-            self.vm.button[self.macrobutton].state = False
+            self.vm.button[self.MACROBUTTON].trigger = False
+            self.vm.button[self.MACROBUTTON].state = False
 
 
 def main():
+    kind_id = "banana"
+
     # we only care about midi events here.
     subs = {ev: False for ev in ["pdirty", "mdirty"]}
     with voicemeeterlib.api(kind_id, subs=subs) as vm:
-        obs = Observer(vm, midi_btn, macrobutton)
-        obs.register()
+        obs = Observer(vm)
 
         while cmd := input("Press <Enter> to exit\n"):
             if not cmd:
@@ -58,10 +61,4 @@ def main():
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    kind_id = "banana"
-    # leftmost M on korg nanokontrol2 in CC mode
-    midi_btn = 48
-    macrobutton = 0
-
     main()

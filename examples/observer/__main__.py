@@ -2,6 +2,8 @@ import logging
 
 import voicemeeterlib
 
+logging.basicConfig(level=logging.INFO)
+
 
 class Observer:
     def __init__(self, vm):
@@ -27,6 +29,8 @@ class Observer:
 
 
 def main():
+    kind_id = "banana"
+
     with voicemeeterlib.api(kind_id) as vm:
         Observer(vm)
 
@@ -36,7 +40,4 @@ def main():
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    kind_id = "banana"
-
     main()
