@@ -64,8 +64,7 @@ def interactive_mode(parser):
     while cmd := input("Please enter command (Press <Enter> to exit)\n"):
         if not cmd:
             break
-        res = parser.parse((cmd,))
-        if res:
+        if res := parser.parse((cmd,)):
             print(res)
 
 
@@ -91,8 +90,7 @@ def main():
             interactive_mode(parser)
             return
 
-        res = parser.parse(cmds)
-        if res:
+        if res := parser.parse(cmds):
             print(res)
 
 
