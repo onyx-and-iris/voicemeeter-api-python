@@ -20,3 +20,7 @@ def ex_obs():
 def ex_observer():
     path = Path.cwd() / "examples" / "observer" / "."
     subprocess.run(["py", str(path)])
+
+
+def test():
+    subprocess.run(["pytest", "-v"])

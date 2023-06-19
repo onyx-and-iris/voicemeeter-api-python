@@ -131,3 +131,5 @@ dmypy.json
 # test/config
 quick.py
 config.toml
+
+.vscode/

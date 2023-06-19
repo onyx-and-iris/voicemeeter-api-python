@@ -11,6 +11,12 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 
 -   [x]
 
+## [1.0.0] - 2023-06-19
+
+No changes to the codebase but it has been stable for several months and should already have been bumped to major version 1.0
+
+I will move this commit to a separate branch in preparation for version 2.0.
+
 ## [0.9.0] - 2022-10-11
 
 ### Added
