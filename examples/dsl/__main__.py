@@ -2,7 +2,6 @@ import argparse
 import logging
 import time
 
-import voicemeeterlib
 from pyparsing import (
     Combine,
     Group,
@@ -14,6 +13,8 @@ from pyparsing import (
     alphas,
     nums,
 )
+
+import voicemeeterlib
 
 logging.basicConfig(level=logging.INFO)
 argparser = argparse.ArgumentParser(description="creates a basic dsl")
@@ -81,10 +82,9 @@ def main():
     )
     # fmt: on
 
-    kind_id = "banana"
-    subs = {ev: False for ev in ["pdirty", "mdirty", "midi"]}
+    KIND_ID = "banana"
 
-    with voicemeeterlib.api(kind_id, subs=subs) as vm:
+    with voicemeeterlib.api(KIND_ID) as vm:
         parser = Parser(vm)
         if args.i:
             interactive_mode(parser)
