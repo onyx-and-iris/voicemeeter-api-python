@@ -25,17 +25,19 @@ def get_vmpath():
     with winreg.OpenKey(
         winreg.HKEY_LOCAL_MACHINE, r"{}".format(REG_KEY + "\\" + VM_KEY)
     ) as vm_key:
-        path = winreg.QueryValueEx(vm_key, r"UninstallString")[0]
-    return path
+        return winreg.QueryValueEx(vm_key, r"UninstallString")[0]
 
 
-vm_path = Path(get_vmpath())
+try:
+    vm_path = Path(get_vmpath())
+except FileNotFoundError as e:
+    raise InstallError(f"Unable to fetch DLL path from the registry") from e
 vm_parent = vm_path.parent
 
 DLL_NAME = f'VoicemeeterRemote{"64" if bits == 64 else ""}.dll'
 
 dll_path = vm_parent.joinpath(DLL_NAME)
 if not dll_path.is_file():
-    raise InstallError(f"Could not find {DLL_NAME}")
+    raise InstallError(f"Could not find {dll_path}")
 
 libc = ct.CDLL(str(dll_path))
