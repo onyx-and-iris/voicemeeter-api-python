@@ -1,15 +1,16 @@
 import logging
 
+logger = logging.getLogger(__name__)
+
 
 class Subject:
     """Adds support for observers"""
-
-    logger = logging.getLogger("subject.subject")
 
     def __init__(self):
         """list of current observers"""
 
         self._observers = list()
+        self.logger = logger.getChild(self.__class__.__name__)
 
     @property
     def observers(self) -> list:

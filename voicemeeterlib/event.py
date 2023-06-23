@@ -1,14 +1,15 @@
 import logging
 from typing import Iterable, Union
 
+logger = logging.getLogger(__name__)
+
 
 class Event:
     """Keeps track of event subscriptions"""
 
-    logger = logging.getLogger("event.event")
-
     def __init__(self, subs: dict):
         self.subs = subs
+        self.logger = logger.getChild(self.__class__.__name__)
 
     def info(self, msg=None):
         info = (f"{msg} events",) if msg else ()
