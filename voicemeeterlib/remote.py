@@ -2,7 +2,7 @@ import ctypes as ct
 import logging
 import time
 from abc import abstractmethod
-from functools import partial
+from queue import Queue
 from typing import Iterable, NoReturn, Optional, Union
 
 from .cbindings import CBindings
@@ -12,33 +12,36 @@ from .inst import bits
 from .kinds import KindId
 from .misc import Midi
 from .subject import Subject
-from .updater import Updater
+from .updater import Producer, Updater
 from .util import grouper, polling, script
+
+logger = logging.getLogger(__name__)
 
 
 class Remote(CBindings):
     """Base class responsible for wrapping the C Remote API"""
 
-    logger = logging.getLogger("remote.remote")
     DELAY = 0.001
 
     def __init__(self, **kwargs):
         self.strip_mode = 0
         self.cache = {}
-        self.cache["strip_level"], self.cache["bus_level"] = self._get_levels()
         self.midi = Midi()
-        self.subject = Subject()
+        self.subject = self.observer = Subject()
         self.running = None
+        self.event = Event(
+            {k: kwargs.pop(k) for k in ("pdirty", "mdirty", "midi", "ldirty")}
+        )
+        self.logger = logger.getChild(self.__class__.__name__)
 
         for attr, val in kwargs.items():
             setattr(self, attr, val)
 
-        self.event = Event(self.subs)
-
     def __enter__(self):
         """setup procedures"""
         self.login()
-        self.init_thread()
+        if self.event.any():
+            self.init_thread()
         return self
 
     @abstractmethod
@@ -50,17 +53,24 @@ class Remote(CBindings):
         """Starts updates thread."""
         self.running = True
         self.event.info()
+        self.cache["strip_level"], self.cache["bus_level"] = self._get_levels()
 
-        self.updater = Updater(self)
+        queue = Queue()
+        self.updater = Updater(self, queue)
         self.updater.start()
+        self.producer = Producer(self, queue)
+        self.producer.start()
+
+        self.logger.debug("events thread initiated!")
 
     def login(self) -> NoReturn:
         """Login to the API, initialize dirty parameters"""
-        res = self.vm_login()
+        res = self.call(self.vm_login, ok=(0, 1))
         if res == 1:
+            self.logger.info(
+                "Voicemeeter engine running but GUI not launched. Launching the GUI now."
+            )
             self.run_voicemeeter(self.kind.name)
-        elif res != 0:
-            raise CAPIError(f"VBVMR_Login returned {res}")
         self.logger.info(f"{type(self).__name__}: Successfully logged into {self}")
         self.clear_dirty()
 
@@ -71,21 +81,21 @@ class Remote(CBindings):
             value = KindId[kind_id.upper()].value + 3
         else:
             value = KindId[kind_id.upper()].value
-        self.vm_runvm(value)
+        self.call(self.vm_runvm, value)
         time.sleep(1)
 
     @property
     def type(self) -> str:
         """Returns the type of Voicemeeter installation (basic, banana, potato)."""
         type_ = ct.c_long()
-        self.vm_get_type(ct.byref(type_))
+        self.call(self.vm_get_type, ct.byref(type_))
         return KindId(type_.value).name.lower()
 
     @property
     def version(self) -> str:
         """Returns Voicemeeter's version as a string"""
         ver = ct.c_long()
-        self.vm_get_version(ct.byref(ver))
+        self.call(self.vm_get_version, ct.byref(ver))
         return "{}.{}.{}.{}".format(
             (ver.value & 0xFF000000) >> 24,
             (ver.value & 0x00FF0000) >> 16,
@@ -96,12 +106,18 @@ class Remote(CBindings):
     @property
     def pdirty(self) -> bool:
         """True iff UI parameters have been updated."""
-        return self.vm_pdirty() == 1
+        return self.call(self.vm_pdirty, ok=(0, 1)) == 1
 
     @property
     def mdirty(self) -> bool:
         """True iff MB parameters have been updated."""
-        return self.vm_mdirty() == 1
+        try:
+            return self.call(self.vm_mdirty, ok=(0, 1)) == 1
+        except AttributeError as e:
+            self.logger.exception(f"{type(e).__name__}: {e}")
+            raise CAPIError(
+                "no bind for VBVMR_MacroButton_IsDirty. are you using an old version of the API?"
+            ) from e
 
     @property
     def ldirty(self) -> bool:
@@ -112,23 +128,24 @@ class Remote(CBindings):
             and self.cache.get("bus_level") == self._bus_buf
         )
 
-    def clear_dirty(self):
-        while self.pdirty or self.mdirty:
-            pass
+    def clear_dirty(self) -> NoReturn:
+        try:
+            while self.pdirty or self.mdirty:
+                pass
+        except CAPIError:
+            self.logger.error("no bind for mdirty, clearing pdirty only")
+            while self.pdirty:
+                pass
 
     @polling
     def get(self, param: str, is_string: Optional[bool] = False) -> Union[str, float]:
         """Gets a string or float parameter"""
         if is_string:
             buf = ct.create_unicode_buffer(512)
-            self.call(
-                partial(self.vm_get_parameter_string, param.encode(), ct.byref(buf))
-            )
+            self.call(self.vm_get_parameter_string, param.encode(), ct.byref(buf))
         else:
             buf = ct.c_float()
-            self.call(
-                partial(self.vm_get_parameter_float, param.encode(), ct.byref(buf))
-            )
+            self.call(self.vm_get_parameter_float, param.encode(), ct.byref(buf))
         return buf.value
 
     def set(self, param: str, val: Union[str, float]) -> NoReturn:
@@ -136,14 +153,10 @@ class Remote(CBindings):
         if isinstance(val, str):
             if len(val) >= 512:
                 raise VMError("String is too long")
-            self.call(
-                partial(self.vm_set_parameter_string, param.encode(), ct.c_wchar_p(val))
-            )
+            self.call(self.vm_set_parameter_string, param.encode(), ct.c_wchar_p(val))
         else:
             self.call(
-                partial(
-                    self.vm_set_parameter_float, param.encode(), ct.c_float(float(val))
-                )
+                self.vm_set_parameter_float, param.encode(), ct.c_float(float(val))
             )
         self.cache[param] = val
 
@@ -151,22 +164,30 @@ class Remote(CBindings):
     def get_buttonstatus(self, id: int, mode: int) -> int:
         """Gets a macrobutton parameter"""
         state = ct.c_float()
-        self.call(
-            partial(
+        try:
+            self.call(
                 self.vm_get_buttonstatus,
                 ct.c_long(id),
                 ct.byref(state),
                 ct.c_long(mode),
             )
-        )
+        except AttributeError as e:
+            self.logger.exception(f"{type(e).__name__}: {e}")
+            raise CAPIError(
+                "no bind for VBVMR_MacroButton_GetStatus. are you using an old version of the API?"
+            ) from e
         return int(state.value)
 
     def set_buttonstatus(self, id: int, state: int, mode: int) -> NoReturn:
         """Sets a macrobutton parameter. Caches value"""
         c_state = ct.c_float(float(state))
-        self.call(
-            partial(self.vm_set_buttonstatus, ct.c_long(id), c_state, ct.c_long(mode))
-        )
+        try:
+            self.call(self.vm_set_buttonstatus, ct.c_long(id), c_state, ct.c_long(mode))
+        except AttributeError as e:
+            self.logger.exception(f"{type(e).__name__}: {e}")
+            raise CAPIError(
+                "no bind for VBVMR_MacroButton_SetStatus. are you using an old version of the API?"
+            ) from e
         self.cache[f"mb_{id}_{mode}"] = int(c_state.value)
 
     def get_num_devices(self, direction: str = None) -> int:
@@ -174,7 +195,8 @@ class Remote(CBindings):
         if direction not in ("in", "out"):
             raise VMError("Expected a direction: in or out")
         func = getattr(self, f"vm_get_num_{direction}devices")
-        return func()
+        res = self.call(func, ok_exp=lambda r: r >= 0)
+        return res
 
     def get_device_description(self, index: int, direction: str = None) -> tuple:
         """Returns a tuple of device parameters"""
@@ -184,7 +206,8 @@ class Remote(CBindings):
         name = ct.create_unicode_buffer(256)
         hwid = ct.create_unicode_buffer(256)
         func = getattr(self, f"vm_get_desc_{direction}devices")
-        func(
+        self.call(
+            func,
             ct.c_long(index),
             ct.byref(type_),
             ct.byref(name),
@@ -195,7 +218,7 @@ class Remote(CBindings):
     def get_level(self, type_: int, index: int) -> float:
         """Retrieves a single level value"""
         val = ct.c_float()
-        self.vm_get_level(ct.c_long(type_), ct.c_long(index), ct.byref(val))
+        self.call(self.vm_get_level, ct.c_long(type_), ct.c_long(index), ct.byref(val))
         return val.value
 
     def _get_levels(self) -> Iterable:
@@ -216,7 +239,7 @@ class Remote(CBindings):
     def get_midi_message(self):
         n = ct.c_long(1024)
         buf = ct.create_string_buffer(1024)
-        res = self.vm_get_midi_message(ct.byref(buf), n)
+        res = self.vm_get_midi_message(ct.byref(buf), n, ok_exp=lambda r: r >= 0)
         if res > 0:
             vals = tuple(
                 grouper(3, (int.from_bytes(buf[i], "little") for i in range(res)))
@@ -228,15 +251,13 @@ class Remote(CBindings):
                 self.midi._most_recent = pitch
                 self.midi._set(pitch, vel)
             return True
-        elif res == -1 or res == -2:
-            raise CAPIError(f"VBVMR_GetMidiMessage returned {res}")
 
     @script
     def sendtext(self, script: str):
         """Sets many parameters from a script"""
         if len(script) > 48000:
             raise ValueError("Script too large, max size 48kB")
-        self.call(partial(self.vm_set_parameter_multi, script.encode()))
+        self.call(self.vm_set_parameter_multi, script.encode())
         time.sleep(self.DELAY * 5)
 
     def apply(self, data: dict):
@@ -266,20 +287,19 @@ class Remote(CBindings):
         try:
             self.apply(self.configs[name])
             self.logger.info(f"Profile '{name}' applied!")
-        except KeyError as e:
+        except KeyError:
             self.logger.error(("\n").join(error_msg))
 
     def logout(self) -> NoReturn:
         """Wait for dirty parameters to clear, then logout of the API"""
         self.clear_dirty()
         time.sleep(0.1)
-        res = self.vm_logout()
-        if res != 0:
-            raise CAPIError(f"VBVMR_Logout returned {res}")
+        self.call(self.vm_logout)
         self.logger.info(f"{type(self).__name__}: Successfully logged out of {self}")
 
     def end_thread(self):
         self.running = False
+        self.logger.debug("events thread stopped")
 
     def __exit__(self, exc_type, exc_value, exc_traceback) -> NoReturn:
         """teardown procedures"""
