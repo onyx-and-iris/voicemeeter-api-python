@@ -2,62 +2,48 @@ import logging
 
 import voicemeeterlib
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 
-class Observer:
-    # leftmost M on korg nanokontrol2 in CC mode
-    MIDI_BUTTON = 48
+class App:
+    MIDI_BUTTON = 48  # leftmost M on korg nanokontrol2 in CC mode
     MACROBUTTON = 0
 
     def __init__(self, vm):
         self.vm = vm
-        self.vm.subject.add(self)
+        self.vm.observer.add(self.on_midi)
 
-    def on_update(self, subject):
-        """
-        We expect to only receive midi updates.
-
-        We could skip subject check but check anyway, in case an event is added later.
-        """
-        if subject == "midi":
-            self.get_info()
-            self.on_midi_press()
+    def on_midi(self):
+        self.get_info()
+        self.on_midi_press()
 
     def get_info(self):
         current = self.vm.midi.current
         print(f"Value of midi button {current} is {self.vm.midi.get(current)}")
 
     def on_midi_press(self):
-        """
-        checks if strip 3 level postfader mode is greater than -40
+        """if strip 3 level max > -40 and midi button 48 is pressed, then set trigger for macrobutton 0"""
 
-        checks if midi button 48 velocity is 127 (full velocity for button press).
-        """
         if (
             max(self.vm.strip[3].levels.postfader) > -40
             and self.vm.midi.get(self.MIDI_BUTTON) == 127
         ):
             print(
-                f"Strip 3 level is greater than -40 and midi button {self.MIDI_BUTTON} is pressed"
+                f"Strip 3 level max is greater than -40 and midi button {self.MIDI_BUTTON} is pressed"
             )
             self.vm.button[self.MACROBUTTON].trigger = True
         else:
             self.vm.button[self.MACROBUTTON].trigger = False
-            self.vm.button[self.MACROBUTTON].state = False
 
 
 def main():
-    kind_id = "banana"
+    KIND_ID = "banana"
 
-    # we only care about midi events here.
-    subs = {ev: False for ev in ["pdirty", "mdirty"]}
-    with voicemeeterlib.api(kind_id, subs=subs) as vm:
-        obs = Observer(vm)
+    with voicemeeterlib.api(KIND_ID, midi=True) as vm:
+        App(vm)
 
         while cmd := input("Press <Enter> to exit\n"):
-            if not cmd:
-                break
+            pass
 
 
 if __name__ == "__main__":
