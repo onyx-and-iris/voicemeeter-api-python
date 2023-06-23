@@ -1,9 +1,12 @@
 import ctypes as ct
+import logging
 from abc import ABCMeta
 from ctypes.wintypes import CHAR, FLOAT, LONG, WCHAR
 
 from .error import CAPIError
 from .inst import libc
+
+logger = logging.getLogger(__name__)
 
 
 class CBindings(metaclass=ABCMeta):
@@ -12,6 +15,8 @@ class CBindings(metaclass=ABCMeta):
 
     Maps expected ctype argument and res types for each binding.
     """
+
+    logger_cbindings = logger.getChild("Cbindings")
 
     vm_login = libc.VBVMR_Login
     vm_login.restype = LONG
@@ -33,17 +38,20 @@ class CBindings(metaclass=ABCMeta):
     vm_get_version.restype = LONG
     vm_get_version.argtypes = [ct.POINTER(LONG)]
 
-    vm_mdirty = libc.VBVMR_MacroButton_IsDirty
-    vm_mdirty.restype = LONG
-    vm_mdirty.argtypes = None
+    if hasattr(libc, "VBVMR_MacroButton_IsDirty"):
+        vm_mdirty = libc.VBVMR_MacroButton_IsDirty
+        vm_mdirty.restype = LONG
+        vm_mdirty.argtypes = None
 
-    vm_get_buttonstatus = libc.VBVMR_MacroButton_GetStatus
-    vm_get_buttonstatus.restype = LONG
-    vm_get_buttonstatus.argtypes = [LONG, ct.POINTER(FLOAT), LONG]
+    if hasattr(libc, "VBVMR_MacroButton_GetStatus"):
+        vm_get_buttonstatus = libc.VBVMR_MacroButton_GetStatus
+        vm_get_buttonstatus.restype = LONG
+        vm_get_buttonstatus.argtypes = [LONG, ct.POINTER(FLOAT), LONG]
 
-    vm_set_buttonstatus = libc.VBVMR_MacroButton_SetStatus
-    vm_set_buttonstatus.restype = LONG
-    vm_set_buttonstatus.argtypes = [LONG, FLOAT, LONG]
+    if hasattr(libc, "VBVMR_MacroButton_SetStatus"):
+        vm_set_buttonstatus = libc.VBVMR_MacroButton_SetStatus
+        vm_set_buttonstatus.restype = LONG
+        vm_set_buttonstatus.argtypes = [LONG, FLOAT, LONG]
 
     vm_pdirty = libc.VBVMR_IsParametersDirty
     vm_pdirty.restype = LONG
@@ -103,7 +111,15 @@ class CBindings(metaclass=ABCMeta):
     vm_get_midi_message.restype = LONG
     vm_get_midi_message.argtypes = [ct.POINTER(CHAR * 1024), LONG]
 
-    def call(self, func):
-        res = func()
-        if res != 0:
-            raise CAPIError(f"Function {func.func.__name__} returned {res}")
+    def call(self, func, *args, ok=(0,), ok_exp=None):
+        try:
+            res = func(*args)
+            if ok_exp is None:
+                if res not in ok:
+                    raise CAPIError(f"{func.__name__} returned {res}")
+            elif not ok_exp(res):
+                raise CAPIError(f"{func.__name__} returned {res}")
+            return res
+        except CAPIError as e:
+            self.logger_cbindings.exception(f"{type(e).__name__}: {e}")
+            raise
