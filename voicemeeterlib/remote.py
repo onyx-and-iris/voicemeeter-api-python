@@ -28,7 +28,7 @@ class Remote(CBindings):
         self.cache = {}
         self.midi = Midi()
         self.subject = self.observer = Subject()
-        self.running = None
+        self.running = False
         self.event = Event(
             {k: kwargs.pop(k) for k in ("pdirty", "mdirty", "midi", "ldirty")}
         )
@@ -53,15 +53,13 @@ class Remote(CBindings):
         """Starts updates thread."""
         self.running = True
         self.event.info()
-        self.cache["strip_level"], self.cache["bus_level"] = self._get_levels()
 
+        self.logger.debug("initiating events thread")
         queue = Queue()
         self.updater = Updater(self, queue)
         self.updater.start()
         self.producer = Producer(self, queue)
         self.producer.start()
-
-        self.logger.debug("events thread initiated!")
 
     def login(self) -> NoReturn:
         """Login to the API, initialize dirty parameters"""
@@ -298,8 +296,8 @@ class Remote(CBindings):
         self.logger.info(f"{type(self).__name__}: Successfully logged out of {self}")
 
     def end_thread(self):
+        self.logger.debug("events thread shutdown started")
         self.running = False
-        self.logger.debug("events thread stopped")
 
     def __exit__(self, exc_type, exc_value, exc_traceback) -> NoReturn:
         """teardown procedures"""

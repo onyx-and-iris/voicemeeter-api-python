@@ -1,7 +1,10 @@
+import logging
 import threading
 import time
 
 from .util import comp
+
+logger = logging.getLogger(__name__)
 
 
 class Producer(threading.Thread):
@@ -11,6 +14,7 @@ class Producer(threading.Thread):
         super().__init__(name="producer", daemon=True)
         self._remote = remote
         self.queue = queue
+        self.logger = logger.getChild(self.__class__.__name__)
 
     def run(self):
         while self._remote.running:
@@ -23,6 +27,7 @@ class Producer(threading.Thread):
             if self._remote.event.ldirty:
                 self.queue.put("ldirty")
             time.sleep(self._remote.ratelimit)
+        self.logger.debug(f"terminating {self.getName()} thread")
         self.queue.put(None)
 
 
@@ -35,6 +40,11 @@ class Updater(threading.Thread):
             2 * self._remote.kind.phys_in + 8 * self._remote.kind.virt_in
         )
         self._remote._bus_comp = [False] * (self._remote.kind.num_bus * 8)
+        (
+            self._remote.cache["strip_level"],
+            self._remote.cache["bus_level"],
+        ) = self._remote._get_levels()
+        self.logger = logger.getChild(self.__class__.__name__)
 
     def _update_comps(self, strip_level, bus_level):
         self._remote._strip_comp, self._remote._bus_comp = (
@@ -51,6 +61,7 @@ class Updater(threading.Thread):
         while True:
             event = self.queue.get()
             if event is None:
+                self.logger.debug(f"terminating {self.getName()} thread")
                 break
 
             if event == "pdirty" and self._remote.pdirty:
