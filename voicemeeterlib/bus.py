@@ -47,22 +47,6 @@ class Bus(IRemote):
         self.setter("mono", 1 if val else 0)
 
     @property
-    def eq(self) -> bool:
-        return self.getter("eq.On") == 1
-
-    @eq.setter
-    def eq(self, val: bool):
-        self.setter("eq.On", 1 if val else 0)
-
-    @property
-    def eq_ab(self) -> bool:
-        return self.getter("eq.ab") == 1
-
-    @eq_ab.setter
-    def eq_ab(self, val: bool):
-        self.setter("eq.ab", 1 if val else 0)
-
-    @property
     def sel(self) -> bool:
         return self.getter("sel") == 1
 
@@ -101,6 +85,28 @@ class Bus(IRemote):
     def fadeby(self, change: float, time_: int):
         self.setter("FadeBy", f"({change}, {time_})")
         time.sleep(self._remote.DELAY)
+
+
+class BusEQ(IRemote):
+    @property
+    def identifier(self) -> str:
+        return f"Bus[{self.index}].eq"
+
+    @property
+    def on(self) -> bool:
+        return self.getter("on") == 1
+
+    @on.setter
+    def on(self, val: bool):
+        self.setter("on", 1 if val else 0)
+
+    @property
+    def ab(self) -> bool:
+        return self.getter("ab") == 1
+
+    @ab.setter
+    def ab(self, val: bool):
+        self.setter("ab", 1 if val else 0)
 
 
 class PhysicalBus(Bus):
@@ -309,6 +315,7 @@ def bus_factory(is_phys_bus, remote, i) -> Union[PhysicalBus, VirtualBus]:
         {
             "levels": BusLevel(remote, i),
             "mode": BUSMODEMIXIN_cls(remote, i),
+            "eq": BusEQ(remote, i),
         },
     )(remote, i)
 
