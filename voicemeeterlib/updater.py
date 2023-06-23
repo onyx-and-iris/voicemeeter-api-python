@@ -4,10 +4,33 @@ import time
 from .util import comp
 
 
-class Updater(threading.Thread):
-    def __init__(self, remote):
-        super().__init__(name="updater", target=self.update, daemon=True)
+class Producer(threading.Thread):
+    """Continously send job queue to the Updater thread at a rate of self._remote.ratelimit."""
+
+    def __init__(self, remote, queue):
+        super().__init__(name="producer", daemon=True)
         self._remote = remote
+        self.queue = queue
+
+    def run(self):
+        while self._remote.running:
+            if self._remote.event.pdirty:
+                self.queue.put("pdirty")
+            if self._remote.event.mdirty:
+                self.queue.put("mdirty")
+            if self._remote.event.midi:
+                self.queue.put("midi")
+            if self._remote.event.ldirty:
+                self.queue.put("ldirty")
+            time.sleep(self._remote.ratelimit)
+        self.queue.put(None)
+
+
+class Updater(threading.Thread):
+    def __init__(self, remote, queue):
+        super().__init__(name="updater", daemon=True)
+        self._remote = remote
+        self.queue = queue
         self._remote._strip_comp = [False] * (
             2 * self._remote.kind.phys_in + 8 * self._remote.kind.virt_in
         )
@@ -19,30 +42,25 @@ class Updater(threading.Thread):
             tuple(not x for x in comp(self._remote.cache["bus_level"], bus_level)),
         )
 
-    def update(self):
+    def run(self):
         """
         Continously update observers of dirty states.
 
         Generate _strip_comp, _bus_comp and update level cache if ldirty.
-
-        Runs updates at a rate of self.ratelimit.
         """
-        while self._remote.running:
-            start = time.time()
-            if self._remote.event.pdirty and self._remote.pdirty:
-                self._remote.subject.notify("pdirty")
-            if self._remote.event.mdirty and self._remote.mdirty:
-                self._remote.subject.notify("mdirty")
-            if self._remote.event.midi and self._remote.get_midi_message():
-                self._remote.subject.notify("midi")
-            if self._remote.event.ldirty and self._remote.ldirty:
+        while True:
+            event = self.queue.get()
+            if event is None:
+                break
+
+            if event == "pdirty" and self._remote.pdirty:
+                self._remote.subject.notify(event)
+            elif event == "mdirty" and self._remote.mdirty:
+                self._remote.subject.notify(event)
+            elif event == "midi" and self._remote.get_midi_message():
+                self._remote.subject.notify(event)
+            elif event == "ldirty" and self._remote.ldirty:
                 self._update_comps(self._remote._strip_buf, self._remote._bus_buf)
                 self._remote.cache["strip_level"] = self._remote._strip_buf
                 self._remote.cache["bus_level"] = self._remote._bus_buf
-                self._remote.subject.notify("ldirty")
-
-            elapsed = time.time() - start
-            if self._remote.event.any() and self._remote.ratelimit - elapsed > 0:
-                time.sleep(self._remote.ratelimit - elapsed)
-            else:
-                time.sleep(0.1)
+                self._remote.subject.notify(event)
