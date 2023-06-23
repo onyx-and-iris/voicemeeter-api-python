@@ -93,6 +93,10 @@ class PhysicalStrip(Strip):
             f"PhysicalStrip",
             (cls, EFFECTS_cls),
             {
+                "comp": StripComp(remote, i),
+                "gate": StripGate(remote, i),
+                "denoiser": StripDenoiser(remote, i),
+                "eq": StripEQ(remote, i),
                 "device": StripDevice.make(remote, i),
             },
         )
@@ -101,28 +105,188 @@ class PhysicalStrip(Strip):
         return f"{type(self).__name__}{self.index}"
 
     @property
-    def comp(self) -> float:
-        return round(self.getter("Comp"), 1)
-
-    @comp.setter
-    def comp(self, val: float):
-        self.setter("Comp", val)
-
-    @property
-    def gate(self) -> float:
-        return round(self.getter("Gate"), 1)
-
-    @gate.setter
-    def gate(self, val: float):
-        self.setter("Gate", val)
-
-    @property
     def audibility(self) -> float:
         return round(self.getter("audibility"), 1)
 
     @audibility.setter
     def audibility(self, val: float):
         self.setter("audibility", val)
+
+
+class StripComp(IRemote):
+    @property
+    def identifier(self) -> str:
+        return f"Strip[{self.index}].comp"
+
+    @property
+    def knob(self) -> float:
+        return round(self.getter(""), 1)
+
+    @knob.setter
+    def knob(self, val: float):
+        self.setter("", val)
+
+    @property
+    def gainin(self) -> float:
+        return round(self.getter("GainIn"), 1)
+
+    @gainin.setter
+    def gainin(self, val: float):
+        self.setter("GainIn", val)
+
+    @property
+    def ratio(self) -> float:
+        return round(self.getter("Ratio"), 1)
+
+    @ratio.setter
+    def ratio(self, val: float):
+        self.setter("Ratio", val)
+
+    @property
+    def threshold(self) -> float:
+        return round(self.getter("Threshold"), 1)
+
+    @threshold.setter
+    def threshold(self, val: float):
+        self.setter("Threshold", val)
+
+    @property
+    def attack(self) -> float:
+        return round(self.getter("Attack"), 1)
+
+    @attack.setter
+    def attack(self, val: float):
+        self.setter("Attack", val)
+
+    @property
+    def release(self) -> float:
+        return round(self.getter("Release"), 1)
+
+    @release.setter
+    def release(self, val: float):
+        self.setter("Release", val)
+
+    @property
+    def knee(self) -> float:
+        return round(self.getter("Knee"), 1)
+
+    @knee.setter
+    def knee(self, val: float):
+        self.setter("Knee", val)
+
+    @property
+    def gainout(self) -> float:
+        return round(self.getter("GainOut"), 1)
+
+    @gainout.setter
+    def gainout(self, val: float):
+        self.setter("GainOut", val)
+
+    @property
+    def makeup(self) -> bool:
+        return self.getter("makeup") == 1
+
+    @makeup.setter
+    def makeup(self, val: bool):
+        self.setter("makeup", 1 if val else 0)
+
+
+class StripGate(IRemote):
+    @property
+    def identifier(self) -> str:
+        return f"Strip[{self.index}].gate"
+
+    @property
+    def knob(self) -> float:
+        return round(self.getter(""), 1)
+
+    @knob.setter
+    def knob(self, val: float):
+        self.setter("", val)
+
+    @property
+    def threshold(self) -> float:
+        return round(self.getter("Threshold"), 1)
+
+    @threshold.setter
+    def threshold(self, val: float):
+        self.setter("Threshold", val)
+
+    @property
+    def damping(self) -> float:
+        return round(self.getter("Damping"), 1)
+
+    @damping.setter
+    def damping(self, val: float):
+        self.setter("Damping", val)
+
+    @property
+    def bpsidechain(self) -> int:
+        return int(self.getter("BPSidechain"))
+
+    @bpsidechain.setter
+    def bpsidechain(self, val: int):
+        self.setter("BPSidechain", val)
+
+    @property
+    def attack(self) -> float:
+        return round(self.getter("Attack"), 1)
+
+    @attack.setter
+    def attack(self, val: float):
+        self.setter("Attack", val)
+
+    @property
+    def hold(self) -> float:
+        return round(self.getter("Hold"), 1)
+
+    @hold.setter
+    def hold(self, val: float):
+        self.setter("Hold", val)
+
+    @property
+    def release(self) -> float:
+        return round(self.getter("Release"), 1)
+
+    @release.setter
+    def release(self, val: float):
+        self.setter("Release", val)
+
+
+class StripDenoiser(IRemote):
+    @property
+    def identifier(self) -> str:
+        return f"Strip[{self.index}].denoiser"
+
+    @property
+    def knob(self) -> float:
+        return round(self.getter(""), 1)
+
+    @knob.setter
+    def knob(self, val: float):
+        self.setter("", val)
+
+
+class StripEQ(IRemote):
+    @property
+    def identifier(self) -> str:
+        return f"Strip[{self.index}].eq"
+
+    @property
+    def on(self) -> bool:
+        return self.getter("on") == 1
+
+    @on.setter
+    def on(self, val: bool):
+        self.setter("on", 1 if val else 0)
+
+    @property
+    def ab(self) -> bool:
+        return self.getter("ab") == 1
+
+    @ab.setter
+    def ab(self, val: bool):
+        self.setter("ab", 1 if val else 0)
 
 
 class StripDevice(IRemote):
