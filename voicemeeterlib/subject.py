@@ -4,10 +4,8 @@ logger = logging.getLogger(__name__)
 
 
 class Subject:
-    """Adds support for observers"""
-
     def __init__(self):
-        """list of current observers"""
+        """Adds support for observers and callbacks"""
 
         self._observers = list()
         self.logger = logger.getChild(self.__class__.__name__)
@@ -18,34 +16,57 @@ class Subject:
 
         return self._observers
 
-    def notify(self, modifier):
+    def notify(self, event):
         """run callbacks on update"""
 
-        [o.on_update(modifier) for o in self._observers]
+        for o in self._observers:
+            if hasattr(o, "on_update"):
+                o.on_update(event)
+            else:
+                if o.__name__ == f"on_{event}":
+                    o()
 
     def add(self, observer):
-        """adds an observer to _observers"""
-
-        if observer not in self._observers:
-            self._observers.append(observer)
-            self.logger.info(f"{type(observer).__name__} added to event observers")
-        else:
-            self.logger.error(
-                f"Failed to add {type(observer).__name__} to event observers"
-            )
-
-    def remove(self, observer):
-        """removes an observer from _observers"""
+        """adds an observer to observers"""
 
         try:
-            self._observers.remove(observer)
-            self.logger.info(f"{type(observer).__name__} removed from event observers")
-        except ValueError:
-            self.logger.error(
-                f"Failed to remove {type(observer).__name__} from event observers"
-            )
+            iterator = iter(observer)
+            for o in iterator:
+                if o not in self._observers:
+                    self._observers.append(o)
+                    self.logger.info(f"{o} added to event observers")
+                else:
+                    self.logger.error(f"Failed to add {o} to event observers")
+        except TypeError:
+            if observer not in self._observers:
+                self._observers.append(observer)
+                self.logger.info(f"{observer} added to event observers")
+            else:
+                self.logger.error(f"Failed to add {observer} to event observers")
+
+    register = add
+
+    def remove(self, observer):
+        """removes an observer from observers"""
+
+        try:
+            iterator = iter(observer)
+            for o in iterator:
+                try:
+                    self._observers.remove(o)
+                    self.logger.info(f"{o} removed from event observers")
+                except ValueError:
+                    self.logger.error(f"Failed to remove {o} from event observers")
+        except TypeError:
+            try:
+                self._observers.remove(observer)
+                self.logger.info(f"{observer} removed from event observers")
+            except ValueError:
+                self.logger.error(f"Failed to remove {observer} from event observers")
+
+    deregister = remove
 
     def clear(self):
-        """clears the _observers list"""
+        """clears the observers list"""
 
         self._observers.clear()
