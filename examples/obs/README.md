@@ -17,7 +17,11 @@ port = 4455
 password = "mystrongpass"
 ```
 
+Closing OBS will end the script.
+
 ## Notes
+
+In this example all but `voicemeeterlib.iremote` logs are filtered out. Log level set at DEBUG.
 
 For a similar Streamlabs Desktop example:
 

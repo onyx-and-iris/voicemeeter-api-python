@@ -1,16 +1,43 @@
-import logging
+import time
+from logging import config
 
-import obsws_python as obs
+import obsws_python as obsws
+
 import voicemeeterlib
 
-logging.basicConfig(level=logging.INFO)
+config.dictConfig(
+    {
+        "version": 1,
+        "formatters": {
+            "standard": {
+                "format": "%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s"
+            }
+        },
+        "handlers": {
+            "stream": {
+                "level": "DEBUG",
+                "class": "logging.StreamHandler",
+                "formatter": "standard",
+            }
+        },
+        "loggers": {
+            "voicemeeterlib.iremote": {"handlers": ["stream"], "level": "DEBUG"}
+        },
+    }
+)
 
 
-class Observer:
+class MyClient:
     def __init__(self, vm):
         self.vm = vm
-        self.client = obs.EventClient()
-        self.client.callback.register(self.on_current_program_scene_changed)
+        self.client = obsws.EventClient()
+        self.client.callback.register(
+            (
+                self.on_current_program_scene_changed,
+                self.on_exit_started,
+            )
+        )
+        self.is_running = True
 
     def on_start(self):
         self.vm.strip[0].mute = True
@@ -52,14 +79,18 @@ class Observer:
         if fn := fget(scene):
             fn()
 
+    def on_exit_started(self, _):
+        self.client.unsubscribe()
+        self.is_running = False
+
 
 def main():
-    subs = {ev: False for ev in ["pdirty", "mdirty", "midi"]}
-    with voicemeeterlib.api("potato", subs=subs) as vm:
-        obs = Observer(vm)
-        while cmd := input("<Enter> to exit\n"):
-            if not cmd:
-                break
+    KIND_ID = "potato"
+
+    with voicemeeterlib.api(KIND_ID) as vm:
+        client = MyClient(vm)
+        while client.is_running:
+            time.sleep(0.1)
 
 
 if __name__ == "__main__":
