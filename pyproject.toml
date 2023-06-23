@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "voicemeeter-api"
-version = "1.0.0"
+version = "2.0.0"
 description = "A Python wrapper for the Voiceemeter API"
 authors = ["onyx-and-iris <code@onyxandiris.online>"]
 license = "MIT"
@@ -21,6 +21,7 @@ pytest-randomly = "^3.12.0"
 pytest-repeat = "^0.9.1"
 black = "^22.3.0"
 isort = "^5.10.1"
+tox = "^4.6.3"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -28,7 +29,21 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
 dsl = "scripts:ex_dsl"
+events = "scripts:ex_events"
+levels = "scripts:ex_levels"
 midi = "scripts:ex_midi"
 obs = "scripts:ex_obs"
 observer = "scripts:ex_observer"
-test ="scripts:test"
+test = "scripts:test"
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+envlist = py310,py311
+
+[testenv]
+allowlist_externals = poetry
+commands =
+  poetry install -v
+  poetry run pytest tests/
+"""
