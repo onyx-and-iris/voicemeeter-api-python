@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from enum import Enum, unique
 
+from .error import VMError
+
 
 @unique
 class KindId(Enum):
@@ -105,7 +107,7 @@ def request_kind_map(kind_id):
     try:
         KIND_obj = kind_factory(kind_id)
     except ValueError as e:
-        print(e)
+        raise VMError(str(e)) from e
     return KIND_obj
 
 
