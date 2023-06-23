@@ -1,4 +1,3 @@
-from .error import VMError
 from .iremote import IRemote
 
 
