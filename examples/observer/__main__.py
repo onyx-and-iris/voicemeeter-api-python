@@ -5,38 +5,40 @@ import voicemeeterlib
 logging.basicConfig(level=logging.INFO)
 
 
-class Observer:
+class App:
     def __init__(self, vm):
         self.vm = vm
         # register your app as event observer
-        self.vm.subject.add(self)
-        # enable level updates, since they are disabled by default.
-        self.vm.event.ldirty = True
+        self.vm.observer.add(self)
+
+    def __str__(self):
+        return type(self).__name__
 
     # define an 'on_update' callback function to receive event updates
-    def on_update(self, subject):
-        if subject == "pdirty":
+    def on_update(self, event):
+        if event == "pdirty":
             print("pdirty!")
-        elif subject == "mdirty":
+        elif event == "mdirty":
             print("mdirty!")
-        elif subject == "ldirty":
+        elif event == "ldirty":
             for bus in self.vm.bus:
                 if bus.levels.isdirty:
                     print(bus, bus.levels.all)
-        elif subject == "midi":
+        elif event == "midi":
             current = self.vm.midi.current
             print(f"Value of midi button {current} is {self.vm.midi.get(current)}")
 
 
 def main():
-    kind_id = "banana"
+    KIND_ID = "banana"
 
-    with voicemeeterlib.api(kind_id) as vm:
-        Observer(vm)
+    with voicemeeterlib.api(
+        KIND_ID, **{k: True for k in ("pdirty", "mdirty", "ldirty", "midi")}
+    ) as vm:
+        App(vm)
 
         while cmd := input("Press <Enter> to exit\n"):
-            if not cmd:
-                break
+            pass
 
 
 if __name__ == "__main__":
