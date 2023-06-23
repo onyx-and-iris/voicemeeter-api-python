@@ -9,6 +9,7 @@ from .bus import request_bus_obj as bus
 from .command import Command
 from .config import request_config as configs
 from .device import Device
+from .error import VMError
 from .kinds import KindMapClass
 from .kinds import request_kind_map as kindmap
 from .macrobutton import MacroButton
@@ -16,6 +17,8 @@ from .recorder import Recorder
 from .remote import Remote
 from .strip import request_strip_obj as strip
 from .vban import request_vban_obj as vban
+
+logger = logging.getLogger(__name__)
 
 
 class FactoryBuilder:
@@ -25,7 +28,6 @@ class FactoryBuilder:
     Separates construction from representation.
     """
 
-    logger = logging.getLogger("remote.factorybuilder")
     BuilderProgress = IntEnum(
         "BuilderProgress",
         "strip bus command macrobutton vban device option recorder patch fx",
@@ -47,11 +49,12 @@ class FactoryBuilder:
             f"Finished building patch for {self._factory}",
             f"Finished building fx for {self._factory}",
         )
+        self.logger = logger.getChild(self.__class__.__name__)
 
     def _pinfo(self, name: str) -> NoReturn:
         """prints progress status for each step"""
         name = name.split("_")[1]
-        self.logger.info(self._info[int(getattr(self.BuilderProgress, name))])
+        self.logger.debug(self._info[int(getattr(self.BuilderProgress, name))])
 
     def make_strip(self):
         self._factory.strip = tuple(
@@ -104,10 +107,16 @@ class FactoryBase(Remote):
     """Base class for factories, subclasses Remote."""
 
     def __init__(self, kind_id: str, **kwargs):
-        defaultevents = {"pdirty": True, "mdirty": True, "midi": True, "ldirty": False}
+        defaultkwargs = {
+            "sync": False,
+            "ratelimit": 0.033,
+            "pdirty": False,
+            "mdirty": False,
+            "midi": False,
+            "ldirty": False,
+        }
         if "subs" in kwargs:
-            defaultevents = defaultevents | kwargs.pop("subs")
-        defaultkwargs = {"sync": False, "ratelimit": 0.033, "subs": defaultevents}
+            defaultkwargs |= kwargs.pop("subs")  # for backwards compatibility
         kwargs = defaultkwargs | kwargs
         self.kind = kindmap(kind_id)
         super().__init__(**kwargs)
@@ -231,9 +240,13 @@ def request_remote_obj(kind_id: str, **kwargs) -> Remote:
 
     Returns a reference to a Remote class of a kind
     """
+
+    logger_entry = logger.getChild("request_remote_obj")
+
     REMOTE_obj = None
     try:
         REMOTE_obj = remote_factory(kind_id, **kwargs)
     except (ValueError, TypeError) as e:
-        raise SystemExit(e)
+        logger_entry.exception(f"{type(e).__name__}: {e}")
+        raise VMError(str(e)) from e
     return REMOTE_obj
