@@ -131,5 +131,7 @@ dmypy.json
 # test/config
 quick.py
 config.toml
+vm-api.log
+logging.json
 
 .vscode/

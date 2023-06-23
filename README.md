@@ -52,16 +52,18 @@ class ManyThings:
 
     def other_things(self):
         self.vm.bus[3].gain = -6.3
-        self.vm.bus[4].eq = True
+        self.vm.bus[4].eq.on = True
         info = (
             f"bus 3 gain has been set to {self.vm.bus[3].gain}",
-            f"bus 4 eq has been set to {self.vm.bus[4].eq}",
+            f"bus 4 eq has been set to {self.vm.bus[4].eq.on}",
         )
         print("\n".join(info))
 
 
 def main():
-    with voicemeeterlib.api(kind_id) as vm:
+    KIND_ID = "banana"
+
+    with voicemeeterlib.api(KIND_ID) as vm:
         do = ManyThings(vm)
         do.things()
         do.other_things()
@@ -79,16 +81,14 @@ def main():
 
 
 if __name__ == "__main__":
-    kind_id = "banana"
-
     main()
 ```
 
 Otherwise you must remember to call `vm.login()`, `vm.logout()` at the start/end of your code.
 
-## `kind_id`
+## `KIND_ID`
 
-Pass the kind of Voicemeeter as an argument. kind_id may be:
+Pass the kind of Voicemeeter as an argument. KIND_ID may be:
 
 -   `basic`
 -   `banana`
@@ -104,8 +104,6 @@ The following properties are available.
 -   `solo`: boolean
 -   `mute`: boolean
 -   `gain`: float, from -60.0 to 12.0
--   `comp`: float, from 0.0 to 10.0
--   `gate`: float, from 0.0 to 10.0
 -   `audibility`: float, from 0.0 to 10.0
 -   `limit`: int, from -40 to 12
 -   `A1 - A5`, `B1 - B3`: boolean
@@ -154,7 +152,72 @@ vm.strip[5].appmute("Spotify", True)
 vm.strip[5].appgain("Spotify", 0.5)
 ```
 
-##### Gainlayers
+#### Strip.Comp
+
+-   `knob`: float, from 0.0 to 10.0
+-   `gainin`: float, from -24.0 to 24.0
+-   `ratio`: float, from 1.0 to 8.0
+-   `threshold`: float, from -40.0 to -3.0
+-   `attack`: float, from 0.0 to 200.0
+-   `release`: float, from 0.0 to 5000.0
+-   `knee`: float, from 0.0 to 1.0
+-   `gainout`: float, from -24.0 to 24.0
+-   `makeup`: boolean
+
+example:
+
+```python
+print(vm.strip[4].comp.knob)
+```
+
+Strip Comp parameters are defined for PhysicalStrips, potato version only.
+
+#### Strip.Gate
+
+-   `knob`: float, from 0.0 to 10.0
+-   `threshold`: float, from -60.0 to -10.0
+-   `damping`: float, from -60.0 to -10.0
+-   `bpsidechain`: int, from 100 to 4000
+-   `attack`: float, from 0.0 to 1000.0
+-   `hold`: float, from 0.0 to 5000.0
+-   `release`: float, from 0.0 to 5000.0
+
+example:
+
+```python
+vm.strip[2].gate.attack = 300.8
+```
+
+Strip Gate parameters are defined for PhysicalStrips, potato version only.
+
+#### Strip.Denoiser
+
+-   `knob`: float, from 0.0 to 10.0
+
+example:
+
+```python
+vm.strip[0].denoiser.knob = 0.5
+```
+
+Strip Denoiser parameters are defined for PhysicalStrips, potato version only.
+
+#### Strip.EQ
+
+The following properties are available.
+
+-   `on`: boolean
+-   `ab`: boolean
+
+example:
+
+```python
+vm.strip[0].eq.ab = True
+```
+
+Strip EQ parameters are defined for PhysicalStrips, potato version only.
+
+##### Strip.Gainlayers
 
 -   `gain`: float, from -60.0 to 12.0
 
@@ -166,7 +229,7 @@ vm.strip[3].gainlayer[3].gain = 3.7
 
 Gainlayers are defined for potato version only.
 
-##### Levels
+##### Strip.Levels
 
 The following properties are available.
 
@@ -187,8 +250,6 @@ Level properties will return -200.0 if no audio detected.
 The following properties are available.
 
 -   `mono`: boolean
--   `eq`: boolean
--   `eq_ab`: boolean
 -   `mute`: boolean
 -   `sel`: boolean
 -   `gain`: float, from -60.0 to 12.0
@@ -208,7 +269,20 @@ print(vm.bus[0].label)
 vm.bus[4].mono = True
 ```
 
-##### Modes
+##### Bus.EQ
+
+The following properties are available.
+
+-   `on`: boolean
+-   `ab`: boolean
+
+example:
+
+```python
+vm.bus[3].eq.on = True
+```
+
+##### Bus.Modes
 
 The following properties are available.
 
@@ -236,7 +310,7 @@ vm.bus[4].mode.amix = True
 print(vm.bus[2].mode.get())
 ```
 
-##### Levels
+##### Bus.Levels
 
 The following properties are available.
 
@@ -409,7 +483,7 @@ example:
 
 ```python
 import voicemeeterlib
-with voicemeeterlib.api(kind_id) as vm:
+with voicemeeterlib.api(KIND_ID) as vm:
     for i in range(vm.device.ins):
         print(vm.device.input(i))
 ```
@@ -595,19 +669,19 @@ will load a user config file at configs/banana/example.toml for Voicemeeter Bana
 
 ## Events
 
-Level updates are considered high volume, by default they are NOT listened for. Use subs keyword arg to initialize event updates.
+By default, NO events are listened for. Use events kwargs to enable specific event types.
 
 example:
 
 ```python
 import voicemeeterlib
-# Set updates to occur every 50ms
-# Listen for level updates but disable midi updates
-with voicemeeterlib.api('banana', ratelimit=0.05, subs={"ldirty": True, "midi": False}) as vm:
+# Set event updates to occur every 50ms
+# Listen for level updates only
+with voicemeeterlib.api('banana', ratelimit=0.05, ldirty=True}) as vm:
     ...
 ```
 
-#### `vm.subject`
+#### `vm.observer`
 
 Use the Subject class to register an app as event observer.
 
@@ -622,7 +696,7 @@ example:
 # register an app to receive updates
 class App():
     def __init__(self, vm):
-        vm.subject.add(self)
+        vm.observer.add(self)
         ...
 ```
 
@@ -664,17 +738,16 @@ print(vm.event.get())
 
 ## Remote class
 
-`voicemeeterlib.api(kind_id: str)`
+`voicemeeterlib.api(KIND_ID: str)`
 
 You may pass the following optional keyword arguments:
 
 -   `sync`: boolean=False, force the getters to wait for dirty parameters to clear. For most cases leave this as False.
 -   `ratelimit`: float=0.033, how often to check for updates in ms.
--   `subs`: dict={"pdirty": True, "mdirty": True, "midi": True, "ldirty": False}, initialize which event updates to listen for.
-    -   `pdirty`: parameter updates
-    -   `mdirty`: macrobutton updates
-    -   `midi`: midi updates
-    -   `ldirty`: level updates
+-   `pdirty`: boolean=False, parameter updates
+-   `mdirty`: boolean=False, macrobutton updates
+-   `midi`: boolean=False, midi updates
+-   `ldirty`: boolean=False, level updates
 
 Access to lower level Getters and Setters are provided with these functions:
 
@@ -705,4 +778,4 @@ pytest -v
 
 ### Official Documentation
 
--   [Voicemeeter Remote C API](https://github.com/onyx-and-iris/Voicemeeter-SDK/blob/main/VoicemeeterRemoteAPI.pdf)
+-   [Voicemeeter Remote C API](https://github.com/onyx-and-iris/Voicemeeter-SDK/blob/update-docs/VoicemeeterRemoteAPI.pdf)

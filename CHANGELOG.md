@@ -11,6 +11,68 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 
 -   [x]
 
+## [2.0.0] - 2023-06-19
+
+Where possible I've attempted to make the changes backwards compatible. The breaking changes affect two higher classes, Strip and Bus, as well as the behaviour of events. All other changes are additive or QOL aimed at giving more options to the developer. For example, every low-level CAPI call is now logged and error raised on Exception, you can now register callback functions as well as observer classes, extra examples to demonstrate different use cases etc.
+
+This breaking changes are as follows:
+
+### Changed
+
+-   `strip[i].comp` now references StripComp class
+    -   To change the comp knob you should now use the property `strip[i].comp.knob`
+-   `strip[i].gate` now references StripGate class
+
+    -   To change the gate knob you should now use the property `strip[i].gate.knob`
+
+-   `bus[i].eq` now references BusEQ class
+
+    -   To set bus[i].{eq,eq_ab} as before you should now use bus[i].eq.on and bus[i].eq.ab
+
+-   by default, <strong>NO</strong> events are checked for. This is reflected in factory.FactoryBase defaultkwargs.
+    -   This is a fundamental behaviour change from version 1.0 of the wrapper. It means the following:
+        -   Unless any events are explicitly requested with an event kwarg the event emitter thread will not run automatically.
+        -   Whether using a context manager or not, you can still initiate the event thread manually and request events with the event object.<br>
+            see `events` example.
+
+There are other non-breaking changes:
+
+### Added
+
+-   `strip[i].eq` added to PhysicalStrip
+-   `strip[i].denoiser` added to PhysicalStrip
+-   `Strip.Comp`, `Strip.Gate`, `Strip.Denoiser` sections added to README.
+-   `Events` section in readme updated to reflect changes to events kwargs.
+-   new comp, gate, denoiser and eq tests added to higher tests.
+-   `levels` example to demonstrate use of the interface without a context manager.
+-   `events` example to demonstrate how to interact with event thread/event object.
+-   `{Remote}.observer` can be used in place of `{Remote}.subject` although subject will still work. Check examples.
+-   Subject class extended to allow registering/de-registering callback functions (as well as observer classes). See `events` example.
+
+### Changed
+
+-   `comp.knob`, `gate.knob`, `denoiser.knob`, `eq.on` added to phys_strip_params in config.TOMLStrBuilder
+
+    -   The `example.toml` config files have been updated to demonstrate setting new comp, gate and eq settings.
+
+-   event kwargs can now be set directly. no need for `subs`. example: `voicemeeterlib.api('banana', midi=True})`
+
+-   factorybuilder steps now logged in DEBUG mode.
+
+-   now using a producer thread to send events to the updater thread.
+
+-   module level loggers implemented (with class loggers as child loggers)
+
+-   config.loader now checks `Path.home() / ".config" / "voicemeeter" / kind.name` for configs.
+    -   note. `Path(__file__).parent / "configs" / kind.name,` was removed as a path to check.
+
+### Fixed
+
+-   All low level CAPI calls are now wrapped by CBindings.call() which logs any errors raised.
+-   Dynamic binding of Macrobutton functions from the CAPI.
+    Should add backwards compatibility with very old versions of the api. See [Issue #4][issue 4].
+-   factory.request_remote_obj now raises a `VMError` if passed an incorrect kind.
+
 ## [1.0.0] - 2023-06-19
 
 No changes to the codebase but it has been stable for several months and should already have been bumped to major version 1.0
@@ -298,3 +360,5 @@ I will move this commit to a separate branch in preparation for version 2.0.
 -   inst module implemented (fetch vm path from registry)
 -   kind maps implemented as dataclasses
 -   project packaged with poetry and added to pypi.
+
+[issue 4]: https://github.com/onyx-and-iris/voicemeeter-api-python/issues/4
