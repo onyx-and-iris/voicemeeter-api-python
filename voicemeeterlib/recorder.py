@@ -1,7 +1,7 @@
 from .error import VMError
 from .iremote import IRemote
 from .kinds import kinds_all
-from .meta import action_prop, bool_prop
+from .meta import action_fn, bool_prop
 
 
 class Recorder(IRemote):
@@ -24,7 +24,7 @@ class Recorder(IRemote):
             (cls, CHANNELOUTMIXIN_cls),
             {
                 **{
-                    param: action_prop(param)
+                    param: action_fn(param)
                     for param in [
                         "play",
                         "stop",

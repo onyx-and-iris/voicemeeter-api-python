@@ -22,8 +22,8 @@ def float_prop(param):
     return property(fget, fset)
 
 
-def action_prop(param, val: int = 1):
-    """A param that performs an action"""
+def action_fn(param, val: int = 1):
+    """meta function that performs an action"""
 
     def fdo(self):
         self.setter(param, val)

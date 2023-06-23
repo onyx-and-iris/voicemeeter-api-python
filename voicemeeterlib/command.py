@@ -1,6 +1,5 @@
-from .error import VMError
 from .iremote import IRemote
-from .meta import action_prop
+from .meta import action_fn
 
 
 class Command(IRemote):
@@ -22,10 +21,9 @@ class Command(IRemote):
             (cls,),
             {
                 **{
-                    param: action_prop(param)
-                    for param in ["show", "shutdown", "restart"]
+                    param: action_fn(param) for param in ["show", "shutdown", "restart"]
                 },
-                "hide": action_prop("show", val=0),
+                "hide": action_fn("show", val=0),
             },
         )
         return CMD_cls(remote)
