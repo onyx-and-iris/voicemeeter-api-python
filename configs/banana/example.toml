@@ -2,12 +2,12 @@
 label = "PhysStrip0"
 A1 = true
 gain = -8.8
-comp = 3.2
+comp.knob = 3.2
 
 [strip-1]
 label = "PhysStrip1"
 B1 = true
-gate = 4.1
+gate.knob = 4.1
 
 [strip-2]
 label = "PhysStrip2"
@@ -34,12 +34,12 @@ mono = true
 
 [bus-2]
 label = "PhysBus2"
-eq = true
+eq.ab = true
 mode = "composite"
 
 [bus-3]
 label = "VirtBus0"
-eq_ab = true
+eq.on = true
 mode = "upmix61"
 
 [bus-4]

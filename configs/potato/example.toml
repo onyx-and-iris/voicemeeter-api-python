@@ -2,26 +2,29 @@
 label = "PhysStrip0"
 A1 = true
 gain = -8.8
-comp = 3.2
+comp.knob = 3.2
 
 [strip-1]
 label = "PhysStrip1"
 B1 = true
-gate = 4.1
+gate.knob = 4.1
 
 [strip-2]
 label = "PhysStrip2"
 gain = 1.1
 limit = -15
+comp.threshold = -35.8
 
 [strip-3]
 label = "PhysStrip3"
 B2 = false
+eq.on = true
 
 [strip-4]
 label = "PhysStrip4"
 B3 = true
 gain = -8.8
+eq.on = true
 
 [strip-5]
 label = "VirtStrip0"
@@ -50,7 +53,7 @@ mono = true
 
 [bus-2]
 label = "PhysBus2"
-eq = true
+eq.on = true
 
 [bus-3]
 label = "PhysBus3"
@@ -62,7 +65,7 @@ mode = "composite"
 
 [bus-5]
 label = "VirtBus0"
-eq_ab = true
+eq.ab = true
 
 [bus-6]
 label = "VirtBus1"
