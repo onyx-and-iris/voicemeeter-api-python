@@ -2,12 +2,16 @@ import itertools
 import logging
 from pathlib import Path
 
+from .error import VMError
+
 try:
     import tomllib
 except ModuleNotFoundError:
     import tomli as tomllib
 
 from .kinds import request_kind_map as kindmap
+
+logger = logging.getLogger(__name__)
 
 
 class TOMLStrBuilder:
@@ -32,10 +36,17 @@ class TOMLStrBuilder:
             + [f"B{i} = false" for i in range(1, self.kind.virt_out + 1)]
         )
         self.phys_strip_params = self.virt_strip_params + [
-            "comp = 0.0",
-            "gate = 0.0",
+            "comp.knob = 0.0",
+            "gate.knob = 0.0",
+            "denoiser.knob = 0.0",
+            "eq.on = false",
         ]
-        self.bus_bool = ["mono = false", "eq = false", "mute = false"]
+        self.bus_params = [
+            "mono = false",
+            "eq.on = false",
+            "mute = false",
+            "gain = 0.0",
+        ]
 
         if profile == "reset":
             self.reset_config()
@@ -66,7 +77,7 @@ class TOMLStrBuilder:
                     else self.virt_strip_params
                 )
             case "bus":
-                toml_str += ("\n").join(self.bus_bool)
+                toml_str += ("\n").join(self.bus_params)
             case _:
                 pass
         return toml_str + "\n"
@@ -119,10 +130,9 @@ class Loader(metaclass=SingletonType):
     loads data into memory if not found
     """
 
-    logger = logging.getLogger("config.Loader")
-
     def __init__(self, kind):
         self._kind = kind
+        self.logger = logger.getChild(self.__class__.__name__)
         self._configs = dict()
         self.defaults(kind)
         self.parser = None
@@ -166,16 +176,16 @@ def loader(kind):
 
     returns configs loaded into memory
     """
-    logger = logging.getLogger("config.loader")
+    logger_loader = logger.getChild("loader")
     loader = Loader(kind)
 
     for path in (
         Path.cwd() / "configs" / kind.name,
-        Path(__file__).parent / "configs" / kind.name,
-        Path.home() / "Documents/Voicemeeter" / "configs" / kind.name,
+        Path.home() / ".config" / "voicemeeter" / kind.name,
+        Path.home() / "Documents" / "Voicemeeter" / "configs" / kind.name,
     ):
         if path.is_dir():
-            logger.info(f"Checking [{path}] for TOML config files:")
+            logger_loader.info(f"Checking [{path}] for TOML config files:")
             for file in path.glob("*.toml"):
                 identifier = file.with_suffix("").stem
                 if loader.parse(identifier, file):
@@ -192,5 +202,5 @@ def request_config(kind_id: str):
     try:
         configs = loader(kindmap(kind_id))
     except KeyError as e:
-        print(f"Unknown Voicemeeter kind '{kind_id}'")
+        raise VMError(f"Unknown Voicemeeter kind {kind_id}") from e
     return configs
