@@ -7,6 +7,16 @@ def ex_dsl():
     subprocess.run(["py", str(path)])
 
 
+def ex_events():
+    path = Path.cwd() / "examples" / "events" / "."
+    subprocess.run(["py", str(path)])
+
+
+def ex_levels():
+    path = Path.cwd() / "examples" / "levels" / "."
+    subprocess.run(["py", str(path)])
+
+
 def ex_midi():
     path = Path.cwd() / "examples" / "midi" / "."
     subprocess.run(["py", str(path)])
@@ -23,4 +33,4 @@ def ex_observer():
 
 
 def test():
-    subprocess.run(["pytest", "-v"])
+    subprocess.run(["tox"])
