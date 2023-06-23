@@ -1,6 +1,6 @@
 import pytest
 
-from tests import data, tests
+from tests import data, vm
 
 
 class TestRemoteFactories:
@@ -10,57 +10,57 @@ class TestRemoteFactories:
         data.name != "basic",
         reason="Skip test if kind is not basic",
     )
-    def test_it_tests_remote_attrs_for_basic(self):
-        assert hasattr(tests, "strip")
-        assert hasattr(tests, "bus")
-        assert hasattr(tests, "command")
-        assert hasattr(tests, "button")
-        assert hasattr(tests, "vban")
-        assert hasattr(tests, "device")
-        assert hasattr(tests, "option")
+    def test_it_vm_remote_attrs_for_basic(self):
+        assert hasattr(vm, "strip")
+        assert hasattr(vm, "bus")
+        assert hasattr(vm, "command")
+        assert hasattr(vm, "button")
+        assert hasattr(vm, "vban")
+        assert hasattr(vm, "device")
+        assert hasattr(vm, "option")
 
-        assert len(tests.strip) == 3
-        assert len(tests.bus) == 2
-        assert len(tests.button) == 80
-        assert len(tests.vban.instream) == 4 and len(tests.vban.outstream) == 4
+        assert len(vm.strip) == 3
+        assert len(vm.bus) == 2
+        assert len(vm.button) == 80
+        assert len(vm.vban.instream) == 4 and len(vm.vban.outstream) == 4
 
     @pytest.mark.skipif(
         data.name != "banana",
         reason="Skip test if kind is not banana",
     )
-    def test_it_tests_remote_attrs_for_banana(self):
-        assert hasattr(tests, "strip")
-        assert hasattr(tests, "bus")
-        assert hasattr(tests, "command")
-        assert hasattr(tests, "button")
-        assert hasattr(tests, "vban")
-        assert hasattr(tests, "device")
-        assert hasattr(tests, "option")
-        assert hasattr(tests, "recorder")
-        assert hasattr(tests, "patch")
+    def test_it_vm_remote_attrs_for_banana(self):
+        assert hasattr(vm, "strip")
+        assert hasattr(vm, "bus")
+        assert hasattr(vm, "command")
+        assert hasattr(vm, "button")
+        assert hasattr(vm, "vban")
+        assert hasattr(vm, "device")
+        assert hasattr(vm, "option")
+        assert hasattr(vm, "recorder")
+        assert hasattr(vm, "patch")
 
-        assert len(tests.strip) == 5
-        assert len(tests.bus) == 5
-        assert len(tests.button) == 80
-        assert len(tests.vban.instream) == 8 and len(tests.vban.outstream) == 8
+        assert len(vm.strip) == 5
+        assert len(vm.bus) == 5
+        assert len(vm.button) == 80
+        assert len(vm.vban.instream) == 8 and len(vm.vban.outstream) == 8
 
     @pytest.mark.skipif(
         data.name != "potato",
         reason="Skip test if kind is not potato",
     )
-    def test_it_tests_remote_attrs_for_potato(self):
-        assert hasattr(tests, "strip")
-        assert hasattr(tests, "bus")
-        assert hasattr(tests, "command")
-        assert hasattr(tests, "button")
-        assert hasattr(tests, "vban")
-        assert hasattr(tests, "device")
-        assert hasattr(tests, "option")
-        assert hasattr(tests, "recorder")
-        assert hasattr(tests, "patch")
-        assert hasattr(tests, "fx")
+    def test_it_vm_remote_attrs_for_potato(self):
+        assert hasattr(vm, "strip")
+        assert hasattr(vm, "bus")
+        assert hasattr(vm, "command")
+        assert hasattr(vm, "button")
+        assert hasattr(vm, "vban")
+        assert hasattr(vm, "device")
+        assert hasattr(vm, "option")
+        assert hasattr(vm, "recorder")
+        assert hasattr(vm, "patch")
+        assert hasattr(vm, "fx")
 
-        assert len(tests.strip) == 8
-        assert len(tests.bus) == 8
-        assert len(tests.button) == 80
-        assert len(tests.vban.instream) == 8 and len(tests.vban.outstream) == 8
+        assert len(vm.strip) == 8
+        assert len(vm.bus) == 8
+        assert len(vm.button) == 80
+        assert len(vm.vban.instream) == 8 and len(vm.vban.outstream) == 8

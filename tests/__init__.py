@@ -3,15 +3,13 @@ import sys
 from dataclasses import dataclass
 
 import voicemeeterlib
-from voicemeeterlib.kinds import KindId, kinds_all
+from voicemeeterlib.kinds import KindId
 from voicemeeterlib.kinds import request_kind_map as kindmap
 
 # let's keep things random
-kind_id = random.choice(tuple(kind_id.name.lower() for kind_id in KindId))
-
-vmrs = {kind.name: voicemeeterlib.api(kind.name) for kind in kinds_all}
-tests = vmrs[kind_id]
-kind = kindmap(kind_id)
+KIND_ID = random.choice(tuple(kind_id.name.lower() for kind_id in KindId))
+vm = voicemeeterlib.api(KIND_ID)
+kind = kindmap(KIND_ID)
 
 
 @dataclass
@@ -42,9 +40,9 @@ data = Data()
 
 def setup_module():
     print(f"\nRunning tests for kind [{data.name}]\n", file=sys.stdout)
-    tests.login()
-    tests.command.reset()
+    vm.login()
+    vm.command.reset()
 
 
 def teardown_module():
-    tests.logout()
+    vm.logout()
