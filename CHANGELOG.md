@@ -46,6 +46,7 @@ There are other non-breaking changes:
 -   new comp, gate, denoiser and eq tests added to higher tests.
 -   `levels` example to demonstrate use of the interface without a context manager.
 -   `events` example to demonstrate how to interact with event thread/event object.
+-   `gui` example to demonstrate GUI controls.
 -   `{Remote}.observer` can be used in place of `{Remote}.subject` although subject will still work. Check examples.
 -   Subject class extended to allow registering/de-registering callback functions (as well as observer classes). See `events` example.
 
