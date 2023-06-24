@@ -11,7 +11,7 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 
 -   [x]
 
-## [2.0.0] - 2023-06-19
+## [2.0.0] - 2023-06-25
 
 Where possible I've attempted to make the changes backwards compatible. The breaking changes affect two higher classes, Strip and Bus, as well as the behaviour of events. All other changes are additive or QOL aimed at giving more options to the developer. For example, every low-level CAPI call is now logged and error raised on Exception, you can now register callback functions as well as observer classes, extra examples to demonstrate different use cases etc.
 
