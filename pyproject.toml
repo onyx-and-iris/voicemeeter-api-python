@@ -30,6 +30,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.scripts]
 dsl = "scripts:ex_dsl"
 events = "scripts:ex_events"
+gui = "scripts:ex_gui"
 levels = "scripts:ex_levels"
 midi = "scripts:ex_midi"
 obs = "scripts:ex_obs"

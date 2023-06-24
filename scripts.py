@@ -12,6 +12,11 @@ def ex_events():
     subprocess.run(["py", str(path)])
 
 
+def ex_gui():
+    path = Path.cwd() / "examples" / "gui" / "."
+    subprocess.run(["py", str(path)])
+
+
 def ex_levels():
     path = Path.cwd() / "examples" / "levels" / "."
     subprocess.run(["py", str(path)])
