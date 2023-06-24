@@ -14,16 +14,18 @@ class ManyThings:
 
     def other_things(self):
         self.vm.bus[3].gain = -6.3
-        self.vm.bus[4].eq = True
+        self.vm.bus[4].eq.on = True
         info = (
             f"bus 3 gain has been set to {self.vm.bus[3].gain}",
-            f"bus 4 eq has been set to {self.vm.bus[4].eq}",
+            f"bus 4 eq has been set to {self.vm.bus[4].eq.on}",
         )
         print("\n".join(info))
 
 
 def main():
-    with voicemeeterlib.api(kind_id) as vm:
+    KIND_ID = "banana"
+
+    with voicemeeterlib.api(KIND_ID) as vm:
         do = ManyThings(vm)
         do.things()
         do.other_things()
@@ -32,7 +34,7 @@ def main():
         vm.apply(
             {
                 "strip-2": {"A1": True, "B1": True, "gain": -6.0},
-                "bus-2": {"mute": True},
+                "bus-2": {"mute": True, "eq": {"on": True}},
                 "button-0": {"state": True},
                 "vban-in-0": {"on": True},
                 "vban-out-1": {"name": "streamname"},
@@ -41,6 +43,4 @@ def main():
 
 
 if __name__ == "__main__":
-    kind_id = "banana"
-
     main()

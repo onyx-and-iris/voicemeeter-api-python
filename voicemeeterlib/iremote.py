@@ -45,9 +45,11 @@ class IRemote(metaclass=ABCMeta):
 
         for attr, val in data.items():
             if not isinstance(val, dict):
-                if hasattr(self, attr):
+                if attr in dir(self):  # avoid calling getattr (with hasattr)
                     target, attr, val = fget(attr, val)
                     setattr(target, attr, val)
+                else:
+                    self.logger.error(f"invalid attribute {attr} for {self}")
             else:
                 target = getattr(self, attr)
                 target.apply(val)

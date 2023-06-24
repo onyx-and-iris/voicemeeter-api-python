@@ -51,8 +51,8 @@ class MyClient:
     def on_end(self):
         self.vm.apply(
             {
-                "strip-0": {"mute": True},
-                "strip-1": {"mute": True, "B1": False},
+                "strip-0": {"mute": True, "comp": {"ratio": 4.3}},
+                "strip-1": {"mute": True, "B1": False, "gate": {"attack": 2.3}},
                 "strip-2": {"mute": True, "B1": False},
                 "vban-in-0": {"on": False},
             }

@@ -72,7 +72,7 @@ def main():
         vm.apply(
             {
                 "strip-2": {"A1": True, "B1": True, "gain": -6.0},
-                "bus-2": {"mute": True},
+                "bus-2": {"mute": True, "eq": {"on": True}},
                 "button-0": {"state": True},
                 "vban-in-0": {"on": True},
                 "vban-out-1": {"name": "streamname"},
@@ -82,6 +82,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 ```
 
 Otherwise you must remember to call `vm.login()`, `vm.logout()` at the start/end of your code.
@@ -636,7 +637,7 @@ get() may return None if no value for requested key in midi cache
 vm.apply(
     {
         "strip-2": {"A1": True, "B1": True, "gain": -6.0},
-        "bus-2": {"mute": True},
+        "bus-2": {"mute": True, "eq": {"on": True}},
         "button-0": {"state": True},
         "vban-in-0": {"on": True},
         "vban-out-1": {"name": "streamname"},
