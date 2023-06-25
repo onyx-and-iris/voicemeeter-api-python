@@ -755,12 +755,6 @@ Access to lower level Getters and Setters are provided with these functions:
 -   `vm.get(param, is_string=False)`: For getting the value of any parameter. Set string to True if getting a property value expected to return a string.
 -   `vm.set(param, value)`: For setting the value of any parameter.
 
-Access to lower level polling functions are provided with these functions:
-
--   `vm.pdirty()`: Returns True if a parameter has been updated.
--   `vm.mdirty()`: Returns True if a macrobutton has been updated.
--   `vm.ldirty()`: Returns True if a level has been updated.
-
 example:
 
 ```python
@@ -768,6 +762,21 @@ vm.get('Strip[2].Mute')
 vm.set('Strip[4].Label', 'stripname')
 vm.set('Strip[0].Gain', -3.6)
 ```
+
+Access to lower level polling functions are provided with the following property objects:
+
+#### `vm.pdirty`
+
+True iff a parameter has been updated.
+
+#### `vm.mdirty`
+
+True iff a macrobutton has been updated.
+
+#### `vm.ldirty`
+
+True iff a level has been updated.
+
 
 ### Run tests
 
