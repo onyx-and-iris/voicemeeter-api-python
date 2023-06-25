@@ -155,6 +155,8 @@ vm.strip[5].appgain("Spotify", 0.5)
 
 #### Strip.Comp
 
+The following properties are available.
+
 -   `knob`: float, from 0.0 to 10.0
 -   `gainin`: float, from -24.0 to 24.0
 -   `ratio`: float, from 1.0 to 8.0
@@ -171,9 +173,13 @@ example:
 print(vm.strip[4].comp.knob)
 ```
 
-Strip Comp parameters are defined for PhysicalStrips, potato version only.
+Strip Comp parameters are defined for PhysicalStrips.
+
+`knob` defined for all versions, all other parameters potato only.
 
 #### Strip.Gate
+
+The following properties are available.
 
 -   `knob`: float, from 0.0 to 10.0
 -   `threshold`: float, from -60.0 to -10.0
@@ -189,9 +195,13 @@ example:
 vm.strip[2].gate.attack = 300.8
 ```
 
-Strip Gate parameters are defined for PhysicalStrips, potato version only.
+Strip Gate parameters are defined for PhysicalStrips.
+
+`knob` defined for all versions, all other parameters potato only.
 
 #### Strip.Denoiser
+
+The following properties are available.
 
 -   `knob`: float, from 0.0 to 10.0
 
