@@ -27,7 +27,7 @@ class Producer(threading.Thread):
             if self._remote.event.ldirty:
                 self.queue.put("ldirty")
             time.sleep(self._remote.ratelimit)
-        self.logger.debug(f"terminating {self.getName()} thread")
+        self.logger.debug(f"terminating {self.name} thread")
         self.queue.put(None)
 
 
@@ -61,7 +61,7 @@ class Updater(threading.Thread):
         while True:
             event = self.queue.get()
             if event is None:
-                self.logger.debug(f"terminating {self.getName()} thread")
+                self.logger.debug(f"terminating {self.name} thread")
                 break
 
             if event == "pdirty" and self._remote.pdirty:
