@@ -16,7 +16,7 @@ def main():
             "\n".join(
                 [
                     f"{vm.strip[5]}: {vm.strip[5].levels.postmute}",
-                    f"{vm.bus[1]}: {vm.bus[0].levels.all}",
+                    f"{vm.bus[0]}: {vm.bus[0].levels.all}",
                 ]
             )
         )
