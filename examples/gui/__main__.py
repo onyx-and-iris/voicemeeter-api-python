@@ -8,6 +8,8 @@ from tkinter import ttk
 
 
 class App(tk.Tk):
+    INDEX = 3
+
     def __init__(self, vm):
         super().__init__()
         self.vm = vm
@@ -15,8 +17,8 @@ class App(tk.Tk):
         self.vm.observer.add(self.on_ldirty)
 
         # create widget variables
-        self.button_var = tk.BooleanVar(value=vm.strip[3].mute)
-        self.slider_var = tk.DoubleVar(value=vm.strip[3].gain)
+        self.button_var = tk.BooleanVar(value=vm.strip[self.INDEX].mute)
+        self.slider_var = tk.DoubleVar(value=vm.strip[self.INDEX].gain)
         self.meter_var = tk.DoubleVar(value=self._get_level())
         self.gainlabel_var = tk.StringVar(value=self.slider_var.get())
 
@@ -24,14 +26,15 @@ class App(tk.Tk):
         self.style = ttk.Style()
         self.style.theme_use("clam")
         self.style.configure(
-            "Mute.TButton", foreground="#cd5c5c" if vm.strip[3].mute else "#5a5a5a"
+            "Mute.TButton",
+            foreground="#cd5c5c" if vm.strip[self.INDEX].mute else "#5a5a5a",
         )
 
         # create labelframe and grid it onto the mainframe
-        self.labelframe = tk.LabelFrame(text=self.vm.strip[3].label)
+        self.labelframe = tk.LabelFrame(self, text=self.vm.strip[self.INDEX].label)
         self.labelframe.grid(padx=1)
 
-        # create slider and grid it
+        # create slider and grid it onto the labelframe
         slider = ttk.Scale(
             self.labelframe,
             from_=12,
@@ -44,6 +47,7 @@ class App(tk.Tk):
             column=0,
             row=0,
         )
+        slider.bind("<Double-Button-1>", self.on_button_double_click)
 
         # create level meter and grid it onto the labelframe
         level_meter = ttk.Progressbar(
@@ -72,18 +76,23 @@ class App(tk.Tk):
 
     def on_slider_move(self, *args):
         val = round(self.slider_var.get(), 1)
-        self.vm.strip[3].gain = val
+        self.vm.strip[self.INDEX].gain = val
         self.gainlabel_var.set(val)
 
     def on_button_press(self):
         self.button_var.set(not self.button_var.get())
-        self.vm.strip[3].mute = self.button_var.get()
+        self.vm.strip[self.INDEX].mute = self.button_var.get()
         self.style.configure(
             "Mute.TButton", foreground="#cd5c5c" if self.button_var.get() else "#5a5a5a"
         )
 
+    def on_button_double_click(self, e):
+        self.slider_var.set(0)
+        self.gainlabel_var.set(0)
+        self.vm.strip[self.INDEX].gain = 0
+
     def _get_level(self):
-        val = max(self.vm.strip[3].levels.postfader)
+        val = max(self.vm.strip[self.INDEX].levels.postfader)
         return 0 if self.button_var.get() else 72 + val - 12
 
     def on_ldirty(self):
