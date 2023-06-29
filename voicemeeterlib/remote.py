@@ -10,7 +10,7 @@ from .error import CAPIError, VMError
 from .event import Event
 from .inst import bits
 from .kinds import KindId
-from .misc import Midi
+from .misc import Midi, VmGui
 from .subject import Subject
 from .updater import Producer, Updater
 from .util import grouper, polling, script
@@ -32,6 +32,7 @@ class Remote(CBindings):
         self.event = Event(
             {k: kwargs.pop(k) for k in ("pdirty", "mdirty", "midi", "ldirty")}
         )
+        self.gui = VmGui()
         self.logger = logger.getChild(self.__class__.__name__)
 
         for attr, val in kwargs.items():
@@ -63,8 +64,8 @@ class Remote(CBindings):
 
     def login(self) -> NoReturn:
         """Login to the API, initialize dirty parameters"""
-        res = self.call(self.vm_login, ok=(0, 1))
-        if res == 1:
+        self.gui.launched = self.call(self.vm_login, ok=(0, 1)) == 0
+        if not self.gui.launched:
             self.logger.info(
                 "Voicemeeter engine running but GUI not launched. Launching the GUI now."
             )

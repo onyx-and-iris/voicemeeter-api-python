@@ -250,3 +250,19 @@ class Midi:
 
     def _set(self, key: int, velocity: int):
         self.cache[key] = velocity
+
+
+class VmGui:
+    _launched = None
+
+    @property
+    def launched(self) -> bool:
+        return self._launched
+
+    @launched.setter
+    def launched(self, val: bool):
+        self._launched = val
+
+    @property
+    def launched_by_api(self):
+        return not self.launched
