@@ -80,7 +80,9 @@ class Recorder(IRemote):
 
     @channel.setter
     def channel(self, val: int):
-        self.getter("channel", val)
+        if not 1 <= val <= 8:
+            self.logger.warning(f"channel got: {val} but expected a value from 1 to 8")
+        self.setter("channel", val)
 
     @property
     def kbps(self):
@@ -107,10 +109,14 @@ class Recorder(IRemote):
         except UnicodeError:
             raise VMError("File full directory must be a raw string")
 
-    def set_loop(self, val: bool):
-        self.setter("mode.loop", 1 if val else 0)
+    # loop forwarder methods, for backwards compatibility
+    @property
+    def loop(self):
+        return self.mode.loop
 
-    loop = property(fset=set_loop)
+    @loop.setter
+    def loop(self, val: bool):
+        self.mode.loop = val
 
     def goto(self, time_str):
         def get_sec():
@@ -135,7 +141,7 @@ class Recorder(IRemote):
     def filetype(self, val: str):
         opts = {"wav": 1, "aiff": 2, "bwf": 3, "mp3": 100}
         try:
-            self.setter("filetype", opts[val])
+            self.setter("filetype", opts[val.lower()])
         except KeyError:
             self.logger.warning(
                 f"filetype got: {val} but expected a value in {list(opts.keys())}"
@@ -143,6 +149,7 @@ class Recorder(IRemote):
 
 
 class RecorderMode(IRemote):
+    @property
     def identifier(self):
         return "recorder.mode"
 
@@ -179,30 +186,25 @@ class RecorderMode(IRemote):
         self.setter("multitrack", 1 if val else 0)
 
 
-class RecorderArmStrip(IRemote):
+class RecorderArmChannel(IRemote):
     def __init__(self, remote, i):
         super().__init__(remote)
         self._i = i
 
+    def set(self, val: bool):
+        self.setter("", 1 if val else 0)
+
+
+class RecorderArmStrip(RecorderArmChannel):
     @property
     def identifier(self):
         return f"recorder.armstrip[{self._i}]"
 
-    def set(self, val: bool):
-        self.setter("", 1 if val else 0)
 
-
-class RecorderArmBus(IRemote):
-    def __init__(self, remote, i):
-        super().__init__(remote)
-        self._i = i
-
+class RecorderArmBus(RecorderArmChannel):
     @property
     def identifier(self):
         return f"recorder.armbus[{self._i}]"
-
-    def set(self, val: bool):
-        self.setter("", 1 if val else 0)
 
 
 def _make_armchannel_mixin(remote, kind):
