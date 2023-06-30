@@ -428,7 +428,7 @@ vm.recorder.load(r'C:\music\mytune.mp3')
 vm.recorder.goto("00:01:30")
 ```
 
-### Recorder.Mode
+#### Recorder.Mode
 
 The following properties are available
 
