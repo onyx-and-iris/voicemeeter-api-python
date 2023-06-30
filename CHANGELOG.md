@@ -11,6 +11,19 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 
 -   [x]
 
+## [2.1.0] - 2023-06-30
+
+### Added
+
+-   RecorderMode added to Recorder class. See Recorder section in README for new properties and methods.
+    -   recorder.loop is now a forwarder method for recorder.mode.loop for backwards compatibility
+
+-   RecorderArmStrip, RecorderArmBus mixed into Recorder class.
+
+### Removed
+
+-   Recorder.loop removed from documentation
+
 ## [2.0.0] - 2023-06-25
 
 Where possible I've attempted to make the changes backwards compatible. The breaking changes affect two higher classes, Strip and Bus, as well as the behaviour of events. All other changes are additive or QOL aimed at giving more options to the developer. For example, every low-level CAPI call is now logged and error raised on Exception, you can now register callback functions as well as observer classes, extra examples to demonstrate different use cases etc.
