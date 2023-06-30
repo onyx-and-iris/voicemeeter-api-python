@@ -1,3 +1,5 @@
+import re
+
 from .error import VMError
 from .iremote import IRemote
 from .kinds import kinds_all
@@ -19,7 +21,7 @@ class Recorder(IRemote):
         Returns a Recorder class of a kind.
         """
         CHANNELOUTMIXIN_cls = _make_channelout_mixins[remote.kind.name]
-        ARMSTRIPMIXIN_cls = _make_armstrip_mixins(remote)[remote.kind.name]
+        ARMSTRIPMIXIN_cls = _make_armchannel_mixins(remote)[remote.kind.name]
         REC_cls = type(
             f"Recorder{remote.kind}",
             (cls, CHANNELOUTMIXIN_cls, ARMSTRIPMIXIN_cls),
@@ -48,6 +50,57 @@ class Recorder(IRemote):
     def identifier(self) -> str:
         return "recorder"
 
+    @property
+    def samplerate(self) -> int:
+        return int(self.getter("samplerate"))
+
+    @samplerate.setter
+    def samplerate(self, val: int):
+        opts = (22050, 24000, 32000, 44100, 48000, 88200, 96000, 176400, 192000)
+        if val not in opts:
+            self.logger.warning(f"samplerate got: {val} but expected a value in {opts}")
+        self.setter("samplerate", val)
+
+    @property
+    def bitresolution(self) -> int:
+        return int(self.getter("bitresolution"))
+
+    @bitresolution.setter
+    def bitresolution(self, val: int):
+        opts = (8, 16, 24, 32)
+        if val not in opts:
+            self.logger.warning(
+                f"bitresolution got: {val} but expected a value in {opts}"
+            )
+        self.setter("bitresolution", val)
+
+    @property
+    def channel(self) -> int:
+        return int(self.getter("channel"))
+
+    @channel.setter
+    def channel(self, val: int):
+        self.getter("channel", val)
+
+    @property
+    def kbps(self):
+        return int(self.getter("kbps"))
+
+    @kbps.setter
+    def kbps(self, val: int):
+        opts = (32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320)
+        if val not in opts:
+            self.logger.warning(f"kbps got: {val} but expected a value in {opts}")
+        self.setter("kbps", val)
+
+    @property
+    def gain(self) -> float:
+        return round(self.getter("gain"), 1)
+
+    @gain.setter
+    def gain(self, val: float):
+        self.setter("gain", val)
+
     def load(self, file: str):
         try:
             self.setter("load", file)
@@ -59,29 +112,34 @@ class Recorder(IRemote):
 
     loop = property(fset=set_loop)
 
-    @property
-    def bitresolution(self) -> int:
-        set.getter("bitresolution")
+    def goto(self, time_str):
+        def get_sec():
+            """Get seconds from time string"""
+            h, m, s = time_str.split(":")
+            return int(h) * 3600 + int(m) * 60 + int(s)
 
-    @bitresolution.setter
-    def bitresolution(self, val: int):
-        set.getter("bitresolution", val)
+        time_str = str(time_str)  # coerce the type
+        if (
+            match := re.match(
+                r"^(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)$",
+                time_str,
+            )
+            is not None
+        ):
+            self.setter("goto", get_sec())
+        else:
+            self.logger.warning(
+                f"goto expects a string that matches the format 'hh:mm:ss'"
+            )
 
-    @property
-    def channel(self) -> int:
-        set.getter("channel")
-
-    @channel.setter
-    def channel(self, val: int):
-        set.getter("channel", val)
-
-    @property
-    def gain(self) -> float:
-        return round(self.getter("gain"), 1)
-
-    @gain.setter
-    def gain(self, val: float):
-        self.setter("gain", val)
+    def filetype(self, val: str):
+        opts = {"wav": 1, "aiff": 2, "bwf": 3, "mp3": 100}
+        try:
+            self.setter("filetype", opts[val])
+        except KeyError:
+            self.logger.warning(
+                f"filetype got: {val} but expected a value in {list(opts.keys())}"
+            )
 
 
 class RecorderMode(IRemote):
@@ -90,7 +148,7 @@ class RecorderMode(IRemote):
 
     @property
     def recbus(self) -> bool:
-        self.getter("recbus")
+        return self.getter("recbus") == 1
 
     @recbus.setter
     def recbus(self, val: bool):
@@ -98,7 +156,7 @@ class RecorderMode(IRemote):
 
     @property
     def playonload(self) -> bool:
-        self.getter("playonload")
+        return self.getter("playonload") == 1
 
     @playonload.setter
     def playonload(self, val: bool):
@@ -106,19 +164,19 @@ class RecorderMode(IRemote):
 
     @property
     def loop(self) -> bool:
-        self.getter("loop")
+        return self.getter("loop") == 1
 
     @loop.setter
     def loop(self, val: bool):
-        self.setter("recbus", 1 if val else 0)
+        self.setter("loop", 1 if val else 0)
 
     @property
     def multitrack(self) -> bool:
-        self.getter("recbus")
+        return self.getter("multitrack") == 1
 
     @multitrack.setter
     def multitrack(self, val: bool):
-        self.setter("recbus", 1 if val else 0)
+        self.setter("multitrack", 1 if val else 0)
 
 
 class RecorderArmStrip(IRemote):
@@ -147,9 +205,10 @@ class RecorderArmBus(IRemote):
         self.setter("", 1 if val else 0)
 
 
-def _make_armstrip_mixin(remote, kind):
+def _make_armchannel_mixin(remote, kind):
+    """Creates an armchannel out mixin"""
     return type(
-        f"ArmStripMixin",
+        f"ArmChannelMixin{kind}",
         (),
         {
             "armstrip": tuple(
@@ -160,12 +219,12 @@ def _make_armstrip_mixin(remote, kind):
     )
 
 
-def _make_armstrip_mixins(remote):
-    return {kind.name: _make_armstrip_mixin(remote, kind) for kind in kinds_all}
+def _make_armchannel_mixins(remote):
+    return {kind.name: _make_armchannel_mixin(remote, kind) for kind in kinds_all}
 
 
 def _make_channelout_mixin(kind):
-    """Creates a channel out property mixin"""
+    """Creates a channel out mixin"""
     return type(
         f"ChannelOutMixin{kind}",
         (),
