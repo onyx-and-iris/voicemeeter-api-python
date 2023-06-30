@@ -398,13 +398,19 @@ The following methods are available
 -   `record()`
 -   `ff()`
 -   `rew()`
--   `load(<filepath>)`: string
+-   `load(filepath)`: raw string
+-   `goto(time_string)`: time string in format `hh:mm:ss`
+-   `filetype(filetype)`: string, ("wav", "aiff", "bwf", "mp3")
 
 The following properties are available
 
--   `loop`: boolean
 -   `A1 - A5`: boolean
 -   `B1 - A3`: boolean
+-   `samplerate`: int, (22050, 24000, 32000, 44100, 48000, 88200, 96000, 176400, 192000)
+-   `bitresolution`: int, (8, 16, 24, 32)
+-   `channel`: int, from 1 to 8
+-   `kbps`: int, (32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320)
+-   `gain`: float, from -60.0 to 12.0
 
 example:
 
@@ -412,17 +418,46 @@ example:
 vm.recorder.play()
 vm.recorder.stop()
 
-# Enable loop play
-vm.recorder.loop = True
-
 # Disable recorder out channel B2
 vm.recorder.B2 = False
 
 # filepath as raw string
 vm.recorder.load(r'C:\music\mytune.mp3')
+
+# set the goto time to 1m 30s
+vm.recorder.goto("00:01:30")
 ```
 
-Recorder properties are defined as write only.
+### Recorder.Mode
+
+The following properties are available
+
+-   `recbus`: boolean
+-   `playonload`: boolean
+-   `loop`: boolean
+-   `multitrack`: boolean
+
+example:
+
+```python
+# Enable loop play
+vm.recorder.mode.loop = True
+```
+
+#### Recorder.ArmStrip[i]|ArmBus[i]
+
+The following method is available
+
+-   `set(val)`: boolean
+
+example:
+
+```python
+# Arm strip 3
+vm.recorder.armstrip[3].set(True)
+# Arm bus 0
+vm.recorder.armbus[0].set(True)
+```
 
 ### VBAN
 
@@ -664,7 +699,7 @@ vm.vban.outstream[0].apply(on: True, name: 'streamname', bit: 24)
 
 ## Config Files
 
-`vm.apply_config(<configname>)`
+`vm.apply_config(configname)`
 
 You may load config files in TOML format.
 Three example configs have been included with the package. Remember to save
