@@ -405,7 +405,7 @@ The following methods are available
 The following properties are available
 
 -   `A1 - A5`: boolean
--   `B1 - A3`: boolean
+-   `B1 - B3`: boolean
 -   `samplerate`: int, (22050, 24000, 32000, 44100, 48000, 88200, 96000, 176400, 192000)
 -   `bitresolution`: int, (8, 16, 24, 32)
 -   `channel`: int, from 1 to 8
