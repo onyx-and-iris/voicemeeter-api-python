@@ -156,6 +156,7 @@ class TestSetAndGetBoolHigher:
         [("A1"), ("B2")],
     )
     def test_it_sets_and_gets_recorder_bool_params(self, param, value):
+        assert hasattr(vm.recorder, param)
         setattr(vm.recorder, param, value)
         assert getattr(vm.recorder, param) == value
 
@@ -168,7 +169,56 @@ class TestSetAndGetBoolHigher:
         [("loop")],
     )
     def test_it_sets_recorder_bool_params(self, param, value):
+        assert hasattr(vm.recorder, param)
         setattr(vm.recorder, param, value)
+        assert getattr(vm.recorder, param) == value
+
+    """ recoder.mode tests """
+
+    @pytest.mark.skipif(
+        data.name == "basic",
+        reason="Skip test if kind is basic",
+    )
+    @pytest.mark.parametrize(
+        "param",
+        [("loop"), ("recbus")],
+    )
+    def test_it_sets_recorder_mode_bool_params(self, param, value):
+        assert hasattr(vm.recorder.mode, param)
+        setattr(vm.recorder.mode, param, value)
+        assert getattr(vm.recorder.mode, param) == value
+
+    """ recorder.armstrip """
+
+    @pytest.mark.skipif(
+        data.name == "basic",
+        reason="Skip test if kind is basic",
+    )
+    @pytest.mark.parametrize(
+        "index",
+        [
+            (data.phys_out),
+            (data.virt_out),
+        ],
+    )
+    def test_it_sets_recorder_armstrip_bool_params(self, index, value):
+        vm.recorder.armstrip[index].set(value)
+
+    """ recorder.armbus """
+
+    @pytest.mark.skipif(
+        data.name == "basic",
+        reason="Skip test if kind is basic",
+    )
+    @pytest.mark.parametrize(
+        "index",
+        [
+            (data.phys_out),
+            (data.virt_out),
+        ],
+    )
+    def test_it_sets_recorder_armbus_bool_params(self, index, value):
+        vm.recorder.armbus[index].set(True)
 
     """ fx tests """
 
@@ -322,6 +372,26 @@ class TestSetAndGetIntHigher:
     def test_it_sets_and_gets_patch_delay_int_params(self, index, value):
         vm.option.delay[index].set(value)
         assert vm.option.delay[index].get() == value
+
+    """ recorder tests """
+
+    @pytest.mark.skipif(
+        data.name == "basic",
+        reason="Skip test if kind is basic",
+    )
+    @pytest.mark.parametrize(
+        "param,value",
+        [
+            ("samplerate", 32000),
+            ("samplerate", 96000),
+            ("bitresolution", 16),
+            ("bitresolution", 32),
+        ],
+    )
+    def test_it_sets_and_gets_recorder_int_params(self, param, value):
+        assert hasattr(vm.recorder, param)
+        setattr(vm.recorder, param, value)
+        assert getattr(vm.recorder, param) == value
 
 
 class TestSetAndGetFloatHigher:

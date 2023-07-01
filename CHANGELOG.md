@@ -11,7 +11,7 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 
 -   [x]
 
-## [2.1.0] - 2023-06-30
+## [2.1.0] - 2023-07-01
 
 ### Added
 
