@@ -11,7 +11,7 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 
 -   [x]
 
-## [2.1.0] - 2023-07-01
+## [2.1.1] - 2023-07-01
 
 ### Added
 
@@ -23,6 +23,10 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 ### Removed
 
 -   Recorder.loop removed from documentation
+
+### Changed
+
+-   When out of bounds values are passed, log warnings instead of raising Errors. See [Issue #6][Issue 6].
 
 ## [2.0.0] - 2023-06-25
 
@@ -376,3 +380,4 @@ I will move this commit to a separate branch in preparation for version 2.0.
 -   project packaged with poetry and added to pypi.
 
 [issue 4]: https://github.com/onyx-and-iris/voicemeeter-api-python/issues/4
+[Issue 6]: https://github.com/onyx-and-iris/voicemeeter-api-python/issues/6

@@ -1,6 +1,5 @@
 from typing import Optional
 
-from .error import VMError
 from .iremote import IRemote
 from .kinds import kinds_all
 
@@ -196,7 +195,7 @@ class Option(IRemote):
     def sr(self, val: int):
         opts = (44100, 48000, 88200, 96000, 176400, 192000)
         if val not in opts:
-            raise VMError(f"Expected one of: {opts}")
+            self.logger.warning(f"sr got: {val} but expected a value in {opts}")
         self.setter("sr", val)
 
     @property

@@ -629,17 +629,15 @@ vm.option.sr = 48000
 
 The following methods are available:
 
--   `buffer(driver, buffer)` : Set buffer size for particular audio driver.
+-   `buffer(driver, buf)` : Set buffer size for particular audio driver.
+    -   buf: int, from 128 to 2048
+    -   driver:str, ("mme", "wdm", "ks", "asio")
 
 example:
 
 ```python
 vm.option.buffer("wdm", 512)
 ```
-
-driver defined as one of ("mme", "wdm", "ks", "asio")
-
-buffer, from 128 to 2048
 
 ##### delay[i]
 

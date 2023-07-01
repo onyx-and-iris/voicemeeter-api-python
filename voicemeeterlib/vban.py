@@ -1,6 +1,5 @@
 from abc import abstractmethod
 
-from .error import VMError
 from .iremote import IRemote
 
 
@@ -50,7 +49,9 @@ class VbanStream(IRemote):
     @port.setter
     def port(self, val: int):
         if not 1024 <= val <= 65535:
-            raise VMError("Expected value from 1024 to 65535")
+            self.logger.warning(
+                f"port got: {val} but expected a value from 1024 to 65535"
+            )
         self.setter("port", val)
 
     @property
@@ -61,7 +62,7 @@ class VbanStream(IRemote):
     def sr(self, val: int):
         opts = (11025, 16000, 22050, 24000, 32000, 44100, 48000, 64000, 88200, 96000)
         if val not in opts:
-            raise VMError(f"Expected one of: {opts}")
+            self.logger.warning(f"sr got: {val} but expected a value in {opts}")
         self.setter("sr", val)
 
     @property
@@ -71,7 +72,7 @@ class VbanStream(IRemote):
     @channel.setter
     def channel(self, val: int):
         if not 1 <= val <= 8:
-            raise VMError("Expected value from 1 to 8")
+            self.logger.warning(f"channel got: {val} but expected a value from 1 to 8")
         self.setter("channel", val)
 
     @property
@@ -81,7 +82,7 @@ class VbanStream(IRemote):
     @bit.setter
     def bit(self, val: int):
         if val not in (16, 24):
-            raise VMError("Expected value 16 or 24")
+            self.logger.warning(f"bit got: {val} but expected value 16 or 24")
         self.setter("bit", 1 if (val == 16) else 2)
 
     @property
@@ -91,7 +92,7 @@ class VbanStream(IRemote):
     @quality.setter
     def quality(self, val: int):
         if not 0 <= val <= 4:
-            raise VMError("Expected value from 0 to 4")
+            self.logger.warning(f"quality got: {val} but expected a value from 0 to 4")
         self.setter("quality", val)
 
     @property
@@ -101,7 +102,7 @@ class VbanStream(IRemote):
     @route.setter
     def route(self, val: int):
         if not 0 <= val <= 8:
-            raise VMError("Expected value from 0 to 8")
+            self.logger.warning(f"route got: {val} but expected a value from 0 to 8")
         self.setter("route", val)
 
 
