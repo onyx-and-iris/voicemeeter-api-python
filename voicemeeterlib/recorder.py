@@ -21,10 +21,10 @@ class Recorder(IRemote):
         Returns a Recorder class of a kind.
         """
         CHANNELOUTMIXIN_cls = _make_channelout_mixins[remote.kind.name]
-        ARMSTRIPMIXIN_cls = _make_armchannel_mixins(remote)[remote.kind.name]
+        ARMCHANNELMIXIN_cls = _make_armchannel_mixins(remote)[remote.kind.name]
         REC_cls = type(
             f"Recorder{remote.kind}",
-            (cls, CHANNELOUTMIXIN_cls, ARMSTRIPMIXIN_cls),
+            (cls, CHANNELOUTMIXIN_cls, ARMCHANNELMIXIN_cls),
             {
                 **{
                     param: action_fn(param)
