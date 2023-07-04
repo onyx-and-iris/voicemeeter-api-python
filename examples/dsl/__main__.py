@@ -63,8 +63,6 @@ class Parser:
 
 def interactive_mode(parser):
     while cmd := input("Please enter command (Press <Enter> to exit)\n"):
-        if not cmd:
-            break
         if res := parser.parse((cmd,)):
             print(res)
 
