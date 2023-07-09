@@ -70,7 +70,9 @@ class Remote(CBindings):
                 "Voicemeeter engine running but GUI not launched. Launching the GUI now."
             )
             self.run_voicemeeter(self.kind.name)
-        self.logger.info(f"{type(self).__name__}: Successfully logged into {self}")
+        self.logger.info(
+            f"{type(self).__name__}: Successfully logged into {self} version {self.version}"
+        )
         self.clear_dirty()
 
     def run_voicemeeter(self, kind_id: str) -> NoReturn:
