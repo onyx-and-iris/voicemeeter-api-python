@@ -18,6 +18,7 @@ class App:
 
     def __enter__(self):
         self.vm.init_thread()
+        return self
 
     def __exit__(self, exc_type, exc_value, traceback):
         self.vm.end_thread()

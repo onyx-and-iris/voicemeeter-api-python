@@ -11,6 +11,20 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 
 -   [x]
 
+## [2.2.0] - 2023-07-10
+
+### Added
+
+-   CAPIError class now stores fn_name, error code and message as class attributes.
+
+### Changed
+
+-   macrobutton capi calls now use error code -9 on AttributeError (using an old version of the API).
+
+### Fixed
+
+-   call to `self.vm_get_midi_message` now wrapped by {CBindings}.call.
+
 ## [2.1.1] - 2023-07-01
 
 ### Added
