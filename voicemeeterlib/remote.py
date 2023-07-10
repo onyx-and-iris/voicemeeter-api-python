@@ -116,8 +116,12 @@ class Remote(CBindings):
             return self.call(self.vm_mdirty, ok=(0, 1)) == 1
         except AttributeError as e:
             self.logger.exception(f"{type(e).__name__}: {e}")
+            ERR_MSG = (
+                "no bind for VBVMR_MacroButton_IsDirty.",
+                "are you using an old version of the API?",
+            )
             raise CAPIError(
-                "no bind for VBVMR_MacroButton_IsDirty. are you using an old version of the API?"
+                "VBVMR_MacroButton_IsDirty", -9, msg=" ".join(ERR_MSG)
             ) from e
 
     @property
@@ -133,8 +137,10 @@ class Remote(CBindings):
         try:
             while self.pdirty or self.mdirty:
                 pass
-        except CAPIError:
-            self.logger.error("no bind for mdirty, clearing pdirty only")
+        except CAPIError as e:
+            if e.fn_name == "VBVMR_MacroButton_IsDirty" and e.code != -9:
+                raise
+            self.logger.error(f"{e} clearing pdirty only.")
             while self.pdirty:
                 pass
 
@@ -174,8 +180,12 @@ class Remote(CBindings):
             )
         except AttributeError as e:
             self.logger.exception(f"{type(e).__name__}: {e}")
+            ERR_MSG = (
+                "no bind for VBVMR_MacroButton_GetStatus.",
+                "are you using an old version of the API?",
+            )
             raise CAPIError(
-                "no bind for VBVMR_MacroButton_GetStatus. are you using an old version of the API?"
+                "VBVMR_MacroButton_GetStatus", -9, msg=" ".join(ERR_MSG)
             ) from e
         return int(state.value)
 
@@ -186,8 +196,12 @@ class Remote(CBindings):
             self.call(self.vm_set_buttonstatus, ct.c_long(id), c_state, ct.c_long(mode))
         except AttributeError as e:
             self.logger.exception(f"{type(e).__name__}: {e}")
+            ERR_MSG = (
+                "no bind for VBVMR_MacroButton_SetStatus.",
+                "are you using an old version of the API?",
+            )
             raise CAPIError(
-                "no bind for VBVMR_MacroButton_SetStatus. are you using an old version of the API?"
+                "VBVMR_MacroButton_SetStatus", -9, msg=" ".join(ERR_MSG)
             ) from e
         self.cache[f"mb_{id}_{mode}"] = int(c_state.value)
 
@@ -240,7 +254,13 @@ class Remote(CBindings):
     def get_midi_message(self):
         n = ct.c_long(1024)
         buf = ct.create_string_buffer(1024)
-        res = self.vm_get_midi_message(ct.byref(buf), n, ok_exp=lambda r: r >= 0)
+        res = self.call(
+            self.vm_get_midi_message,
+            ct.byref(buf),
+            n,
+            ok=(-5, -6),  # no data received from midi device
+            ok_exp=lambda r: r >= 0,
+        )
         if res > 0:
             vals = tuple(
                 grouper(3, (int.from_bytes(buf[i], "little") for i in range(res)))
