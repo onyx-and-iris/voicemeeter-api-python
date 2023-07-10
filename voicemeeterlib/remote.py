@@ -138,7 +138,7 @@ class Remote(CBindings):
             while self.pdirty or self.mdirty:
                 pass
         except CAPIError as e:
-            if e.fn_name == "VBVMR_MacroButton_IsDirty" and e.code != -9:
+            if not (e.fn_name == "VBVMR_MacroButton_IsDirty" and e.code == -9):
                 raise
             self.logger.error(f"{e} clearing pdirty only.")
             while self.pdirty:
