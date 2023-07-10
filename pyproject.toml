@@ -7,9 +7,7 @@ license = "MIT"
 readme = "README.md"
 repository = "https://github.com/onyx-and-iris/voicemeeter-api-python"
 
-packages = [
-    { include = "voicemeeterlib" },
-]
+packages = [{ include = "voicemeeterlib" }]
 
 [tool.poetry.dependencies]
 python = "^3.10"
