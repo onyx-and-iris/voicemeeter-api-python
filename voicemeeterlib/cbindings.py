@@ -16,7 +16,7 @@ class CBindings(metaclass=ABCMeta):
     Maps expected ctype argument and res types for each binding.
     """
 
-    logger_cbindings = logger.getChild("Cbindings")
+    logger_cbindings = logger.getChild("CBindings")
 
     vm_login = libc.VBVMR_Login
     vm_login.restype = LONG
@@ -116,10 +116,10 @@ class CBindings(metaclass=ABCMeta):
             res = func(*args)
             if ok_exp is None:
                 if res not in ok:
-                    raise CAPIError(f"{func.__name__} returned {res}")
-            elif not ok_exp(res):
-                raise CAPIError(f"{func.__name__} returned {res}")
+                    raise CAPIError(func.__name__, res)
+            elif not ok_exp(res) and res not in ok:
+                raise CAPIError(func.__name__, res)
             return res
         except CAPIError as e:
-            self.logger_cbindings.exception(f"{type(e).__name__}: {e}")
+            self.logger_cbindings.exception(str(e))
             raise
