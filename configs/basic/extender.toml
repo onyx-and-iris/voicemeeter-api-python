@@ -7,3 +7,6 @@ gain = 0.0
 [bus-0]
 label = "bus0_extended"
 mute = false
+
+[vban-in-3]
+name = "vban_extended"
