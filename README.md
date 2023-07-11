@@ -691,8 +691,8 @@ vm.apply(
 Or for each class you may do:
 
 ```python
-vm.strip[0].apply(mute: True, gain: 3.2, A1: True)
-vm.vban.outstream[0].apply(on: True, name: 'streamname', bit: 24)
+vm.strip[0].apply({"mute": True, "gain": 3.2, "A1": True})
+vm.vban.outstream[0].apply({"on": True, "name": "streamname", "bit": 24})
 ```
 
 ## Config Files
