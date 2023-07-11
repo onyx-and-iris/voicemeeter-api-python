@@ -11,6 +11,12 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 
 -   [x]
 
+## [2.3.0] - 2023-07-11
+
+### Added
+
+-   user configs may now extend other user configs. check `config extends` section in README.
+
 ## [2.2.0] - 2023-07-10
 
 ### Added

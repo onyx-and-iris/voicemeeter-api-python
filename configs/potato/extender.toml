@@ -1,0 +1,9 @@
+extends = "example"
+[strip-0]
+label = "strip0_extended"
+A1 = false
+gain = 0.0
+
+[bus-0]
+label = "bus0_extended"
+mute = false

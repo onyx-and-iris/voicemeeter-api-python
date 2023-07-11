@@ -701,7 +701,7 @@ vm.vban.outstream[0].apply(on: True, name: 'streamname', bit: 24)
 
 You may load config files in TOML format.
 Three example configs have been included with the package. Remember to save
-current settings before loading a user config. To set one you may do:
+current settings before loading a user config. To load one you may do:
 
 ```python
 import voicemeeterlib
@@ -709,7 +709,26 @@ with voicemeeterlib.api('banana') as vm:
     vm.apply_config('example')
 ```
 
-will load a user config file at configs/banana/example.toml for Voicemeeter Banana.
+Your configs may be located in one of the following paths:
+-   \<current working directory\> / "configs" / kind_id
+-   \<user home directory\> / ".config" / "voicemeeter" / kind_id
+-   \<user home directory\> / "Documents" / "Voicemeeter" / "configs" / kind_id
+
+If a config with the same name is located in multiple locations, only the first one found is loaded into memory, in the above order.
+
+#### `config extends`
+
+You may also load a config that extends another config with overrides or additional parameters.
+
+You just need to define a key `extends` in the config TOML, that names the config to be extended.
+
+Three example 'extender' configs are included with the repo. You may load them with:
+
+```python
+import voicemeeterlib
+with voicemeeterlib.api('banana') as vm:
+    vm.apply_config('extender')
+```
 
 ## Events
 

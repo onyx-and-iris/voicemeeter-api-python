@@ -301,16 +301,24 @@ class Remote(CBindings):
 
     def apply_config(self, name):
         """applies a config from memory"""
-        error_msg = (
+        ERR_MSG = (
             f"No config with name '{name}' is loaded into memory",
             f"Known configs: {list(self.configs.keys())}",
         )
         try:
-            self.apply(self.configs[name])
-            self.logger.info(f"Profile '{name}' applied!")
+            config = self.configs[name].copy()
         except KeyError as e:
-            self.logger.error(("\n").join(error_msg))
-            raise VMError(("\n").join(error_msg)) from e
+            self.logger.error(("\n").join(ERR_MSG))
+            raise VMError(("\n").join(ERR_MSG)) from e
+
+        if "extends" in config:
+            extended = config.pop("extends")
+            config = self.configs[extended] | config
+            self.logger.debug(
+                f"profile '{name}' extends '{extended}', profiles merged.."
+            )
+        self.apply(config)
+        self.logger.info(f"Profile '{name}' applied!")
 
     def logout(self) -> NoReturn:
         """Wait for dirty parameters to clear, then logout of the API"""
