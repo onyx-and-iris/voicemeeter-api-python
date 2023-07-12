@@ -11,6 +11,16 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 
 -   [x]
 
+## [2.3.2] - 2023-07-12
+
+### Added
+
+-   vban.{instream,outstream} tuples now contain classes that represent MIDI and TEXT streams.
+
+### Fixed
+
+-   apply_config() now performs a deep merge when extending a config with another.
+
 ## [2.3.0] - 2023-07-11
 
 ### Added

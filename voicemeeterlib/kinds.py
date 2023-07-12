@@ -64,7 +64,7 @@ class BasicMap(KindMapClass):
     name: str
     ins: tuple = (2, 1)
     outs: tuple = (1, 1)
-    vban: tuple = (4, 4)
+    vban: tuple = (4, 4, 1, 1)
     asio: tuple = (0, 0)
     insert: int = 0
 
@@ -74,7 +74,7 @@ class BananaMap(KindMapClass):
     name: str
     ins: tuple = (3, 2)
     outs: tuple = (3, 2)
-    vban: tuple = (8, 8)
+    vban: tuple = (8, 8, 1, 1)
     asio: tuple = (6, 8)
     insert: int = 22
 
@@ -84,7 +84,7 @@ class PotatoMap(KindMapClass):
     name: str
     ins: tuple = (5, 3)
     outs: tuple = (5, 3)
-    vban: tuple = (8, 8)
+    vban: tuple = (8, 8, 1, 1)
     asio: tuple = (10, 8)
     insert: int = 34
 

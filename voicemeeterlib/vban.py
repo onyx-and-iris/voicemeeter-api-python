@@ -1,6 +1,7 @@
 from abc import abstractmethod
 
 from .iremote import IRemote
+from .kinds import kinds_all
 
 
 class VbanStream(IRemote):
@@ -133,6 +134,21 @@ class VbanInstream(VbanStream):
         return super(VbanInstream, self).bit
 
 
+class VbanAudioInstream(VbanInstream):
+    def __str__(self):
+        return f"{type(self).__name__}{self._remote.kind}{self.index}"
+
+
+class VbanMidiInstream(VbanInstream):
+    def __str__(self):
+        return f"{type(self).__name__}{self._remote.kind}{self.index}"
+
+
+class VbanTextInstream(VbanInstream):
+    def __str__(self):
+        return f"{type(self).__name__}{self._remote.kind}{self.index}"
+
+
 class VbanOutstream(VbanStream):
     """
     class representing a vban outstream
@@ -148,6 +164,52 @@ class VbanOutstream(VbanStream):
         return "out"
 
 
+class VbanAudioOutstream(VbanOutstream):
+    def __str__(self):
+        return f"{type(self).__name__}{self._remote.kind}{self.index}"
+
+
+class VbanMidiOutstream(VbanOutstream):
+    def __str__(self):
+        return f"{type(self).__name__}{self._remote.kind}{self.index}"
+
+
+def _make_stream_pair(remote, kind):
+    num_instream, num_outstream, num_midi, num_text = kind.vban
+
+    def _generate_streams(i, dir):
+        """generator function for instream/outstream types"""
+        if dir == "in":
+            if i < num_instream:
+                yield VbanAudioInstream
+            elif i < num_instream + num_midi:
+                yield VbanMidiInstream
+            else:
+                yield VbanTextInstream
+        else:
+            if i < num_outstream:
+                yield VbanAudioOutstream
+            else:
+                yield VbanMidiOutstream
+
+    return (
+        tuple(
+            cls(remote, i)
+            for i in range(num_instream + num_midi + num_text)
+            for cls in _generate_streams(i, "in")
+        ),
+        tuple(
+            cls(remote, i)
+            for i in range(num_outstream + num_midi)
+            for cls in _generate_streams(i, "out")
+        ),
+    )
+
+
+def _make_stream_pairs(remote):
+    return {kind.name: _make_stream_pair(remote, kind) for kind in kinds_all}
+
+
 class Vban:
     """
     class representing the vban module
@@ -157,9 +219,7 @@ class Vban:
 
     def __init__(self, remote):
         self.remote = remote
-        num_instream, num_outstream = remote.kind.vban
-        self.instream = tuple(VbanInstream(remote, i) for i in range(num_instream))
-        self.outstream = tuple(VbanOutstream(remote, i) for i in range(num_outstream))
+        self.instream, self.outstream = _make_stream_pairs(remote)[remote.kind.name]
 
     def enable(self):
         self.remote.set("vban.Enable", 1)

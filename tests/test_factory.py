@@ -22,7 +22,7 @@ class TestRemoteFactories:
         assert len(vm.strip) == 3
         assert len(vm.bus) == 2
         assert len(vm.button) == 80
-        assert len(vm.vban.instream) == 4 and len(vm.vban.outstream) == 4
+        assert len(vm.vban.instream) == 6 and len(vm.vban.outstream) == 5
 
     @pytest.mark.skipif(
         data.name != "banana",
@@ -42,7 +42,7 @@ class TestRemoteFactories:
         assert len(vm.strip) == 5
         assert len(vm.bus) == 5
         assert len(vm.button) == 80
-        assert len(vm.vban.instream) == 8 and len(vm.vban.outstream) == 8
+        assert len(vm.vban.instream) == 10 and len(vm.vban.outstream) == 9
 
     @pytest.mark.skipif(
         data.name != "potato",
@@ -63,4 +63,4 @@ class TestRemoteFactories:
         assert len(vm.strip) == 8
         assert len(vm.bus) == 8
         assert len(vm.button) == 80
-        assert len(vm.vban.instream) == 8 and len(vm.vban.outstream) == 8
+        assert len(vm.vban.instream) == 10 and len(vm.vban.outstream) == 9
