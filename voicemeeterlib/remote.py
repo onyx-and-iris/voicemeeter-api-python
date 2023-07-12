@@ -1,3 +1,4 @@
+import copy
 import ctypes as ct
 import logging
 import time
@@ -13,7 +14,7 @@ from .kinds import KindId
 from .misc import Midi, VmGui
 from .subject import Subject
 from .updater import Producer, Updater
-from .util import grouper, polling, script
+from .util import deep_merge, grouper, polling, script
 
 logger = logging.getLogger(__name__)
 
@@ -306,14 +307,18 @@ class Remote(CBindings):
             f"Known configs: {list(self.configs.keys())}",
         )
         try:
-            config = self.configs[name].copy()
+            config = self.configs[name]
         except KeyError as e:
             self.logger.error(("\n").join(ERR_MSG))
             raise VMError(("\n").join(ERR_MSG)) from e
 
         if "extends" in config:
-            extended = config.pop("extends")
-            config = self.configs[extended] | config
+            extended = config["extends"]
+            config = {
+                k: v
+                for k, v in deep_merge(self.configs[extended], config)
+                if k not in ("extends")
+            }
             self.logger.debug(
                 f"profile '{name}' extends '{extended}', profiles merged.."
             )
