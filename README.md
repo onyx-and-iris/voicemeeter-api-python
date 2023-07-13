@@ -840,12 +840,12 @@ True iff a macrobutton has been updated.
 True iff a level has been updated.
 
 
-### `Errors`
+### Errors
 
 -   `errors.VMError`: Exception raised when general errors occur.
 -   `errors.InstallError`: Exception raised when installation errors occur.
 -   `errors.CAPIError`: Exception raised when the C-API returns error values.
-    -   Error codes are stored in {Exception Class}.code. For a full list of error codes [check the VoicemeeterRemote header file][[Voicemeeter Remote Header].
+    -   Error codes are stored in {Exception Class}.code. For a full list of error codes [check the VoicemeeterRemote header file][Voicemeeter Remote Header].
 
 
 ### Logging
