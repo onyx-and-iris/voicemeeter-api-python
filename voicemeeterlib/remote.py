@@ -327,7 +327,6 @@ class Remote(CBindings):
 
     def logout(self) -> NoReturn:
         """Wait for dirty parameters to clear, then logout of the API"""
-        self.clear_dirty()
         time.sleep(0.1)
         self.call(self.vm_logout)
         self.logger.info(f"{type(self).__name__}: Successfully logged out of {self}")
