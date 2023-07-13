@@ -740,7 +740,7 @@ example:
 import voicemeeterlib
 # Set event updates to occur every 50ms
 # Listen for level updates only
-with voicemeeterlib.api('banana', ratelimit=0.05, ldirty=True}) as vm:
+with voicemeeterlib.api('banana', ratelimit=0.05, ldirty=True) as vm:
     ...
 ```
 
@@ -827,17 +827,40 @@ vm.set('Strip[0].Gain', -3.6)
 
 Access to lower level polling functions are provided with the following property objects:
 
-#### `vm.pdirty`
+##### `vm.pdirty`
 
 True iff a parameter has been updated.
 
-#### `vm.mdirty`
+##### `vm.mdirty`
 
 True iff a macrobutton has been updated.
 
-#### `vm.ldirty`
+##### `vm.ldirty`
 
 True iff a level has been updated.
+
+
+### `Errors`
+
+-   `errors.VMError`: Exception raised when general errors occur.
+-   `errors.InstallError`: Exception raised when installation errors occur.
+-   `errors.CAPIError`: Exception raised when the C-API returns error values.
+    -   Error codes are stored in {Exception Class}.code. For a full list of error codes [check the VoicemeeterRemote header file][[Voicemeeter Remote Header].
+
+
+### Logging
+
+It's possible to see the messages sent by the interface's setters and getters, may be useful for debugging.
+
+example:
+```python
+import voicemeeterlib
+
+logging.basicConfig(level=logging.DEBUG)
+
+with voicemeeterlib.api("banana") as vm:
+        ...
+```
 
 
 ### Run tests
@@ -851,3 +874,6 @@ pytest -v
 ### Official Documentation
 
 -   [Voicemeeter Remote C API](https://github.com/onyx-and-iris/Voicemeeter-SDK/blob/update-docs/VoicemeeterRemoteAPI.pdf)
+
+
+[Voicemeeter Remote Header]: https://github.com/onyx-and-iris/Voicemeeter-SDK/blob/update-docs/VoicemeeterRemote.h
