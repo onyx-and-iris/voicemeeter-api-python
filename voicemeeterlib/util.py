@@ -1,4 +1,3 @@
-import copy
 import functools
 from itertools import zip_longest
 from typing import Iterator
