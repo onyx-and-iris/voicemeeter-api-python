@@ -25,7 +25,7 @@ class MacroButton(Adapter):
         return self.getter(1) == 1
 
     @state.setter
-    def state(self, val):
+    def state(self, val: bool):
         self.setter(1 if val else 0, 1)
 
     @property
@@ -33,7 +33,7 @@ class MacroButton(Adapter):
         return self.getter(2) == 1
 
     @stateonly.setter
-    def stateonly(self, val):
+    def stateonly(self, val: bool):
         self.setter(1 if val else 0, 2)
 
     @property
@@ -41,5 +41,5 @@ class MacroButton(Adapter):
         return self.getter(3) == 1
 
     @trigger.setter
-    def trigger(self, val):
+    def trigger(self, val: bool):
         self.setter(1 if val else 0, 3)

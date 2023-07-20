@@ -364,7 +364,7 @@ class VirtualStrip(Strip):
         self.setter("karaoke", val)
 
     @property
-    def bass(self):
+    def bass(self) -> float:
         return round(self.getter("EQGain1"), 1)
 
     @bass.setter
@@ -372,7 +372,7 @@ class VirtualStrip(Strip):
         self.setter("EQGain1", val)
 
     @property
-    def mid(self):
+    def mid(self) -> float:
         return round(self.getter("EQGain2"), 1)
 
     @mid.setter
@@ -382,7 +382,7 @@ class VirtualStrip(Strip):
     med = mid
 
     @property
-    def treble(self):
+    def treble(self) -> float:
         return round(self.getter("EQGain3"), 1)
 
     high = treble
