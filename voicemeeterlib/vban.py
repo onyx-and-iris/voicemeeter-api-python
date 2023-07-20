@@ -135,18 +135,15 @@ class VbanInstream(VbanStream):
 
 
 class VbanAudioInstream(VbanInstream):
-    def __str__(self):
-        return f"{type(self).__name__}{self._remote.kind}{self.index}"
+    """Represents a VBAN Audio Instream"""
 
 
 class VbanMidiInstream(VbanInstream):
-    def __str__(self):
-        return f"{type(self).__name__}{self._remote.kind}{self.index}"
+    """Represents a VBAN Midi Instream"""
 
 
 class VbanTextInstream(VbanInstream):
-    def __str__(self):
-        return f"{type(self).__name__}{self._remote.kind}{self.index}"
+    """Represents a VBAN Text Instream"""
 
 
 class VbanOutstream(VbanStream):
@@ -165,13 +162,11 @@ class VbanOutstream(VbanStream):
 
 
 class VbanAudioOutstream(VbanOutstream):
-    def __str__(self):
-        return f"{type(self).__name__}{self._remote.kind}{self.index}"
+    """Represents a VBAN Audio Outstream"""
 
 
 class VbanMidiOutstream(VbanOutstream):
-    def __str__(self):
-        return f"{type(self).__name__}{self._remote.kind}{self.index}"
+    """Represents a VBAN Midi Outstream"""
 
 
 def _make_stream_pair(remote, kind):
