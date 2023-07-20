@@ -36,10 +36,8 @@ class Updater(threading.Thread):
         super().__init__(name="updater", daemon=True)
         self._remote = remote
         self.queue = queue
-        self._remote._strip_comp = [False] * (
-            2 * self._remote.kind.phys_in + 8 * self._remote.kind.virt_in
-        )
-        self._remote._bus_comp = [False] * (self._remote.kind.num_bus * 8)
+        self._remote._strip_comp = [False] * (self._remote.kind.num_strip_levels)
+        self._remote._bus_comp = [False] * (self._remote.kind.num_bus_levels)
         (
             self._remote.cache["strip_level"],
             self._remote.cache["bus_level"],

@@ -32,28 +32,36 @@ class KindMapClass(metaclass=SingletonType):
     insert: int
 
     @property
-    def phys_in(self):
+    def phys_in(self) -> int:
         return self.ins[0]
 
     @property
-    def virt_in(self):
+    def virt_in(self) -> int:
         return self.ins[-1]
 
     @property
-    def phys_out(self):
+    def phys_out(self) -> int:
         return self.outs[0]
 
     @property
-    def virt_out(self):
+    def virt_out(self) -> int:
         return self.outs[-1]
 
     @property
-    def num_strip(self):
+    def num_strip(self) -> int:
         return sum(self.ins)
 
     @property
-    def num_bus(self):
+    def num_bus(self) -> int:
         return sum(self.outs)
+
+    @property
+    def num_strip_levels(self) -> int:
+        return 2 * self.phys_in + 8 * self.virt_in
+
+    @property
+    def num_bus_levels(self) -> int:
+        return 8 * (self.phys_out + self.virt_out)
 
     def __str__(self) -> str:
         return self.name.capitalize()

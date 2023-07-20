@@ -1,4 +1,3 @@
-import copy
 import ctypes as ct
 import logging
 import time
@@ -244,12 +243,9 @@ class Remote(CBindings):
         return (
             tuple(
                 self.get_level(self.strip_mode, i)
-                for i in range(2 * self.kind.phys_in + 8 * self.kind.virt_in)
+                for i in range(self.kind.num_strip_levels)
             ),
-            tuple(
-                self.get_level(3, i)
-                for i in range(8 * (self.kind.phys_out + self.kind.virt_out))
-            ),
+            tuple(self.get_level(3, i) for i in range(self.kind.num_bus_levels)),
         )
 
     def get_midi_message(self):
@@ -325,15 +321,15 @@ class Remote(CBindings):
         self.apply(config)
         self.logger.info(f"Profile '{name}' applied!")
 
-    def logout(self) -> NoReturn:
-        """Wait for dirty parameters to clear, then logout of the API"""
-        time.sleep(0.1)
-        self.call(self.vm_logout)
-        self.logger.info(f"{type(self).__name__}: Successfully logged out of {self}")
-
     def end_thread(self):
         self.logger.debug("events thread shutdown started")
         self.running = False
+
+    def logout(self) -> NoReturn:
+        """Logout of the API"""
+        time.sleep(0.1)
+        self.call(self.vm_logout)
+        self.logger.info(f"{type(self).__name__}: Successfully logged out of {self}")
 
     def __exit__(self, exc_type, exc_value, exc_traceback) -> NoReturn:
         """teardown procedures"""
