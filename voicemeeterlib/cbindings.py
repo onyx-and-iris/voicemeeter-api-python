@@ -18,98 +18,98 @@ class CBindings(metaclass=ABCMeta):
 
     logger_cbindings = logger.getChild("CBindings")
 
-    vm_login = libc.VBVMR_Login
-    vm_login.restype = LONG
-    vm_login.argtypes = None
+    bind_login = libc.VBVMR_Login
+    bind_login.restype = LONG
+    bind_login.argtypes = None
 
-    vm_logout = libc.VBVMR_Logout
-    vm_logout.restype = LONG
-    vm_logout.argtypes = None
+    bind_logout = libc.VBVMR_Logout
+    bind_logout.restype = LONG
+    bind_logout.argtypes = None
 
-    vm_runvm = libc.VBVMR_RunVoicemeeter
-    vm_runvm.restype = LONG
-    vm_runvm.argtypes = [LONG]
+    bind_run_voicemeeter = libc.VBVMR_RunVoicemeeter
+    bind_run_voicemeeter.restype = LONG
+    bind_run_voicemeeter.argtypes = [LONG]
 
-    vm_get_type = libc.VBVMR_GetVoicemeeterType
-    vm_get_type.restype = LONG
-    vm_get_type.argtypes = [ct.POINTER(LONG)]
+    bind_get_voicemeeter_type = libc.VBVMR_GetVoicemeeterType
+    bind_get_voicemeeter_type.restype = LONG
+    bind_get_voicemeeter_type.argtypes = [ct.POINTER(LONG)]
 
-    vm_get_version = libc.VBVMR_GetVoicemeeterVersion
-    vm_get_version.restype = LONG
-    vm_get_version.argtypes = [ct.POINTER(LONG)]
+    bind_get_voicemeeter_version = libc.VBVMR_GetVoicemeeterVersion
+    bind_get_voicemeeter_version.restype = LONG
+    bind_get_voicemeeter_version.argtypes = [ct.POINTER(LONG)]
 
     if hasattr(libc, "VBVMR_MacroButton_IsDirty"):
-        vm_mdirty = libc.VBVMR_MacroButton_IsDirty
-        vm_mdirty.restype = LONG
-        vm_mdirty.argtypes = None
+        bind_macro_button_is_dirty = libc.VBVMR_MacroButton_IsDirty
+        bind_macro_button_is_dirty.restype = LONG
+        bind_macro_button_is_dirty.argtypes = None
 
     if hasattr(libc, "VBVMR_MacroButton_GetStatus"):
-        vm_get_buttonstatus = libc.VBVMR_MacroButton_GetStatus
-        vm_get_buttonstatus.restype = LONG
-        vm_get_buttonstatus.argtypes = [LONG, ct.POINTER(FLOAT), LONG]
+        bind_macro_button_get_status = libc.VBVMR_MacroButton_GetStatus
+        bind_macro_button_get_status.restype = LONG
+        bind_macro_button_get_status.argtypes = [LONG, ct.POINTER(FLOAT), LONG]
 
     if hasattr(libc, "VBVMR_MacroButton_SetStatus"):
-        vm_set_buttonstatus = libc.VBVMR_MacroButton_SetStatus
-        vm_set_buttonstatus.restype = LONG
-        vm_set_buttonstatus.argtypes = [LONG, FLOAT, LONG]
+        bind_macro_button_set_status = libc.VBVMR_MacroButton_SetStatus
+        bind_macro_button_set_status.restype = LONG
+        bind_macro_button_set_status.argtypes = [LONG, FLOAT, LONG]
 
-    vm_pdirty = libc.VBVMR_IsParametersDirty
-    vm_pdirty.restype = LONG
-    vm_pdirty.argtypes = None
+    bind_is_parameters_dirty = libc.VBVMR_IsParametersDirty
+    bind_is_parameters_dirty.restype = LONG
+    bind_is_parameters_dirty.argtypes = None
 
-    vm_get_parameter_float = libc.VBVMR_GetParameterFloat
-    vm_get_parameter_float.restype = LONG
-    vm_get_parameter_float.argtypes = [ct.POINTER(CHAR), ct.POINTER(FLOAT)]
+    bind_get_parameter_float = libc.VBVMR_GetParameterFloat
+    bind_get_parameter_float.restype = LONG
+    bind_get_parameter_float.argtypes = [ct.POINTER(CHAR), ct.POINTER(FLOAT)]
 
-    vm_set_parameter_float = libc.VBVMR_SetParameterFloat
-    vm_set_parameter_float.restype = LONG
-    vm_set_parameter_float.argtypes = [ct.POINTER(CHAR), FLOAT]
+    bind_set_parameter_float = libc.VBVMR_SetParameterFloat
+    bind_set_parameter_float.restype = LONG
+    bind_set_parameter_float.argtypes = [ct.POINTER(CHAR), FLOAT]
 
-    vm_get_parameter_string = libc.VBVMR_GetParameterStringW
-    vm_get_parameter_string.restype = LONG
-    vm_get_parameter_string.argtypes = [ct.POINTER(CHAR), ct.POINTER(WCHAR * 512)]
+    bind_get_parameter_string_w = libc.VBVMR_GetParameterStringW
+    bind_get_parameter_string_w.restype = LONG
+    bind_get_parameter_string_w.argtypes = [ct.POINTER(CHAR), ct.POINTER(WCHAR * 512)]
 
-    vm_set_parameter_string = libc.VBVMR_SetParameterStringW
-    vm_set_parameter_string.restype = LONG
-    vm_set_parameter_string.argtypes = [ct.POINTER(CHAR), ct.POINTER(WCHAR)]
+    bind_set_parameter_string_w = libc.VBVMR_SetParameterStringW
+    bind_set_parameter_string_w.restype = LONG
+    bind_set_parameter_string_w.argtypes = [ct.POINTER(CHAR), ct.POINTER(WCHAR)]
 
-    vm_set_parameter_multi = libc.VBVMR_SetParameters
-    vm_set_parameter_multi.restype = LONG
-    vm_set_parameter_multi.argtypes = [ct.POINTER(CHAR)]
+    bind_set_parameters = libc.VBVMR_SetParameters
+    bind_set_parameters.restype = LONG
+    bind_set_parameters.argtypes = [ct.POINTER(CHAR)]
 
-    vm_get_level = libc.VBVMR_GetLevel
-    vm_get_level.restype = LONG
-    vm_get_level.argtypes = [LONG, LONG, ct.POINTER(FLOAT)]
+    bind_get_level = libc.VBVMR_GetLevel
+    bind_get_level.restype = LONG
+    bind_get_level.argtypes = [LONG, LONG, ct.POINTER(FLOAT)]
 
-    vm_get_num_indevices = libc.VBVMR_Input_GetDeviceNumber
-    vm_get_num_indevices.restype = LONG
-    vm_get_num_indevices.argtypes = None
+    bind_input_get_device_number = libc.VBVMR_Input_GetDeviceNumber
+    bind_input_get_device_number.restype = LONG
+    bind_input_get_device_number.argtypes = None
 
-    vm_get_desc_indevices = libc.VBVMR_Input_GetDeviceDescW
-    vm_get_desc_indevices.restype = LONG
-    vm_get_desc_indevices.argtypes = [
+    bind_input_get_device_desc_w = libc.VBVMR_Input_GetDeviceDescW
+    bind_input_get_device_desc_w.restype = LONG
+    bind_input_get_device_desc_w.argtypes = [
         LONG,
         ct.POINTER(LONG),
         ct.POINTER(WCHAR * 256),
         ct.POINTER(WCHAR * 256),
     ]
 
-    vm_get_num_outdevices = libc.VBVMR_Output_GetDeviceNumber
-    vm_get_num_outdevices.restype = LONG
-    vm_get_num_outdevices.argtypes = None
+    bind_output_get_device_number = libc.VBVMR_Output_GetDeviceNumber
+    bind_output_get_device_number.restype = LONG
+    bind_output_get_device_number.argtypes = None
 
-    vm_get_desc_outdevices = libc.VBVMR_Output_GetDeviceDescW
-    vm_get_desc_outdevices.restype = LONG
-    vm_get_desc_outdevices.argtypes = [
+    bind_output_get_device_desc_w = libc.VBVMR_Output_GetDeviceDescW
+    bind_output_get_device_desc_w.restype = LONG
+    bind_output_get_device_desc_w.argtypes = [
         LONG,
         ct.POINTER(LONG),
         ct.POINTER(WCHAR * 256),
         ct.POINTER(WCHAR * 256),
     ]
 
-    vm_get_midi_message = libc.VBVMR_GetMidiMessage
-    vm_get_midi_message.restype = LONG
-    vm_get_midi_message.argtypes = [ct.POINTER(CHAR * 1024), LONG]
+    bind_get_midi_message = libc.VBVMR_GetMidiMessage
+    bind_get_midi_message.restype = LONG
+    bind_get_midi_message.argtypes = [ct.POINTER(CHAR * 1024), LONG]
 
     def call(self, func, *args, ok=(0,), ok_exp=None):
         try:

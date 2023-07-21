@@ -64,7 +64,7 @@ class Remote(CBindings):
 
     def login(self) -> NoReturn:
         """Login to the API, initialize dirty parameters"""
-        self.gui.launched = self.call(self.vm_login, ok=(0, 1)) == 0
+        self.gui.launched = self.call(self.bind_login, ok=(0, 1)) == 0
         if not self.gui.launched:
             self.logger.info(
                 "Voicemeeter engine running but GUI not launched. Launching the GUI now."
@@ -82,21 +82,21 @@ class Remote(CBindings):
             value = KindId[kind_id.upper()].value + 3
         else:
             value = KindId[kind_id.upper()].value
-        self.call(self.vm_runvm, value)
+        self.call(self.bind_run_voicemeeter, value)
         time.sleep(1)
 
     @property
     def type(self) -> str:
         """Returns the type of Voicemeeter installation (basic, banana, potato)."""
         type_ = ct.c_long()
-        self.call(self.vm_get_type, ct.byref(type_))
+        self.call(self.bind_get_voicemeeter_type, ct.byref(type_))
         return KindId(type_.value).name.lower()
 
     @property
     def version(self) -> str:
         """Returns Voicemeeter's version as a string"""
         ver = ct.c_long()
-        self.call(self.vm_get_version, ct.byref(ver))
+        self.call(self.bind_get_voicemeeter_version, ct.byref(ver))
         return "{}.{}.{}.{}".format(
             (ver.value & 0xFF000000) >> 24,
             (ver.value & 0x00FF0000) >> 16,
@@ -107,13 +107,13 @@ class Remote(CBindings):
     @property
     def pdirty(self) -> bool:
         """True iff UI parameters have been updated."""
-        return self.call(self.vm_pdirty, ok=(0, 1)) == 1
+        return self.call(self.bind_is_parameters_dirty, ok=(0, 1)) == 1
 
     @property
     def mdirty(self) -> bool:
         """True iff MB parameters have been updated."""
         try:
-            return self.call(self.vm_mdirty, ok=(0, 1)) == 1
+            return self.call(self.bind_macro_button_is_dirty, ok=(0, 1)) == 1
         except AttributeError as e:
             self.logger.exception(f"{type(e).__name__}: {e}")
             ERR_MSG = (
@@ -149,10 +149,10 @@ class Remote(CBindings):
         """Gets a string or float parameter"""
         if is_string:
             buf = ct.create_unicode_buffer(512)
-            self.call(self.vm_get_parameter_string, param.encode(), ct.byref(buf))
+            self.call(self.bind_get_parameter_string_w, param.encode(), ct.byref(buf))
         else:
             buf = ct.c_float()
-            self.call(self.vm_get_parameter_float, param.encode(), ct.byref(buf))
+            self.call(self.bind_get_parameter_float, param.encode(), ct.byref(buf))
         return buf.value
 
     def set(self, param: str, val: Union[str, float]) -> NoReturn:
@@ -160,22 +160,24 @@ class Remote(CBindings):
         if isinstance(val, str):
             if len(val) >= 512:
                 raise VMError("String is too long")
-            self.call(self.vm_set_parameter_string, param.encode(), ct.c_wchar_p(val))
+            self.call(
+                self.bind_set_parameter_string_w, param.encode(), ct.c_wchar_p(val)
+            )
         else:
             self.call(
-                self.vm_set_parameter_float, param.encode(), ct.c_float(float(val))
+                self.bind_set_parameter_float, param.encode(), ct.c_float(float(val))
             )
         self.cache[param] = val
 
     @polling
-    def get_buttonstatus(self, id: int, mode: int) -> int:
+    def get_buttonstatus(self, id_: int, mode: int) -> int:
         """Gets a macrobutton parameter"""
-        state = ct.c_float()
+        c_state = ct.c_float()
         try:
             self.call(
-                self.vm_get_buttonstatus,
-                ct.c_long(id),
-                ct.byref(state),
+                self.bind_macro_button_get_status,
+                ct.c_long(id_),
+                ct.byref(c_state),
                 ct.c_long(mode),
             )
         except AttributeError as e:
@@ -187,13 +189,18 @@ class Remote(CBindings):
             raise CAPIError(
                 "VBVMR_MacroButton_GetStatus", -9, msg=" ".join(ERR_MSG)
             ) from e
-        return int(state.value)
+        return int(c_state.value)
 
-    def set_buttonstatus(self, id: int, state: int, mode: int) -> NoReturn:
+    def set_buttonstatus(self, id_: int, val: int, mode: int) -> NoReturn:
         """Sets a macrobutton parameter. Caches value"""
-        c_state = ct.c_float(float(state))
+        c_state = ct.c_float(float(val))
         try:
-            self.call(self.vm_set_buttonstatus, ct.c_long(id), c_state, ct.c_long(mode))
+            self.call(
+                self.bind_macro_button_set_status,
+                ct.c_long(id_),
+                c_state,
+                ct.c_long(mode),
+            )
         except AttributeError as e:
             self.logger.exception(f"{type(e).__name__}: {e}")
             ERR_MSG = (
@@ -203,7 +210,7 @@ class Remote(CBindings):
             raise CAPIError(
                 "VBVMR_MacroButton_SetStatus", -9, msg=" ".join(ERR_MSG)
             ) from e
-        self.cache[f"mb_{id}_{mode}"] = int(c_state.value)
+        self.cache[f"mb_{id_}_{mode}"] = int(c_state.value)
 
     def get_num_devices(self, direction: str = None) -> int:
         """Retrieves number of physical devices connected"""
@@ -220,7 +227,7 @@ class Remote(CBindings):
         type_ = ct.c_long()
         name = ct.create_unicode_buffer(256)
         hwid = ct.create_unicode_buffer(256)
-        func = getattr(self, f"vm_get_desc_{direction}devices")
+        func = getattr(self, f"bind_{direction}put_get_device_desc_w")
         self.call(
             func,
             ct.c_long(index),
@@ -233,7 +240,9 @@ class Remote(CBindings):
     def get_level(self, type_: int, index: int) -> float:
         """Retrieves a single level value"""
         val = ct.c_float()
-        self.call(self.vm_get_level, ct.c_long(type_), ct.c_long(index), ct.byref(val))
+        self.call(
+            self.bind_get_level, ct.c_long(type_), ct.c_long(index), ct.byref(val)
+        )
         return val.value
 
     def _get_levels(self) -> Iterable:
@@ -252,7 +261,7 @@ class Remote(CBindings):
         n = ct.c_long(1024)
         buf = ct.create_string_buffer(1024)
         res = self.call(
-            self.vm_get_midi_message,
+            self.bind_get_midi_message,
             ct.byref(buf),
             n,
             ok=(-5, -6),  # no data received from midi device
@@ -275,7 +284,7 @@ class Remote(CBindings):
         """Sets many parameters from a script"""
         if len(script) > 48000:
             raise ValueError("Script too large, max size 48kB")
-        self.call(self.vm_set_parameter_multi, script.encode())
+        self.call(self.bind_set_parameters, script.encode())
         time.sleep(self.DELAY * 5)
 
     def apply(self, data: dict):
@@ -328,7 +337,7 @@ class Remote(CBindings):
     def logout(self) -> NoReturn:
         """Logout of the API"""
         time.sleep(0.1)
-        self.call(self.vm_logout)
+        self.call(self.bind_logout)
         self.logger.info(f"{type(self).__name__}: Successfully logged out of {self}")
 
     def __exit__(self, exc_type, exc_value, exc_traceback) -> NoReturn:
