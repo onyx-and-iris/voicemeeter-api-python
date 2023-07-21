@@ -216,7 +216,7 @@ class Remote(CBindings):
         """Retrieves number of physical devices connected"""
         if direction not in ("in", "out"):
             raise VMError("Expected a direction: in or out")
-        func = getattr(self, f"vm_get_num_{direction}devices")
+        func = getattr(self, f"bind_{direction}put_get_device_number")
         res = self.call(func, ok_exp=lambda r: r >= 0)
         return res
 
