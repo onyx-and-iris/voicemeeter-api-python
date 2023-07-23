@@ -380,12 +380,13 @@ The following properties are available.
 -   `state`: boolean
 -   `stateonly`: boolean
 -   `trigger`: boolean
+-   `color`: int, from 0 to 8
 
 example:
 
 ```python
 vm.button[37].state = True
-vm.button[55].trigger = False
+vm.button[4].color = 1
 ```
 
 ### Recorder
