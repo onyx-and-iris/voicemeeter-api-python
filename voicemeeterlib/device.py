@@ -23,6 +23,7 @@ class Adapter(IRemote):
     def output(self):
         pass
 
+    @property
     def identifier(self):
         pass
 

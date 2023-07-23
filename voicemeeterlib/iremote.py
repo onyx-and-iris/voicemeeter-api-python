@@ -33,6 +33,7 @@ class IRemote(metaclass=ABCMeta):
             cmd += (f".{param}",)
         return "".join(cmd)
 
+    @property
     @abstractmethod
     def identifier(self):
         pass

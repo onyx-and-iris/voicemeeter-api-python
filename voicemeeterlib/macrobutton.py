@@ -12,9 +12,6 @@ ButtonModes = IntEnum(
 class Adapter(IRemote):
     """Adapter to the common interface."""
 
-    def identifier(self):
-        pass
-
     def getter(self, mode):
         self.logger.debug(f"getter: button[{self.index}].{ButtonModes(mode).name}")
         return self._remote.get_buttonstatus(self.index, mode)
@@ -26,7 +23,21 @@ class Adapter(IRemote):
         self._remote.set_buttonstatus(self.index, val, mode)
 
 
-class MacroButton(Adapter):
+class MacroButtonColorMixin(IRemote):
+    @property
+    def identifier(self):
+        return f"command.button[{self.index}]"
+
+    @property
+    def color(self) -> int:
+        return int(IRemote.getter(self, "color"))
+
+    @color.setter
+    def color(self, val: int):
+        IRemote.setter(self, "color", val)
+
+
+class MacroButton(Adapter, MacroButtonColorMixin):
     """Defines concrete implementation for macrobutton"""
 
     def __str__(self):
