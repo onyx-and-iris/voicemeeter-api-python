@@ -147,8 +147,13 @@ class Loader(metaclass=SingletonType):
             self.logger.info(
                 f"config file with name {identifier} already in memory, skipping.."
             )
-            return False
-        self.parser = dataextraction_factory(data)
+            return
+        try:
+            self.parser = dataextraction_factory(data)
+        except tomllib.TOMLDecodeError as e:
+            ERR_MSG = (str(e), f"When attempting to load {identifier}.toml")
+            self.logger.error(f"{type(e).__name__}: {' '.join(ERR_MSG)}")
+            return
         return True
 
     def register(self, identifier, data=None):
