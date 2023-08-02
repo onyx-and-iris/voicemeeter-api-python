@@ -3,7 +3,7 @@ import logging
 import time
 from abc import abstractmethod
 from queue import Queue
-from typing import Iterable, NoReturn, Optional, Union
+from typing import Iterable, Optional, Union
 
 from .cbindings import CBindings
 from .error import CAPIError, VMError
@@ -62,7 +62,7 @@ class Remote(CBindings):
         self.producer = Producer(self, queue)
         self.producer.start()
 
-    def login(self) -> NoReturn:
+    def login(self) -> None:
         """Login to the API, initialize dirty parameters"""
         self.gui.launched = self.call(self.bind_login, ok=(0, 1)) == 0
         if not self.gui.launched:
@@ -75,7 +75,7 @@ class Remote(CBindings):
         )
         self.clear_dirty()
 
-    def run_voicemeeter(self, kind_id: str) -> NoReturn:
+    def run_voicemeeter(self, kind_id: str) -> None:
         if kind_id not in (kind.name.lower() for kind in KindId):
             raise VMError(f"Unexpected Voicemeeter type: '{kind_id}'")
         if kind_id == "potato" and bits == 8:
@@ -133,7 +133,7 @@ class Remote(CBindings):
             and self.cache.get("bus_level") == self._bus_buf
         )
 
-    def clear_dirty(self) -> NoReturn:
+    def clear_dirty(self) -> None:
         try:
             while self.pdirty or self.mdirty:
                 pass
@@ -155,7 +155,7 @@ class Remote(CBindings):
             self.call(self.bind_get_parameter_float, param.encode(), ct.byref(buf))
         return buf.value
 
-    def set(self, param: str, val: Union[str, float]) -> NoReturn:
+    def set(self, param: str, val: Union[str, float]) -> None:
         """Sets a string or float parameter. Caches value"""
         if isinstance(val, str):
             if len(val) >= 512:
@@ -191,7 +191,7 @@ class Remote(CBindings):
             ) from e
         return int(c_state.value)
 
-    def set_buttonstatus(self, id_: int, val: int, mode: int) -> NoReturn:
+    def set_buttonstatus(self, id_: int, val: int, mode: int) -> None:
         """Sets a macrobutton parameter. Caches value"""
         c_state = ct.c_float(float(val))
         try:
@@ -334,13 +334,13 @@ class Remote(CBindings):
         self.logger.debug("events thread shutdown started")
         self.running = False
 
-    def logout(self) -> NoReturn:
+    def logout(self) -> None:
         """Logout of the API"""
         time.sleep(0.1)
         self.call(self.bind_logout)
         self.logger.info(f"{type(self).__name__}: Successfully logged out of {self}")
 
-    def __exit__(self, exc_type, exc_value, exc_traceback) -> NoReturn:
+    def __exit__(self, exc_type, exc_value, exc_traceback) -> None:
         """teardown procedures"""
         self.end_thread()
         self.logout()
