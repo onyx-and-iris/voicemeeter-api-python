@@ -172,32 +172,24 @@ class VbanMidiOutstream(VbanOutstream):
 def _make_stream_pair(remote, kind):
     num_instream, num_outstream, num_midi, num_text = kind.vban
 
-    def _generate_streams(i, dir):
-        """generator function for instream/outstream types"""
-        if dir == "in":
-            if i < num_instream:
-                yield VbanAudioInstream
-            elif i < num_instream + num_midi:
-                yield VbanMidiInstream
-            else:
-                yield VbanTextInstream
-        else:
-            if i < num_outstream:
-                yield VbanAudioOutstream
-            else:
-                yield VbanMidiOutstream
+    def _make_cls(i, dir):
+        match dir:
+            case "in":
+                if i < num_instream:
+                    return VbanAudioInstream(remote, i)
+                elif i < num_instream + num_midi:
+                    return VbanMidiInstream(remote, i)
+                else:
+                    return VbanTextInstream(remote, i)
+            case "out":
+                if i < num_outstream:
+                    return VbanAudioOutstream(remote, i)
+                else:
+                    return VbanMidiOutstream(remote, i)
 
     return (
-        tuple(
-            cls(remote, i)
-            for i in range(num_instream + num_midi + num_text)
-            for cls in _generate_streams(i, "in")
-        ),
-        tuple(
-            cls(remote, i)
-            for i in range(num_outstream + num_midi)
-            for cls in _generate_streams(i, "out")
-        ),
+        tuple(_make_cls(i, "in") for i in range(num_instream + num_midi + num_text)),
+        tuple(_make_cls(i, "out") for i in range(num_outstream + num_midi)),
     )
 
 
