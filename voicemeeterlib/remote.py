@@ -1,5 +1,6 @@
 import ctypes as ct
 import logging
+import threading
 import time
 from abc import abstractmethod
 from queue import Queue
@@ -28,11 +29,12 @@ class Remote(CBindings):
         self.cache = {}
         self.midi = Midi()
         self.subject = self.observer = Subject()
-        self.running = False
         self.event = Event(
             {k: kwargs.pop(k) for k in ("pdirty", "mdirty", "midi", "ldirty")}
         )
         self.gui = VmGui()
+        self.stop_event = threading.Event()
+        self.stop_event.clear()
         self.logger = logger.getChild(self.__class__.__name__)
 
         for attr, val in kwargs.items():
@@ -52,15 +54,17 @@ class Remote(CBindings):
 
     def init_thread(self):
         """Starts updates thread."""
-        self.running = True
         self.event.info()
 
         self.logger.debug("initiating events thread")
         queue = Queue()
         self.updater = Updater(self, queue)
         self.updater.start()
-        self.producer = Producer(self, queue)
+        self.producer = Producer(self, queue, self.stop_event)
         self.producer.start()
+
+    def stopped(self):
+        return self.stop_event.is_set()
 
     def login(self) -> None:
         """Login to the API, initialize dirty parameters"""
@@ -331,9 +335,10 @@ class Remote(CBindings):
         self.logger.info(f"Profile '{name}' applied!")
 
     def end_thread(self):
-        if self.running:
+        if not self.stopped():
             self.logger.debug("events thread shutdown started")
-            self.running = False
+            self.stop_event.set()
+            self.producer.join()  # wait for producer thread to complete cycle
 
     def logout(self) -> None:
         """Logout of the API"""

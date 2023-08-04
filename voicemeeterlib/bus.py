@@ -210,7 +210,7 @@ class BusLevel(IRemote):
         def fget(x):
             return round(20 * log(x, 10), 1) if x > 0 else -200.0
 
-        if self._remote.running and self._remote.event.ldirty:
+        if not self._remote.stopped() and self._remote.event.ldirty:
             vals = self._remote.cache["bus_level"][self.range[0] : self.range[-1]]
         else:
             vals = [self._remote.get_level(mode, i) for i in range(*self.range)]
@@ -232,7 +232,7 @@ class BusLevel(IRemote):
 
         Expected to be used in a callback only.
         """
-        if self._remote.running:
+        if not self._remote.stopped():
             return any(self._remote._bus_comp[self.range[0] : self.range[-1]])
 
     is_updated = isdirty

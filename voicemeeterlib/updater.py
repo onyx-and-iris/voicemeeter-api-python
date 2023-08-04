@@ -10,14 +10,18 @@ logger = logging.getLogger(__name__)
 class Producer(threading.Thread):
     """Continously send job queue to the Updater thread at a rate of self._remote.ratelimit."""
 
-    def __init__(self, remote, queue):
-        super().__init__(name="producer", daemon=True)
+    def __init__(self, remote, queue, stop_event):
+        super().__init__(name="producer", daemon=False)
         self._remote = remote
         self.queue = queue
+        self.stop_event = stop_event
         self.logger = logger.getChild(self.__class__.__name__)
 
+    def stopped(self):
+        return self.stop_event.is_set()
+
     def run(self):
-        while self._remote.running:
+        while not self.stopped():
             if self._remote.event.pdirty:
                 self.queue.put("pdirty")
             if self._remote.event.mdirty:
