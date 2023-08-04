@@ -1,7 +1,5 @@
-import json
 import logging
 import time
-from logging import config
 
 import voicemeeterlib
 
