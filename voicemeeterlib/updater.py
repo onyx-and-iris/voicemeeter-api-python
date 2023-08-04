@@ -56,12 +56,7 @@ class Updater(threading.Thread):
 
         Generate _strip_comp, _bus_comp and update level cache if ldirty.
         """
-        while True:
-            event = self.queue.get()
-            if event is None:
-                self.logger.debug(f"terminating {self.name} thread")
-                break
-
+        while event := self.queue.get():
             if event == "pdirty" and self._remote.pdirty:
                 self._remote.subject.notify(event)
             elif event == "mdirty" and self._remote.mdirty:
@@ -73,3 +68,4 @@ class Updater(threading.Thread):
                 self._remote.cache["strip_level"] = self._remote._strip_buf
                 self._remote.cache["bus_level"] = self._remote._bus_buf
                 self._remote.subject.notify(event)
+        self.logger.debug(f"terminating {self.name} thread")

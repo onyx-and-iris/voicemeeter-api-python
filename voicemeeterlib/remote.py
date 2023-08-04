@@ -331,8 +331,9 @@ class Remote(CBindings):
         self.logger.info(f"Profile '{name}' applied!")
 
     def end_thread(self):
-        self.logger.debug("events thread shutdown started")
-        self.running = False
+        if self.running:
+            self.logger.debug("events thread shutdown started")
+            self.running = False
 
     def logout(self) -> None:
         """Logout of the API"""
