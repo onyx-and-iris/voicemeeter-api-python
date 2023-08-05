@@ -33,8 +33,7 @@ class Remote(CBindings):
             {k: kwargs.pop(k) for k in ("pdirty", "mdirty", "midi", "ldirty")}
         )
         self.gui = VmGui()
-        self.stop_event = threading.Event()
-        self.stop_event.clear()
+        self.stop_event = None
         self.logger = logger.getChild(self.__class__.__name__)
 
         for attr, val in kwargs.items():
@@ -57,6 +56,8 @@ class Remote(CBindings):
         self.event.info()
 
         self.logger.debug("initiating events thread")
+        self.stop_event = threading.Event()
+        self.stop_event.clear()
         queue = Queue()
         self.updater = Updater(self, queue)
         self.updater.start()
@@ -64,7 +65,7 @@ class Remote(CBindings):
         self.producer.start()
 
     def stopped(self):
-        return self.stop_event.is_set()
+        return self.stop_event is None or self.stop_event.is_set()
 
     def login(self) -> None:
         """Login to the API, initialize dirty parameters"""
