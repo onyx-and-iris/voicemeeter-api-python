@@ -23,7 +23,7 @@ class App:
         return current
 
     def on_midi_press(self):
-        """if strip 3 level max > -40 and midi button 48 is pressed, then set trigger for macrobutton 0"""
+        """if midi button 48 is pressed and strip 3 level max > -40, then set trigger for macrobutton 0"""
 
         if (
             self.vm.midi.get(self.MIDI_BUTTON) == 127
