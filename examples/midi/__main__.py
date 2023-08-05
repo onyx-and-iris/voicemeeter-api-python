@@ -14,19 +14,20 @@ class App:
         self.vm.observer.add(self.on_midi)
 
     def on_midi(self):
-        self.get_info()
-        self.on_midi_press()
+        if self.get_info() == self.MIDI_BUTTON:
+            self.on_midi_press()
 
     def get_info(self):
         current = self.vm.midi.current
         print(f"Value of midi button {current} is {self.vm.midi.get(current)}")
+        return current
 
     def on_midi_press(self):
         """if strip 3 level max > -40 and midi button 48 is pressed, then set trigger for macrobutton 0"""
 
         if (
-            max(self.vm.strip[3].levels.postfader) > -40
-            and self.vm.midi.get(self.MIDI_BUTTON) == 127
+            self.vm.midi.get(self.MIDI_BUTTON) == 127
+            and max(self.vm.strip[3].levels.postfader) > -40
         ):
             print(
                 f"Strip 3 level max is greater than -40 and midi button {self.MIDI_BUTTON} is pressed"
