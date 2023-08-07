@@ -10,7 +10,7 @@ class TestRemoteFactories:
         data.name != "basic",
         reason="Skip test if kind is not basic",
     )
-    def test_it_vm_remote_attrs_for_basic(self):
+    def test_it_tests_vm_remote_attrs_for_basic(self):
         assert hasattr(vm, "strip")
         assert hasattr(vm, "bus")
         assert hasattr(vm, "command")
@@ -28,7 +28,7 @@ class TestRemoteFactories:
         data.name != "banana",
         reason="Skip test if kind is not banana",
     )
-    def test_it_vm_remote_attrs_for_banana(self):
+    def test_it_tests_vm_remote_attrs_for_banana(self):
         assert hasattr(vm, "strip")
         assert hasattr(vm, "bus")
         assert hasattr(vm, "command")
@@ -48,7 +48,7 @@ class TestRemoteFactories:
         data.name != "potato",
         reason="Skip test if kind is not potato",
     )
-    def test_it_vm_remote_attrs_for_potato(self):
+    def test_it_tests_vm_remote_attrs_for_potato(self):
         assert hasattr(vm, "strip")
         assert hasattr(vm, "bus")
         assert hasattr(vm, "command")
