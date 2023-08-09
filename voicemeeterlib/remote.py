@@ -299,16 +299,23 @@ class Remote(CBindings):
         minor delay between each recursion
         """
 
-        def param(key):
-            obj, m2, *rem = key.split("-")
-            index = int(m2) if m2.isnumeric() else int(*rem)
-            if obj in ("strip", "bus", "button"):
-                return getattr(self, obj)[index]
-            elif obj == "vban":
-                return getattr(getattr(self, obj), f"{m2}stream")[index]
-            raise ValueError(obj)
+        def target(key):
+            kls, m2, *rem = key.split("-")
+            match kls:
+                case "strip" | "bus" | "button":
+                    index = m2
+                    target = getattr(self, kls)
+                case "vban":
+                    dir = f"{m2.rstrip('stream')}stream"
+                    index = rem[0]
+                    target = getattr(self.vban, dir)
+                case _:
+                    ERR_MSG = f"invalid config key '{kls}'"
+                    self.logger.error(ERR_MSG)
+                    raise ValueError(ERR_MSG)
+            return target[int(index)]
 
-        [param(key).apply(datum).then_wait() for key, datum in data.items()]
+        [target(key).apply(di).then_wait() for key, di in data.items()]
 
     def apply_config(self, name):
         """applies a config from memory"""
