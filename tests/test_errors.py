@@ -43,5 +43,5 @@ class TestErrors:
             "unknown-0": {"state": True},
             "vban-out-1": {"name": "streamname"},
         }
-        with pytest.raises(ValueError, match="invalid config key 'unknown'"):
+        with pytest.raises(ValueError, match="invalid config key 'unknown-0'"):
             vm.apply(CONFIG)
