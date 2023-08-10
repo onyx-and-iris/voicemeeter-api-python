@@ -25,7 +25,11 @@ Function Get-TimeStamp {
 if ($MyInvocation.InvocationName -ne ".") {
     Invoke-Expression ".\.venv\Scripts\Activate.ps1"
 
-    RunTests
+    @("potato") | ForEach-Object {
+        $env:KIND = $_
+        RunTests        
+    }
+
 
     Invoke-Expression "deactivate"
 }

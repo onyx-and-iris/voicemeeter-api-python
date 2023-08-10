@@ -1,3 +1,4 @@
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -38,5 +39,21 @@ def ex_observer():
     subprocess.run([sys.executable, str(scriptpath)])
 
 
-def test():
+def test_basic():
+    os.environ["KIND"] = "basic"
     subprocess.run(["tox"])
+
+
+def test_banana():
+    os.environ["KIND"] = "banana"
+    subprocess.run(["tox"])
+
+
+def test_potato():
+    os.environ["KIND"] = "potato"
+    subprocess.run(["tox"])
+
+
+def test_all():
+    steps = [test_basic, test_banana, test_potato]
+    [step() for step in steps]

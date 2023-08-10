@@ -33,7 +33,10 @@ levels = "scripts:ex_levels"
 midi = "scripts:ex_midi"
 obs = "scripts:ex_obs"
 observer = "scripts:ex_observer"
-test = "scripts:test"
+basic = "scripts:test_basic"
+banana = "scripts:test_banana"
+potato = "scripts:test_potato"
+all = "scripts:test_all"
 
 [tool.tox]
 legacy_tox_ini = """

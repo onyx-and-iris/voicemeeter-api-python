@@ -1,3 +1,4 @@
+import os
 import random
 import sys
 from dataclasses import dataclass
@@ -30,8 +31,10 @@ class Data:
         return (2 * self.phys_in) + (8 * self.virt_in)
 
 
-# let's keep things random
-KIND_ID = random.choice(tuple(kind_id.name.lower() for kind_id in KindId))
+# get KIND_ID from env var, otherwise set to random
+KIND_ID = os.environ.get(
+    "KIND", random.choice(tuple(kind_id.name.lower() for kind_id in KindId))
+)
 vm = voicemeeterlib.api(KIND_ID)
 kind = kindmap(KIND_ID)
 
