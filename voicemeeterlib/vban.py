@@ -172,8 +172,8 @@ class VbanMidiOutstream(VbanOutstream):
 def _make_stream_pair(remote, kind):
     num_instream, num_outstream, num_midi, num_text = kind.vban
 
-    def _make_cls(i, dir):
-        match dir:
+    def _make_cls(i, direction):
+        match direction:
             case "in":
                 if i < num_instream:
                     return VbanAudioInstream(remote, i)
