@@ -301,10 +301,16 @@ class Remote(CBindings):
 
         def target(key):
             match key.split("-"):
-                case ["strip" | "bus" | "button" as kls, index]:
+                case ["strip" | "bus" | "button" as kls, index] if index.isnumeric():
                     target = getattr(self, kls)
-                case ["vban", direction, index]:
-                    target = getattr(self.vban, f"{direction.rstrip('stream')}stream")
+                case [
+                    "vban",
+                    "in" | "instream" | "out" | "outstream" as direction,
+                    index,
+                ] if index.isnumeric():
+                    target = getattr(
+                        self.vban, f"{direction.removesuffix('stream')}stream"
+                    )
                 case _:
                     ERR_MSG = f"invalid config key '{key}'"
                     self.logger.error(ERR_MSG)
