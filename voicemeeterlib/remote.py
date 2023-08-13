@@ -121,13 +121,7 @@ class Remote(CBindings):
             return self.call(self.bind_macro_button_is_dirty, ok=(0, 1)) == 1
         except AttributeError as e:
             self.logger.exception(f"{type(e).__name__}: {e}")
-            ERR_MSG = (
-                "no bind for VBVMR_MacroButton_IsDirty.",
-                "are you using an old version of the API?",
-            )
-            raise CAPIError(
-                "VBVMR_MacroButton_IsDirty", -9, msg=" ".join(ERR_MSG)
-            ) from e
+            raise CAPIError("VBVMR_MacroButton_IsDirty", -9) from e
 
     @property
     def ldirty(self) -> bool:
@@ -187,13 +181,7 @@ class Remote(CBindings):
             )
         except AttributeError as e:
             self.logger.exception(f"{type(e).__name__}: {e}")
-            ERR_MSG = (
-                "no bind for VBVMR_MacroButton_GetStatus.",
-                "are you using an old version of the API?",
-            )
-            raise CAPIError(
-                "VBVMR_MacroButton_GetStatus", -9, msg=" ".join(ERR_MSG)
-            ) from e
+            raise CAPIError("VBVMR_MacroButton_GetStatus", -9) from e
         return int(c_state.value)
 
     def set_buttonstatus(self, id_: int, val: int, mode: int) -> None:
@@ -208,13 +196,7 @@ class Remote(CBindings):
             )
         except AttributeError as e:
             self.logger.exception(f"{type(e).__name__}: {e}")
-            ERR_MSG = (
-                "no bind for VBVMR_MacroButton_SetStatus.",
-                "are you using an old version of the API?",
-            )
-            raise CAPIError(
-                "VBVMR_MacroButton_SetStatus", -9, msg=" ".join(ERR_MSG)
-            ) from e
+            raise CAPIError("VBVMR_MacroButton_SetStatus", -9) from e
         self.cache[f"mb_{id_}_{mode}"] = int(c_state.value)
 
     def get_num_devices(self, direction: str = None) -> int:

@@ -121,5 +121,5 @@ class CBindings(metaclass=ABCMeta):
                 raise CAPIError(func.__name__, res)
             return res
         except CAPIError as e:
-            self.logger_cbindings.exception(str(e))
+            self.logger_cbindings.exception(f"{type(e).__name__}: {e}")
             raise

@@ -1,13 +1,6 @@
 class VMError(Exception):
     """Base VM Exception class. Raised when general errors occur."""
 
-    def __init__(self, msg):
-        self.message = msg
-        super().__init__(self.message)
-
-    def __str__(self):
-        return f"{type(self).__name__}: {self.message}"
-
 
 class InstallError(VMError):
     """Exception raised when installation errors occur"""
@@ -16,7 +9,16 @@ class InstallError(VMError):
 class CAPIError(VMError):
     """Exception raised when the C-API returns an error code"""
 
-    def __init__(self, fn_name, code, msg=None):
+    def __init__(self, fn_name, code):
         self.fn_name = fn_name
         self.code = code
-        super(CAPIError, self).__init__(msg if msg else f"{fn_name} returned {code}")
+        if self.code == -9:
+            message = " ".join(
+                (
+                    f"no bind for {self.fn_name}.",
+                    "are you using an old version of the API?",
+                )
+            )
+        else:
+            message = f"{self.fn_name} returned {self.code}"
+        super().__init__(message)
