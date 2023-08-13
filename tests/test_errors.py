@@ -1,3 +1,5 @@
+import re
+
 import pytest
 
 import voicemeeterlib
@@ -30,11 +32,11 @@ class TestErrors:
             "No config with name 'unknown' is loaded into memory",
             f"Known configs: {list(vm.configs.keys())}",
         )
-        with pytest.raises(voicemeeterlib.error.VMError) as exc_info:
-            vm.apply_config("unknown")
 
-        e = exc_info.value
-        assert e.message == "\n".join(EXPECTED_MSG)
+        with pytest.raises(
+            voicemeeterlib.error.VMError, match=re.escape("\n".join(EXPECTED_MSG))
+        ):
+            vm.apply_config("unknown")
 
     def test_it_tests_an_invalid_config_key(self):
         CONFIG = {
