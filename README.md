@@ -845,7 +845,10 @@ True iff a level has been updated.
 -   `errors.VMError`: Exception raised when general errors occur.
 -   `errors.InstallError`: Exception raised when installation errors occur.
 -   `errors.CAPIError`: Exception raised when the C-API returns error values.
-    -   Error codes are stored in {Exception Class}.code. For a full list of error codes [check the VoicemeeterRemote header file][Voicemeeter Remote Header].
+    -   The following attributes are available:
+        -   `fn_name`: C-API function name.
+        -   `code`: error code
+    -   For a full list of error codes check the [VoicemeeterRemote header file][Voicemeeter Remote Header].
 
 
 ### Logging

@@ -11,6 +11,24 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 
 -   [x]
 
+## [2.4.8] - 2023-08-13
+
+### Added
+
+-   Error tests added in tests/test_errors.py
+-   fn_name and code set as class attributes for CAPIError
+-   Errors section in README updated.
+
+### Changed
+
+-   InstallError and CAPIError classes now subclass VMError
+
+## [2.3.7] - 2023-08-01
+
+### Changed
+
+-   If the configs loader is passed an invalid config TOML it will log an error but continue to load further configs into memory.
+
 ## [2.3.2] - 2023-07-12
 
 ### Added
