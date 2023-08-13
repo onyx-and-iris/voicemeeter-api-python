@@ -12,27 +12,32 @@ if platform.system() != "Windows":
 
 
 VM_KEY = "VB:Voicemeeter {17359A74-1236-5467}"
-REG_KEY = "".join(
-    [
-        "SOFTWARE",
-        ("\\WOW6432Node" if bits == 64 else ""),
-        "\\Microsoft\\Windows\\CurrentVersion\\Uninstall",
-    ]
+REG_KEY = "\\".join(
+    filter(
+        None,
+        (
+            "SOFTWARE",
+            "WOW6432Node" if bits == 64 else "",
+            "Microsoft",
+            "Windows",
+            "CurrentVersion",
+            "Uninstall",
+        ),
+    )
 )
 
 
 def get_vmpath():
     with winreg.OpenKey(
-        winreg.HKEY_LOCAL_MACHINE, r"{}".format(REG_KEY + "\\" + VM_KEY)
+        winreg.HKEY_LOCAL_MACHINE, r"{}".format("\\".join((REG_KEY, VM_KEY)))
     ) as vm_key:
         return winreg.QueryValueEx(vm_key, r"UninstallString")[0]
 
 
 try:
-    vm_path = Path(get_vmpath())
+    vm_parent = Path(get_vmpath()).parent
 except FileNotFoundError as e:
     raise InstallError(f"Unable to fetch DLL path from the registry") from e
-vm_parent = vm_path.parent
 
 DLL_NAME = f'VoicemeeterRemote{"64" if bits == 64 else ""}.dll'
 
