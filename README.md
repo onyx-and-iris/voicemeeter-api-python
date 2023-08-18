@@ -842,7 +842,7 @@ True iff a level has been updated.
 
 ### Errors
 
--   `errors.VMError`: Exception raised when general errors occur.
+-   `errors.VMError`: Base custom exception class.
 -   `errors.InstallError`: Exception raised when installation errors occur.
 -   `errors.CAPIError`: Exception raised when the C-API returns error values.
     -   The following attributes are available:

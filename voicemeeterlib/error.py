@@ -1,5 +1,5 @@
 class VMError(Exception):
-    """Base VM Exception class. Raised when general errors occur."""
+    """Base voicemeeterlib exception class."""
 
 
 class InstallError(VMError):
