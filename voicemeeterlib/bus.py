@@ -173,7 +173,7 @@ class BusDevice(IRemote):
 
 class VirtualBus(Bus):
     @classmethod
-    def make(cls, kind):
+    def make(cls, remote, i, kind):
         """
         Factory method for VirtualBus.
 
@@ -183,7 +183,13 @@ class VirtualBus(Bus):
         """
         kls = (cls,)
         if kind.name == "basic":
-            kls += (PhysicalBus,)
+            return type(
+                "VirtualBus",
+                kls,
+                {
+                    "device": BusDevice.make(remote, i),
+                },
+            )
         elif kind.name == "potato":
             EFFECTS_cls = _make_effects_mixin()
             kls += (EFFECTS_cls,)
@@ -306,7 +312,7 @@ def bus_factory(is_phys_bus, remote, i) -> Union[PhysicalBus, VirtualBus]:
     BUS_cls = (
         PhysicalBus.make(remote, i, remote.kind)
         if is_phys_bus
-        else VirtualBus.make(remote.kind)
+        else VirtualBus.make(remote, i, remote.kind)
     )
     BUSMODEMIXIN_cls = _make_bus_mode_mixin()
     return type(
