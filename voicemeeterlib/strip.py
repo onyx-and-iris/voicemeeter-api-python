@@ -168,7 +168,7 @@ class StripComp(IRemote):
 
     @property
     def knee(self) -> float:
-        return round(self.getter("Knee"), 1)
+        return round(self.getter("Knee"), 2)
 
     @knee.setter
     def knee(self, val: float):
