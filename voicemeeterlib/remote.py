@@ -75,6 +75,7 @@ class Remote(CBindings):
                 "Voicemeeter engine running but GUI not launched. Launching the GUI now."
             )
             self.run_voicemeeter(self.kind.name)
+        time.sleep(0.1)
         self.logger.info(
             f"{type(self).__name__}: Successfully logged into {self} version {self.version}"
         )
