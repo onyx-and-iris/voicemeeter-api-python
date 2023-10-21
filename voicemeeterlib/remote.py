@@ -76,10 +76,10 @@ class Remote(CBindings):
             )
             self.run_voicemeeter(self.kind.name)
         time.sleep(0.1)
+        self.clear_dirty()
         self.logger.info(
             f"{type(self).__name__}: Successfully logged into {self} version {self.version}"
         )
-        self.clear_dirty()
 
     def run_voicemeeter(self, kind_id: str) -> None:
         if kind_id not in (kind.name.lower() for kind in KindId):
