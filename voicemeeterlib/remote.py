@@ -75,20 +75,23 @@ class Remote(CBindings):
                 "Voicemeeter engine running but GUI not launched. Launching the GUI now."
             )
             self.run_voicemeeter(self.kind.name)
+
+        err = None
         start = time.time()
-        while True:
+        while time.time() < start + self.timeout:
             try:
                 time.sleep(0.1)  # ensure at least 0.1 delay before clearing dirty
                 self.logger.info(
                     f"{type(self).__name__}: Successfully logged into {self} version {self.version}"
                 )
-                elapsed = time.time() - start
-                self.logger.debug(f"login time: {round(elapsed, 2)}")
+                self.logger.debug(f"login time: {round(time.time() - start, 2)}")
+                err = None
                 break
-            except CAPIError:
-                if time.time() > start + self.timeout:
-                    raise VMError("Timeout logging into the api")
+            except CAPIError as e:
+                err = e
                 continue
+        if err:
+            raise VMError("Timeout logging into the api")
         self.clear_dirty()
 
     def run_voicemeeter(self, kind_id: str) -> None:
