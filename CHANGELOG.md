@@ -11,6 +11,13 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 
 -   [x]
 
+## [2.5.0]
+
+### Fixed
+
+-   {Remote}.login() now has a configuratble timeout. Use timeout kwarg to set it. Defaults to 2 seconds.
+-   Remote class section in README updated to include timeout kwarg.
+
 ## [2.4.8] - 2023-08-13
 
 ### Added

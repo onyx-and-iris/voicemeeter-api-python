@@ -812,6 +812,7 @@ You may pass the following optional keyword arguments:
 -   `mdirty`: boolean=False, macrobutton updates
 -   `midi`: boolean=False, midi updates
 -   `ldirty`: boolean=False, level updates
+-   `timeout`: float=2.0, maximum time to wait for a successful login in seconds
 
 Access to lower level Getters and Setters are provided with these functions:
 

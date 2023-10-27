@@ -114,6 +114,7 @@ class FactoryBase(Remote):
             "mdirty": False,
             "midi": False,
             "ldirty": False,
+            "timeout": 2,
         }
         if "subs" in kwargs:
             defaultkwargs |= kwargs.pop("subs")  # for backwards compatibility
