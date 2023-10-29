@@ -14,7 +14,7 @@ from .kinds import KindId
 from .misc import Midi, VmGui
 from .subject import Subject
 from .updater import Producer, Updater
-from .util import deep_merge, grouper, polling, script
+from .util import deep_merge, grouper, polling, script, timeout
 
 logger = logging.getLogger(__name__)
 
@@ -67,6 +67,7 @@ class Remote(CBindings):
     def stopped(self):
         return self.stop_event is None or self.stop_event.is_set()
 
+    @timeout
     def login(self) -> None:
         """Login to the API, initialize dirty parameters"""
         self.gui.launched = self.call(self.bind_login, ok=(0, 1)) == 0
@@ -75,24 +76,6 @@ class Remote(CBindings):
                 "Voicemeeter engine running but GUI not launched. Launching the GUI now."
             )
             self.run_voicemeeter(self.kind.name)
-
-        err = None
-        start = time.time()
-        while time.time() < start + self.timeout:
-            try:
-                time.sleep(0.1)  # ensure at least 0.1 delay before clearing dirty
-                self.logger.info(
-                    f"{type(self).__name__}: Successfully logged into {self} version {self.version}"
-                )
-                self.logger.debug(f"login time: {round(time.time() - start, 2)}")
-                err = None
-                break
-            except CAPIError as e:
-                err = e
-                continue
-        if err:
-            raise VMError("Timeout logging into the api")
-        self.clear_dirty()
 
     def run_voicemeeter(self, kind_id: str) -> None:
         if kind_id not in (kind.name.lower() for kind in KindId):

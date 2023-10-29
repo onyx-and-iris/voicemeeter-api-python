@@ -1,6 +1,40 @@
 import functools
+import time
 from itertools import zip_longest
 from typing import Iterator
+
+from .error import CAPIError, VMError
+
+
+def timeout(func):
+    """
+    Times out the login function once time elapsed exceeds remote.timeout.
+    """
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        remote, *_ = args
+        func(*args, **kwargs)
+
+        err = None
+        start = time.time()
+        while time.time() < start + remote.timeout:
+            try:
+                time.sleep(0.1)  # ensure at least 0.1 delay before clearing dirty
+                remote.logger.info(
+                    f"{type(remote).__name__}: Successfully logged into {remote} version {remote.version}"
+                )
+                remote.logger.debug(f"login time: {round(time.time() - start, 2)}")
+                err = None
+                break
+            except CAPIError as e:
+                err = e
+                continue
+        if err:
+            raise VMError("Timeout logging into the api")
+        remote.clear_dirty()
+
+    return wrapper
 
 
 def polling(func):
