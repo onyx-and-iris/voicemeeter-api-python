@@ -90,7 +90,7 @@ class PhysicalStrip(Strip):
         """
         EFFECTS_cls = _make_effects_mixins(is_phys)[remote.kind.name]
         return type(
-            f"PhysicalStrip",
+            "PhysicalStrip",
             (cls, EFFECTS_cls),
             {
                 "comp": StripComp(remote, i),
@@ -337,7 +337,7 @@ class VirtualStrip(Strip):
         """
         EFFECTS_cls = _make_effects_mixins(is_phys)[remote.kind.name]
         return type(
-            f"VirtualStrip",
+            "VirtualStrip",
             (cls, EFFECTS_cls),
             {},
         )
@@ -491,7 +491,7 @@ class GainLayer(IRemote):
 def _make_gainlayer_mixin(remote, index):
     """Creates a GainLayer mixin"""
     return type(
-        f"GainlayerMixin",
+        "GainlayerMixin",
         (),
         {
             "gainlayer": tuple(

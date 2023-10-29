@@ -126,7 +126,7 @@ class Recorder(IRemote):
 
         time_str = str(time_str)  # coerce the type
         if (
-            match := re.match(
+            re.match(
                 r"^(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)$",
                 time_str,
             )
@@ -135,7 +135,7 @@ class Recorder(IRemote):
             self.setter("goto", get_sec())
         else:
             self.logger.warning(
-                f"goto expects a string that matches the format 'hh:mm:ss'"
+                "goto expects a string that matches the format 'hh:mm:ss'"
             )
 
     def filetype(self, val: str):

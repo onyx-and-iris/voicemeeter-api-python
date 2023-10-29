@@ -70,7 +70,7 @@ class Patch(IRemote):
 
     @property
     def identifier(self) -> str:
-        return f"patch"
+        return "patch"
 
     @property
     def postfadercomp(self) -> bool:
@@ -92,7 +92,7 @@ class Patch(IRemote):
 class Asio(IRemote):
     @property
     def identifier(self) -> str:
-        return f"patch"
+        return "patch"
 
 
 class AsioIn(Asio):

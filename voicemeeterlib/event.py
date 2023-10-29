@@ -16,7 +16,7 @@ class Event:
         if self.any():
             info += (f"now listening for {', '.join(self.get())} events",)
         else:
-            info += (f"not listening for any events",)
+            info += ("not listening for any events",)
         self.logger.info(", ".join(info))
 
     @property
