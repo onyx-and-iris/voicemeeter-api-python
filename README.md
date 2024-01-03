@@ -882,4 +882,4 @@ pytest -v
 -   [Voicemeeter Remote C API](https://github.com/onyx-and-iris/Voicemeeter-SDK/blob/main/VoicemeeterRemoteAPI.pdf)
 
 
-[Voicemeeter Remote Header]: https://github.com/onyx-and-iris/Voicemeeter-SDK/blob/update-docs/VoicemeeterRemote.h
+[Voicemeeter Remote Header]: https://github.com/onyx-and-iris/Voicemeeter-SDK/blob/main/VoicemeeterRemote.h
