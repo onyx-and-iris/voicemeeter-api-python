@@ -80,7 +80,7 @@ class Remote(CBindings):
     def run_voicemeeter(self, kind_id: str) -> None:
         if kind_id not in (kind.name.lower() for kind in KindId):
             raise VMError(f"Unexpected Voicemeeter type: '{kind_id}'")
-        if kind_id == "potato" and bits == 8:
+        if kind_id == "potato" and bits == 64:
             value = KindId[kind_id.upper()].value + 3
         else:
             value = KindId[kind_id.upper()].value
