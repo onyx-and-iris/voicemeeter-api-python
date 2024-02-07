@@ -42,7 +42,7 @@ all = "scripts:test_all"
 [tool.tox]
 legacy_tox_ini = """
 [tox]
-envlist = py310,py311
+envlist = py310,py311,py312
 
 [testenv]
 allowlist_externals = poetry
