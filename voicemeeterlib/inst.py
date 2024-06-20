@@ -31,7 +31,7 @@ def get_vmpath():
     with winreg.OpenKey(
         winreg.HKEY_LOCAL_MACHINE, r"{}".format("\\".join((REG_KEY, VM_KEY)))
     ) as vm_key:
-        return winreg.QueryValueEx(vm_key, r"UninstallString")[0]
+        return winreg.QueryValueEx(vm_key, r"UninstallString")[0].strip('"')
 
 
 try:

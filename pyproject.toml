@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "voicemeeter-api"
-version = "2.5.3"
+version = "2.5.4"
 description = "A Python wrapper for the Voiceemeter API"
 authors = ["onyx-and-iris <code@onyxandiris.online>"]
 license = "MIT"
