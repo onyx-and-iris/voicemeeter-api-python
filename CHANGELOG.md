@@ -11,6 +11,17 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 
 -   [x]
 
+## [2.6.0] - 2024-06-29
+
+### Added
+
+-   bits kwarg for overriding the type of GUI that is launched on startup. 
+    -   Defaults to 64, set it to either 32 or 64.
+
+### Fixed
+
+-   {Remote}.run_voicemeeter() now launches x64 bit GUI's for all kinds if Python detects a 64 bit system.
+
 ## [2.5.0] - 2023-10-27
 
 ### Fixed
