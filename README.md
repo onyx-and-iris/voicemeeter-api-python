@@ -814,6 +814,7 @@ You may pass the following optional keyword arguments:
 -   `midi`: boolean=False, midi updates
 -   `ldirty`: boolean=False, level updates
 -   `timeout`: float=2.0, maximum time to wait for a successful login in seconds
+-   `bits`: int=64, (may be one of 32 or 64), overrides the type of Voicemeeter GUI {Remote}.run_voicemeeter() will launch
 
 Access to lower level Getters and Setters are provided with these functions:
 
