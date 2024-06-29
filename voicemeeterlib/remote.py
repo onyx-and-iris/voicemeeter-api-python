@@ -9,7 +9,7 @@ from typing import Iterable, Optional, Union
 from .cbindings import CBindings
 from .error import CAPIError, VMError
 from .event import Event
-from .inst import bits
+from .inst import BITS
 from .kinds import KindId
 from .misc import Midi, VmGui
 from .subject import Subject
@@ -38,6 +38,12 @@ class Remote(CBindings):
 
         for attr, val in kwargs.items():
             setattr(self, attr, val)
+
+        if self.bits not in (32, 64):
+            self.logger.warning(
+                f"kwarg bits got {self.bits}, expected either 32 or 64, defaulting to 64"
+            )
+            self.bits = 64
 
     def __enter__(self):
         """setup procedures"""
@@ -80,10 +86,9 @@ class Remote(CBindings):
     def run_voicemeeter(self, kind_id: str) -> None:
         if kind_id not in (kind.name.lower() for kind in KindId):
             raise VMError(f"Unexpected Voicemeeter type: '{kind_id}'")
-        if kind_id == "potato" and bits == 64:
-            value = KindId[kind_id.upper()].value + 3
-        else:
-            value = KindId[kind_id.upper()].value
+        value = KindId[kind_id.upper()].value
+        if BITS == 64 and self.bits == 64:
+            value += 3
         self.call(self.bind_run_voicemeeter, value)
 
     @property
