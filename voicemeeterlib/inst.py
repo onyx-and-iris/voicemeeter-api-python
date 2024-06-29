@@ -5,7 +5,7 @@ from pathlib import Path
 
 from .error import InstallError
 
-bits = 64 if ct.sizeof(ct.c_voidp) == 8 else 32
+BITS = 64 if ct.sizeof(ct.c_void_p) == 8 else 32
 
 if platform.system() != "Windows":
     raise InstallError("Only Windows OS supported")
@@ -17,7 +17,7 @@ REG_KEY = "\\".join(
         None,
         (
             "SOFTWARE",
-            "WOW6432Node" if bits == 64 else "",
+            "WOW6432Node" if BITS == 64 else "",
             "Microsoft",
             "Windows",
             "CurrentVersion",
@@ -39,7 +39,7 @@ try:
 except FileNotFoundError as e:
     raise InstallError("Unable to fetch DLL path from the registry") from e
 
-DLL_NAME = f'VoicemeeterRemote{"64" if bits == 64 else ""}.dll'
+DLL_NAME = f'VoicemeeterRemote{"64" if BITS == 64 else ""}.dll'
 
 dll_path = vm_parent.joinpath(DLL_NAME)
 if not dll_path.is_file():
