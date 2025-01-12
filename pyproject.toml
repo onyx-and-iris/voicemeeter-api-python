@@ -24,18 +24,18 @@ virtualenv-pyenv = "^0.5.0"
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.poetry.scripts]
-dsl = "scripts:ex_dsl"
-events = "scripts:ex_events"
-gui = "scripts:ex_gui"
-levels = "scripts:ex_levels"
-midi = "scripts:ex_midi"
-obs = "scripts:ex_obs"
-observer = "scripts:ex_observer"
-basic = "scripts:test_basic"
-banana = "scripts:test_banana"
-potato = "scripts:test_potato"
-all = "scripts:test_all"
+[tool.poe.tasks]
+dsl.script = "scripts:ex_dsl"
+events.script = "scripts:ex_events"
+gui.script = "scripts:ex_gui"
+levels.script = "scripts:ex_levels"
+midi.script = "scripts:ex_midi"
+obs.script = "scripts:ex_obs"
+observer.script = "scripts:ex_observer"
+basic.script = "scripts:test_basic"
+banana.script = "scripts:test_banana"
+potato.script = "scripts:test_potato"
+all.script = "scripts:test_all"
 
 [tool.tox]
 legacy_tox_ini = """
@@ -95,6 +95,7 @@ unfixable = []
 
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
 
 [tool.ruff.format]
 # Like Black, use double quotes for strings.
