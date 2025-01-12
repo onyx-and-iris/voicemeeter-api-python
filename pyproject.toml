@@ -9,6 +9,9 @@ repository = "https://github.com/onyx-and-iris/voicemeeter-api-python"
 
 packages = [{ include = "voicemeeterlib" }]
 
+[tool.poetry.requires-plugins]
+poethepoet = "^0.32.1"
+
 [tool.poetry.dependencies]
 python = "^3.10"
 tomli = { version = "^2.0.1", python = "<3.11" }
