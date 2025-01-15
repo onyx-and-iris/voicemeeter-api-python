@@ -41,7 +41,7 @@ def main():
     KIND_ID = "banana"
 
     with voicemeeterlib.api(KIND_ID) as vm:
-        with App(vm) as app:
+        with App(vm):
             for i in range(5, 0, -1):
                 print(f"events start in {i} seconds")
                 time.sleep(1)

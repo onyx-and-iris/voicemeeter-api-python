@@ -1,10 +1,10 @@
 import logging
+import tkinter as tk
+from tkinter import ttk
 
 import voicemeeterlib
 
 logging.basicConfig(level=logging.DEBUG)
-import tkinter as tk
-from tkinter import ttk
 
 
 class App(tk.Tk):

@@ -5,8 +5,7 @@ from pathlib import Path
 
 
 def ex_dsl():
-    scriptpath = Path.cwd() / "examples" / "dsl" / "."
-    subprocess.run([sys.executable, str(scriptpath)])
+    subprocess.run(["tox", "r", "-e", "dsl"])
 
 
 def ex_events():
@@ -30,8 +29,7 @@ def ex_midi():
 
 
 def ex_obs():
-    scriptpath = Path.cwd() / "examples" / "obs" / "."
-    subprocess.run([sys.executable, str(scriptpath)])
+    subprocess.run(["tox", "r", "-e", "obs"])
 
 
 def ex_observer():

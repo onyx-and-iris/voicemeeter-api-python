@@ -131,7 +131,8 @@ class Parser:
                 case [
                     [kls, index],
                     [secondary, param],
-                    [val] | val,
+                    [val]
+                    | val,
                 ]:
                     primary = getattr(self.vm, kls)[int(index)]
                     target = getattr(primary, secondary)

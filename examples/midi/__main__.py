@@ -43,7 +43,7 @@ def main():
     with voicemeeterlib.api(KIND_ID, midi=True) as vm:
         App(vm)
 
-        while cmd := input("Press <Enter> to exit\n"):
+        while _ := input("Press <Enter> to exit\n"):
             pass
 
 
