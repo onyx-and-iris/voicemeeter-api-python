@@ -288,7 +288,10 @@ class Remote(CBindings):
                     target = getattr(self, kls)
                 case [
                     "vban",
-                    "in" | "instream" | "out" | "outstream" as direction,
+                    "in"
+                    | "instream"
+                    | "out"
+                    | "outstream" as direction,
                     index,
                 ] if index.isnumeric():
                     target = getattr(

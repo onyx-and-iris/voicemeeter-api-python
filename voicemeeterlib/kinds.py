@@ -22,7 +22,7 @@ class SingletonType(type):
         return cls._instances[cls]
 
 
-@dataclass
+@dataclass(frozen=True)
 class KindMapClass(metaclass=SingletonType):
     name: str
     ins: tuple
@@ -68,9 +68,8 @@ class KindMapClass(metaclass=SingletonType):
         return self.name.capitalize()
 
 
-@dataclass
+@dataclass(frozen=True)
 class BasicMap(KindMapClass):
-    name: str
     ins: tuple = (2, 1)
     outs: tuple = (1, 1)
     vban: tuple = (4, 4, 1, 1)
@@ -79,9 +78,8 @@ class BasicMap(KindMapClass):
     composite: int = 0
 
 
-@dataclass
+@dataclass(frozen=True)
 class BananaMap(KindMapClass):
-    name: str
     ins: tuple = (3, 2)
     outs: tuple = (3, 2)
     vban: tuple = (8, 8, 1, 1)
@@ -90,9 +88,8 @@ class BananaMap(KindMapClass):
     composite: int = 8
 
 
-@dataclass
+@dataclass(frozen=True)
 class PotatoMap(KindMapClass):
-    name: str
     ins: tuple = (5, 3)
     outs: tuple = (5, 3)
     vban: tuple = (8, 8, 1, 1)
@@ -123,4 +120,4 @@ def request_kind_map(kind_id):
     return KIND_obj
 
 
-kinds_all = list(request_kind_map(kind_id.name.lower()) for kind_id in KindId)
+all = kinds_all = [request_kind_map(kind_id.name.lower()) for kind_id in KindId]

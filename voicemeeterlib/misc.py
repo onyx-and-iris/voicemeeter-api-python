@@ -1,7 +1,7 @@
 from typing import Optional
 
+from . import kinds
 from .iremote import IRemote
-from .kinds import kinds_all
 
 
 class FX(IRemote):
@@ -133,7 +133,7 @@ def _make_asio_mixin(remote, kind):
 
 
 def _make_asio_mixins(remote):
-    return {kind.name: _make_asio_mixin(remote, kind) for kind in kinds_all}
+    return {kind.name: _make_asio_mixin(remote, kind) for kind in kinds.all}
 
 
 class Composite(IRemote):

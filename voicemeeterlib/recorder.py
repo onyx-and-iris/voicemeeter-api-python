@@ -1,8 +1,8 @@
 import re
 
+from . import kinds
 from .error import VMError
 from .iremote import IRemote
-from .kinds import kinds_all
 from .meta import action_fn, bool_prop
 
 
@@ -222,7 +222,7 @@ def _make_armchannel_mixin(remote, kind):
 
 
 def _make_armchannel_mixins(remote):
-    return {kind.name: _make_armchannel_mixin(remote, kind) for kind in kinds_all}
+    return {kind.name: _make_armchannel_mixin(remote, kind) for kind in kinds.all}
 
 
 def _make_channelout_mixin(kind):
@@ -238,5 +238,5 @@ def _make_channelout_mixin(kind):
 
 
 _make_channelout_mixins = {
-    kind.name: _make_channelout_mixin(kind) for kind in kinds_all
+    kind.name: _make_channelout_mixin(kind) for kind in kinds.all
 }

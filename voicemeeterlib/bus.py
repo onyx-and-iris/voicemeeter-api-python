@@ -4,8 +4,8 @@ from enum import IntEnum
 from math import log
 from typing import Union
 
+from . import kinds
 from .iremote import IRemote
-from .kinds import kinds_all
 from .meta import bus_mode_prop, device_prop, float_prop
 
 BusModes = IntEnum(
@@ -248,7 +248,7 @@ def make_bus_level_map(kind):
     return tuple((i, i + 8) for i in range(0, (kind.phys_out + kind.virt_out) * 8, 8))
 
 
-_make_bus_level_maps = {kind.name: make_bus_level_map(kind) for kind in kinds_all}
+_make_bus_level_maps = {kind.name: make_bus_level_map(kind) for kind in kinds.all}
 
 
 def _make_bus_mode_mixin():

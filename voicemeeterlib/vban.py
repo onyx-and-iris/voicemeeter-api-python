@@ -1,7 +1,7 @@
 from abc import abstractmethod
 
+from . import kinds
 from .iremote import IRemote
-from .kinds import kinds_all
 
 
 class VbanStream(IRemote):
@@ -194,7 +194,7 @@ def _make_stream_pair(remote, kind):
 
 
 def _make_stream_pairs(remote):
-    return {kind.name: _make_stream_pair(remote, kind) for kind in kinds_all}
+    return {kind.name: _make_stream_pair(remote, kind) for kind in kinds.all}
 
 
 class Vban:

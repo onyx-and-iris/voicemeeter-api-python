@@ -3,8 +3,8 @@ from abc import abstractmethod
 from math import log
 from typing import Union
 
+from . import kinds
 from .iremote import IRemote
-from .kinds import kinds_all
 from .meta import bool_prop, device_prop, float_prop
 
 
@@ -467,7 +467,7 @@ def make_strip_level_map(kind):
     return phys_map + virt_map
 
 
-_make_strip_level_maps = {kind.name: make_strip_level_map(kind) for kind in kinds_all}
+_make_strip_level_maps = {kind.name: make_strip_level_map(kind) for kind in kinds.all}
 
 
 class GainLayer(IRemote):
@@ -514,7 +514,7 @@ def _make_channelout_mixin(kind):
 
 
 _make_channelout_mixins = {
-    kind.name: _make_channelout_mixin(kind) for kind in kinds_all
+    kind.name: _make_channelout_mixin(kind) for kind in kinds.all
 }
 
 
@@ -569,7 +569,7 @@ def _make_effects_mixin(kind, is_phys):
 
 
 def _make_effects_mixins(is_phys):
-    return {kind.name: _make_effects_mixin(kind, is_phys) for kind in kinds_all}
+    return {kind.name: _make_effects_mixin(kind, is_phys) for kind in kinds.all}
 
 
 def strip_factory(is_phys_strip, remote, i) -> Union[PhysicalStrip, VirtualStrip]:
