@@ -30,7 +30,7 @@ class Remote(CBindings):
         self.midi = Midi()
         self.subject = self.observer = Subject()
         self.event = Event(
-            {k: kwargs.pop(k) for k in ("pdirty", "mdirty", "midi", "ldirty")}
+            {k: kwargs.pop(k) for k in ('pdirty', 'mdirty', 'midi', 'ldirty')}
         )
         self.gui = VmGui()
         self.stop_event = None
@@ -41,7 +41,7 @@ class Remote(CBindings):
 
         if self.bits not in (32, 64):
             self.logger.warning(
-                f"kwarg bits got {self.bits}, expected either 32 or 64, defaulting to 64"
+                f'kwarg bits got {self.bits}, expected either 32 or 64, defaulting to 64'
             )
             self.bits = 64
 
@@ -61,7 +61,7 @@ class Remote(CBindings):
         """Starts updates thread."""
         self.event.info()
 
-        self.logger.debug("initiating events thread")
+        self.logger.debug('initiating events thread')
         self.stop_event = threading.Event()
         self.stop_event.clear()
         queue = Queue()
@@ -79,7 +79,7 @@ class Remote(CBindings):
         self.gui.launched = self.call(self.bind_login, ok=(0, 1)) == 0
         if not self.gui.launched:
             self.logger.info(
-                "Voicemeeter engine running but GUI not launched. Launching the GUI now."
+                'Voicemeeter engine running but GUI not launched. Launching the GUI now.'
             )
             self.run_voicemeeter(self.kind.name)
 
@@ -103,7 +103,7 @@ class Remote(CBindings):
         """Returns Voicemeeter's version as a string"""
         ver = ct.c_long()
         self.call(self.bind_get_voicemeeter_version, ct.byref(ver))
-        return "{}.{}.{}.{}".format(
+        return '{}.{}.{}.{}'.format(
             (ver.value & 0xFF000000) >> 24,
             (ver.value & 0x00FF0000) >> 16,
             (ver.value & 0x0000FF00) >> 8,
@@ -121,16 +121,16 @@ class Remote(CBindings):
         try:
             return self.call(self.bind_macro_button_is_dirty, ok=(0, 1)) == 1
         except AttributeError as e:
-            self.logger.exception(f"{type(e).__name__}: {e}")
-            raise CAPIError("VBVMR_MacroButton_IsDirty", -9) from e
+            self.logger.exception(f'{type(e).__name__}: {e}')
+            raise CAPIError('VBVMR_MacroButton_IsDirty', -9) from e
 
     @property
     def ldirty(self) -> bool:
         """True iff levels have been updated."""
         self._strip_buf, self._bus_buf = self._get_levels()
         return not (
-            self.cache.get("strip_level") == self._strip_buf
-            and self.cache.get("bus_level") == self._bus_buf
+            self.cache.get('strip_level') == self._strip_buf
+            and self.cache.get('bus_level') == self._bus_buf
         )
 
     def clear_dirty(self) -> None:
@@ -138,9 +138,9 @@ class Remote(CBindings):
             while self.pdirty or self.mdirty:
                 pass
         except CAPIError as e:
-            if not (e.fn_name == "VBVMR_MacroButton_IsDirty" and e.code == -9):
+            if not (e.fn_name == 'VBVMR_MacroButton_IsDirty' and e.code == -9):
                 raise
-            self.logger.error(f"{e} clearing pdirty only.")
+            self.logger.error(f'{e} clearing pdirty only.')
             while self.pdirty:
                 pass
 
@@ -159,7 +159,7 @@ class Remote(CBindings):
         """Sets a string or float parameter. Caches value"""
         if isinstance(val, str):
             if len(val) >= 512:
-                raise VMError("String is too long")
+                raise VMError('String is too long')
             self.call(
                 self.bind_set_parameter_string_w, param.encode(), ct.c_wchar_p(val)
             )
@@ -181,8 +181,8 @@ class Remote(CBindings):
                 ct.c_long(mode),
             )
         except AttributeError as e:
-            self.logger.exception(f"{type(e).__name__}: {e}")
-            raise CAPIError("VBVMR_MacroButton_GetStatus", -9) from e
+            self.logger.exception(f'{type(e).__name__}: {e}')
+            raise CAPIError('VBVMR_MacroButton_GetStatus', -9) from e
         return int(c_state.value)
 
     def set_buttonstatus(self, id_: int, val: int, mode: int) -> None:
@@ -196,26 +196,26 @@ class Remote(CBindings):
                 ct.c_long(mode),
             )
         except AttributeError as e:
-            self.logger.exception(f"{type(e).__name__}: {e}")
-            raise CAPIError("VBVMR_MacroButton_SetStatus", -9) from e
-        self.cache[f"mb_{id_}_{mode}"] = int(c_state.value)
+            self.logger.exception(f'{type(e).__name__}: {e}')
+            raise CAPIError('VBVMR_MacroButton_SetStatus', -9) from e
+        self.cache[f'mb_{id_}_{mode}'] = int(c_state.value)
 
     def get_num_devices(self, direction: str = None) -> int:
         """Retrieves number of physical devices connected"""
-        if direction not in ("in", "out"):
-            raise VMError("Expected a direction: in or out")
-        func = getattr(self, f"bind_{direction}put_get_device_number")
+        if direction not in ('in', 'out'):
+            raise VMError('Expected a direction: in or out')
+        func = getattr(self, f'bind_{direction}put_get_device_number')
         res = self.call(func, ok_exp=lambda r: r >= 0)
         return res
 
     def get_device_description(self, index: int, direction: str = None) -> tuple:
         """Returns a tuple of device parameters"""
-        if direction not in ("in", "out"):
-            raise VMError("Expected a direction: in or out")
+        if direction not in ('in', 'out'):
+            raise VMError('Expected a direction: in or out')
         type_ = ct.c_long()
         name = ct.create_unicode_buffer(256)
         hwid = ct.create_unicode_buffer(256)
-        func = getattr(self, f"bind_{direction}put_get_device_desc_w")
+        func = getattr(self, f'bind_{direction}put_get_device_desc_w')
         self.call(
             func,
             ct.c_long(index),
@@ -257,7 +257,7 @@ class Remote(CBindings):
         )
         if res > 0:
             vals = tuple(
-                grouper(3, (int.from_bytes(buf[i], "little") for i in range(res)))
+                grouper(3, (int.from_bytes(buf[i], 'little') for i in range(res)))
             )
             for msg in vals:
                 ch, pitch, vel = msg
@@ -271,7 +271,7 @@ class Remote(CBindings):
     def sendtext(self, script: str):
         """Sets many parameters from a script"""
         if len(script) > 48000:
-            raise ValueError("Script too large, max size 48kB")
+            raise ValueError('Script too large, max size 48kB')
         self.call(self.bind_set_parameters, script.encode())
         time.sleep(self.DELAY * 5)
 
@@ -283,15 +283,15 @@ class Remote(CBindings):
         """
 
         def target(key):
-            match key.split("-"):
-                case ["strip" | "bus" | "button" as kls, index] if index.isnumeric():
+            match key.split('-'):
+                case ['strip' | 'bus' | 'button' as kls, index] if index.isnumeric():
                     target = getattr(self, kls)
                 case [
-                    "vban",
-                    "in"
-                    | "instream"
-                    | "out"
-                    | "outstream" as direction,
+                    'vban',
+                    'in'
+                    | 'instream'
+                    | 'out'
+                    | 'outstream' as direction,
                     index,
                 ] if index.isnumeric():
                     target = getattr(
@@ -309,20 +309,20 @@ class Remote(CBindings):
         """applies a config from memory"""
         ERR_MSG = (
             f"No config with name '{name}' is loaded into memory",
-            f"Known configs: {list(self.configs.keys())}",
+            f'Known configs: {list(self.configs.keys())}',
         )
         try:
             config = self.configs[name]
         except KeyError as e:
-            self.logger.error(("\n").join(ERR_MSG))
-            raise VMError(("\n").join(ERR_MSG)) from e
+            self.logger.error(('\n').join(ERR_MSG))
+            raise VMError(('\n').join(ERR_MSG)) from e
 
-        if "extends" in config:
-            extended = config["extends"]
+        if 'extends' in config:
+            extended = config['extends']
             config = {
                 k: v
                 for k, v in deep_merge(self.configs[extended], config)
-                if k not in ("extends")
+                if k not in ('extends')
             }
             self.logger.debug(
                 f"profile '{name}' extends '{extended}', profiles merged.."
@@ -332,7 +332,7 @@ class Remote(CBindings):
 
     def end_thread(self):
         if not self.stopped():
-            self.logger.debug("events thread shutdown started")
+            self.logger.debug('events thread shutdown started')
             self.stop_event.set()
             self.producer.join()  # wait for producer thread to complete cycle
 
@@ -340,7 +340,7 @@ class Remote(CBindings):
         """Logout of the API"""
         time.sleep(0.1)
         self.call(self.bind_logout)
-        self.logger.info(f"{type(self).__name__}: Successfully logged out of {self}")
+        self.logger.info(f'{type(self).__name__}: Successfully logged out of {self}')
 
     def __exit__(self, exc_type, exc_value, exc_traceback) -> None:
         """teardown procedures"""

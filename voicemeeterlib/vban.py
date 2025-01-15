@@ -17,94 +17,94 @@ class VbanStream(IRemote):
 
     @property
     def identifier(self) -> str:
-        return f"vban.{self.direction}stream[{self.index}]"
+        return f'vban.{self.direction}stream[{self.index}]'
 
     @property
     def on(self) -> bool:
-        return self.getter("on") == 1
+        return self.getter('on') == 1
 
     @on.setter
     def on(self, val: bool):
-        self.setter("on", 1 if val else 0)
+        self.setter('on', 1 if val else 0)
 
     @property
     def name(self) -> str:
-        return self.getter("name", is_string=True)
+        return self.getter('name', is_string=True)
 
     @name.setter
     def name(self, val: str):
-        self.setter("name", val)
+        self.setter('name', val)
 
     @property
     def ip(self) -> str:
-        return self.getter("ip", is_string=True)
+        return self.getter('ip', is_string=True)
 
     @ip.setter
     def ip(self, val: str):
-        self.setter("ip", val)
+        self.setter('ip', val)
 
     @property
     def port(self) -> int:
-        return int(self.getter("port"))
+        return int(self.getter('port'))
 
     @port.setter
     def port(self, val: int):
         if not 1024 <= val <= 65535:
             self.logger.warning(
-                f"port got: {val} but expected a value from 1024 to 65535"
+                f'port got: {val} but expected a value from 1024 to 65535'
             )
-        self.setter("port", val)
+        self.setter('port', val)
 
     @property
     def sr(self) -> int:
-        return int(self.getter("sr"))
+        return int(self.getter('sr'))
 
     @sr.setter
     def sr(self, val: int):
         opts = (11025, 16000, 22050, 24000, 32000, 44100, 48000, 64000, 88200, 96000)
         if val not in opts:
-            self.logger.warning(f"sr got: {val} but expected a value in {opts}")
-        self.setter("sr", val)
+            self.logger.warning(f'sr got: {val} but expected a value in {opts}')
+        self.setter('sr', val)
 
     @property
     def channel(self) -> int:
-        return int(self.getter("channel"))
+        return int(self.getter('channel'))
 
     @channel.setter
     def channel(self, val: int):
         if not 1 <= val <= 8:
-            self.logger.warning(f"channel got: {val} but expected a value from 1 to 8")
-        self.setter("channel", val)
+            self.logger.warning(f'channel got: {val} but expected a value from 1 to 8')
+        self.setter('channel', val)
 
     @property
     def bit(self) -> int:
-        return 16 if (int(self.getter("bit") == 1)) else 24
+        return 16 if (int(self.getter('bit') == 1)) else 24
 
     @bit.setter
     def bit(self, val: int):
         if val not in (16, 24):
-            self.logger.warning(f"bit got: {val} but expected value 16 or 24")
-        self.setter("bit", 1 if (val == 16) else 2)
+            self.logger.warning(f'bit got: {val} but expected value 16 or 24')
+        self.setter('bit', 1 if (val == 16) else 2)
 
     @property
     def quality(self) -> int:
-        return int(self.getter("quality"))
+        return int(self.getter('quality'))
 
     @quality.setter
     def quality(self, val: int):
         if not 0 <= val <= 4:
-            self.logger.warning(f"quality got: {val} but expected a value from 0 to 4")
-        self.setter("quality", val)
+            self.logger.warning(f'quality got: {val} but expected a value from 0 to 4')
+        self.setter('quality', val)
 
     @property
     def route(self) -> int:
-        return int(self.getter("route"))
+        return int(self.getter('route'))
 
     @route.setter
     def route(self, val: int):
         if not 0 <= val <= 8:
-            self.logger.warning(f"route got: {val} but expected a value from 0 to 8")
-        self.setter("route", val)
+            self.logger.warning(f'route got: {val} but expected a value from 0 to 8')
+        self.setter('route', val)
 
 
 class VbanInstream(VbanStream):
@@ -115,11 +115,11 @@ class VbanInstream(VbanStream):
     """
 
     def __str__(self):
-        return f"{type(self).__name__}{self._remote.kind}{self.index}"
+        return f'{type(self).__name__}{self._remote.kind}{self.index}'
 
     @property
     def direction(self) -> str:
-        return "in"
+        return 'in'
 
     @property
     def sr(self) -> int:
@@ -154,11 +154,11 @@ class VbanOutstream(VbanStream):
     """
 
     def __str__(self):
-        return f"{type(self).__name__}{self._remote.kind}{self.index}"
+        return f'{type(self).__name__}{self._remote.kind}{self.index}'
 
     @property
     def direction(self) -> str:
-        return "out"
+        return 'out'
 
 
 class VbanAudioOutstream(VbanOutstream):
@@ -174,22 +174,22 @@ def _make_stream_pair(remote, kind):
 
     def _make_cls(i, direction):
         match direction:
-            case "in":
+            case 'in':
                 if i < num_instream:
                     return VbanAudioInstream(remote, i)
                 elif i < num_instream + num_midi:
                     return VbanMidiInstream(remote, i)
                 else:
                     return VbanTextInstream(remote, i)
-            case "out":
+            case 'out':
                 if i < num_outstream:
                     return VbanAudioOutstream(remote, i)
                 else:
                     return VbanMidiOutstream(remote, i)
 
     return (
-        tuple(_make_cls(i, "in") for i in range(num_instream + num_midi + num_text)),
-        tuple(_make_cls(i, "out") for i in range(num_outstream + num_midi)),
+        tuple(_make_cls(i, 'in') for i in range(num_instream + num_midi + num_text)),
+        tuple(_make_cls(i, 'out') for i in range(num_outstream + num_midi)),
     )
 
 
@@ -209,10 +209,10 @@ class Vban:
         self.instream, self.outstream = _make_stream_pairs(remote)[remote.kind.name]
 
     def enable(self):
-        self.remote.set("vban.Enable", 1)
+        self.remote.set('vban.Enable', 1)
 
     def disable(self):
-        self.remote.set("vban.Enable", 0)
+        self.remote.set('vban.Enable', 0)
 
 
 def vban_factory(remote) -> Vban:
@@ -222,7 +222,7 @@ def vban_factory(remote) -> Vban:
     Returns a class that represents the VBAN module.
     """
     VBAN_cls = Vban
-    return type(f"{VBAN_cls.__name__}", (VBAN_cls,), {})(remote)
+    return type(f'{VBAN_cls.__name__}', (VBAN_cls,), {})(remote)
 
 
 def request_vban_obj(remote) -> Vban:

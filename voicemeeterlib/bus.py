@@ -9,8 +9,8 @@ from .iremote import IRemote
 from .meta import bus_mode_prop, device_prop, float_prop
 
 BusModes = IntEnum(
-    "BusModes",
-    "normal amix bmix repeat composite tvmix upmix21 upmix41 upmix61 centeronly lfeonly rearonly",
+    'BusModes',
+    'normal amix bmix repeat composite tvmix upmix21 upmix41 upmix61 centeronly lfeonly rearonly',
     start=0,
 )
 
@@ -28,85 +28,85 @@ class Bus(IRemote):
 
     @property
     def identifier(self) -> str:
-        return f"bus[{self.index}]"
+        return f'bus[{self.index}]'
 
     @property
     def mute(self) -> bool:
-        return self.getter("mute") == 1
+        return self.getter('mute') == 1
 
     @mute.setter
     def mute(self, val: bool):
-        self.setter("mute", 1 if val else 0)
+        self.setter('mute', 1 if val else 0)
 
     @property
     def mono(self) -> bool:
-        return self.getter("mono") == 1
+        return self.getter('mono') == 1
 
     @mono.setter
     def mono(self, val: bool):
-        self.setter("mono", 1 if val else 0)
+        self.setter('mono', 1 if val else 0)
 
     @property
     def sel(self) -> bool:
-        return self.getter("sel") == 1
+        return self.getter('sel') == 1
 
     @sel.setter
     def sel(self, val: bool):
-        self.setter("sel", 1 if val else 0)
+        self.setter('sel', 1 if val else 0)
 
     @property
     def label(self) -> str:
-        return self.getter("Label", is_string=True)
+        return self.getter('Label', is_string=True)
 
     @label.setter
     def label(self, val: str):
-        self.setter("Label", str(val))
+        self.setter('Label', str(val))
 
     @property
     def gain(self) -> float:
-        return round(self.getter("gain"), 1)
+        return round(self.getter('gain'), 1)
 
     @gain.setter
     def gain(self, val: float):
-        self.setter("gain", val)
+        self.setter('gain', val)
 
     @property
     def monitor(self) -> bool:
-        return self.getter("monitor") == 1
+        return self.getter('monitor') == 1
 
     @monitor.setter
     def monitor(self, val: bool):
-        self.setter("monitor", 1 if val else 0)
+        self.setter('monitor', 1 if val else 0)
 
     def fadeto(self, target: float, time_: int):
-        self.setter("FadeTo", f"({target}, {time_})")
+        self.setter('FadeTo', f'({target}, {time_})')
         time.sleep(self._remote.DELAY)
 
     def fadeby(self, change: float, time_: int):
-        self.setter("FadeBy", f"({change}, {time_})")
+        self.setter('FadeBy', f'({change}, {time_})')
         time.sleep(self._remote.DELAY)
 
 
 class BusEQ(IRemote):
     @property
     def identifier(self) -> str:
-        return f"Bus[{self.index}].eq"
+        return f'Bus[{self.index}].eq'
 
     @property
     def on(self) -> bool:
-        return self.getter("on") == 1
+        return self.getter('on') == 1
 
     @on.setter
     def on(self, val: bool):
-        self.setter("on", 1 if val else 0)
+        self.setter('on', 1 if val else 0)
 
     @property
     def ab(self) -> bool:
-        return self.getter("ab") == 1
+        return self.getter('ab') == 1
 
     @ab.setter
     def ab(self, val: bool):
-        self.setter("ab", 1 if val else 0)
+        self.setter('ab', 1 if val else 0)
 
 
 class PhysicalBus(Bus):
@@ -118,19 +118,19 @@ class PhysicalBus(Bus):
         Returns a PhysicalBus class.
         """
         kls = (cls,)
-        if kind.name == "potato":
+        if kind.name == 'potato':
             EFFECTS_cls = _make_effects_mixin()
             kls += (EFFECTS_cls,)
         return type(
-            "PhysicalBus",
+            'PhysicalBus',
             kls,
             {
-                "device": BusDevice.make(remote, i),
+                'device': BusDevice.make(remote, i),
             },
         )
 
     def __str__(self):
-        return f"{type(self).__name__}{self.index}"
+        return f'{type(self).__name__}{self.index}'
 
 
 class BusDevice(IRemote):
@@ -142,16 +142,16 @@ class BusDevice(IRemote):
         Returns a BusDevice class of a kind.
         """
         DEVICE_cls = type(
-            f"BusDevice{remote.kind}",
+            f'BusDevice{remote.kind}',
             (cls,),
             {
                 **{
                     param: device_prop(param)
                     for param in [
-                        "wdm",
-                        "ks",
-                        "mme",
-                        "asio",
+                        'wdm',
+                        'ks',
+                        'mme',
+                        'asio',
                     ]
                 },
             },
@@ -160,15 +160,15 @@ class BusDevice(IRemote):
 
     @property
     def identifier(self) -> str:
-        return f"Bus[{self.index}].device"
+        return f'Bus[{self.index}].device'
 
     @property
     def name(self) -> str:
-        return self.getter("name", is_string=True)
+        return self.getter('name', is_string=True)
 
     @property
     def sr(self) -> int:
-        return int(self.getter("sr"))
+        return int(self.getter('sr'))
 
 
 class VirtualBus(Bus):
@@ -182,21 +182,21 @@ class VirtualBus(Bus):
         Returns a VirtualBus class.
         """
         kls = (cls,)
-        if kind.name == "basic":
+        if kind.name == 'basic':
             return type(
-                "VirtualBus",
+                'VirtualBus',
                 kls,
                 {
-                    "device": BusDevice.make(remote, i),
+                    'device': BusDevice.make(remote, i),
                 },
             )
-        elif kind.name == "potato":
+        elif kind.name == 'potato':
             EFFECTS_cls = _make_effects_mixin()
             kls += (EFFECTS_cls,)
-        return type("VirtualBus", kls, {})
+        return type('VirtualBus', kls, {})
 
     def __str__(self):
-        return f"{type(self).__name__}{self.index}"
+        return f'{type(self).__name__}{self.index}'
 
 
 class BusLevel(IRemote):
@@ -217,7 +217,7 @@ class BusLevel(IRemote):
             return round(20 * log(x, 10), 1) if x > 0 else -200.0
 
         if not self._remote.stopped() and self._remote.event.ldirty:
-            vals = self._remote.cache["bus_level"][self.range[0] : self.range[-1]]
+            vals = self._remote.cache['bus_level'][self.range[0] : self.range[-1]]
         else:
             vals = [self._remote.get_level(mode, i) for i in range(*self.range)]
 
@@ -225,7 +225,7 @@ class BusLevel(IRemote):
 
     @property
     def identifier(self) -> str:
-        return f"Bus[{self.index}]"
+        return f'Bus[{self.index}]'
 
     @property
     def all(self) -> tuple:
@@ -255,7 +255,7 @@ def _make_bus_mode_mixin():
     """Creates a mixin of Bus Modes."""
 
     def identifier(self) -> str:
-        return f"Bus[{self.index}].mode"
+        return f'Bus[{self.index}].mode'
 
     def get(self) -> str:
         time.sleep(0.01)
@@ -276,15 +276,15 @@ def _make_bus_mode_mixin():
         ):
             if val:
                 return BusModes(i + 1).name
-        return "normal"
+        return 'normal'
 
     return type(
-        "BusModeMixin",
+        'BusModeMixin',
         (IRemote,),
         {
-            "identifier": property(identifier),
+            'identifier': property(identifier),
             **{mode.name: bus_mode_prop(mode.name) for mode in BusModes},
-            "get": get,
+            'get': get,
         },
     )
 
@@ -292,12 +292,12 @@ def _make_bus_mode_mixin():
 def _make_effects_mixin():
     """creates an fx mixin"""
     return type(
-        "FX",
+        'FX',
         (),
         {
             **{
-                f"return{param}": float_prop(f"return{param}")
-                for param in ["reverb", "delay", "fx1", "fx2"]
+                f'return{param}': float_prop(f'return{param}')
+                for param in ['reverb', 'delay', 'fx1', 'fx2']
             },
         },
     )
@@ -316,12 +316,12 @@ def bus_factory(is_phys_bus, remote, i) -> Union[PhysicalBus, VirtualBus]:
     )
     BUSMODEMIXIN_cls = _make_bus_mode_mixin()
     return type(
-        f"{BUS_cls.__name__}{remote.kind}",
+        f'{BUS_cls.__name__}{remote.kind}',
         (BUS_cls,),
         {
-            "levels": BusLevel(remote, i),
-            "mode": BUSMODEMIXIN_cls(remote, i),
-            "eq": BusEQ(remote, i),
+            'levels': BusLevel(remote, i),
+            'mode': BUSMODEMIXIN_cls(remote, i),
+            'eq': BusEQ(remote, i),
         },
     )(remote, i)
 

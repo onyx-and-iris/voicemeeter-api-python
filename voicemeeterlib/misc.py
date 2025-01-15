@@ -6,43 +6,43 @@ from .iremote import IRemote
 
 class FX(IRemote):
     def __str__(self):
-        return f"{type(self).__name__}"
+        return f'{type(self).__name__}'
 
     @property
     def identifier(self) -> str:
-        return "FX"
+        return 'FX'
 
     @property
     def reverb(self) -> bool:
-        return self.getter("reverb.On") == 1
+        return self.getter('reverb.On') == 1
 
     @reverb.setter
     def reverb(self, val: bool):
-        self.setter("reverb.On", 1 if val else 0)
+        self.setter('reverb.On', 1 if val else 0)
 
     @property
     def reverb_ab(self) -> bool:
-        return self.getter("reverb.ab") == 1
+        return self.getter('reverb.ab') == 1
 
     @reverb_ab.setter
     def reverb_ab(self, val: bool):
-        self.setter("reverb.ab", 1 if val else 0)
+        self.setter('reverb.ab', 1 if val else 0)
 
     @property
     def delay(self) -> bool:
-        return self.getter("delay.On") == 1
+        return self.getter('delay.On') == 1
 
     @delay.setter
     def delay(self, val: bool):
-        self.setter("delay.On", 1 if val else 0)
+        self.setter('delay.On', 1 if val else 0)
 
     @property
     def delay_ab(self) -> bool:
-        return self.getter("delay.ab") == 1
+        return self.getter('delay.ab') == 1
 
     @delay_ab.setter
     def delay_ab(self, val: bool):
-        self.setter("delay.ab", 1 if val else 0)
+        self.setter('delay.ab', 1 if val else 0)
 
 
 class Patch(IRemote):
@@ -57,50 +57,50 @@ class Patch(IRemote):
         """
         ASIO_cls = _make_asio_mixins(remote)[remote.kind.name]
         return type(
-            f"Patch{remote.kind}",
+            f'Patch{remote.kind}',
             (cls, ASIO_cls),
             {
-                "composite": tuple(Composite(remote, i) for i in range(8)),
-                "insert": tuple(Insert(remote, i) for i in range(remote.kind.insert)),
+                'composite': tuple(Composite(remote, i) for i in range(8)),
+                'insert': tuple(Insert(remote, i) for i in range(remote.kind.insert)),
             },
         )(remote)
 
     def __str__(self):
-        return f"{type(self).__name__}"
+        return f'{type(self).__name__}'
 
     @property
     def identifier(self) -> str:
-        return "patch"
+        return 'patch'
 
     @property
     def postfadercomp(self) -> bool:
-        return self.getter("postfadercomposite") == 1
+        return self.getter('postfadercomposite') == 1
 
     @postfadercomp.setter
     def postfadercomp(self, val: bool):
-        self.setter("postfadercomposite", 1 if val else 0)
+        self.setter('postfadercomposite', 1 if val else 0)
 
     @property
     def postfxinsert(self) -> bool:
-        return self.getter("postfxinsert") == 1
+        return self.getter('postfxinsert') == 1
 
     @postfxinsert.setter
     def postfxinsert(self, val: bool):
-        self.setter("postfxinsert", 1 if val else 0)
+        self.setter('postfxinsert', 1 if val else 0)
 
 
 class Asio(IRemote):
     @property
     def identifier(self) -> str:
-        return "patch"
+        return 'patch'
 
 
 class AsioIn(Asio):
     def get(self) -> int:
-        return int(self.getter(f"asio[{self.index}]"))
+        return int(self.getter(f'asio[{self.index}]'))
 
     def set(self, val: int):
-        self.setter(f"asio[{self.index}]", val)
+        self.setter(f'asio[{self.index}]', val)
 
 
 class AsioOut(Asio):
@@ -109,10 +109,10 @@ class AsioOut(Asio):
         self._param = param
 
     def get(self) -> int:
-        return int(self.getter(f"out{self._param}[{self.index}]"))
+        return int(self.getter(f'out{self._param}[{self.index}]'))
 
     def set(self, val: int):
-        self.setter(f"out{self._param}[{self.index}]", val)
+        self.setter(f'out{self._param}[{self.index}]', val)
 
 
 def _make_asio_mixin(remote, kind):
@@ -120,13 +120,13 @@ def _make_asio_mixin(remote, kind):
     asio_in, asio_out = kind.asio
 
     return type(
-        f"ASIO{kind}",
+        f'ASIO{kind}',
         (IRemote,),
         {
-            "asio": tuple(AsioIn(remote, i) for i in range(asio_in)),
+            'asio': tuple(AsioIn(remote, i) for i in range(asio_in)),
             **{
                 param: tuple(AsioOut(remote, i, param) for i in range(asio_out))
-                for param in ["A2", "A3", "A4", "A5"]
+                for param in ['A2', 'A3', 'A4', 'A5']
             },
         },
     )
@@ -139,27 +139,27 @@ def _make_asio_mixins(remote):
 class Composite(IRemote):
     @property
     def identifier(self) -> str:
-        return "patch"
+        return 'patch'
 
     def get(self) -> int:
-        return int(self.getter(f"composite[{self.index}]"))
+        return int(self.getter(f'composite[{self.index}]'))
 
     def set(self, val: int):
-        self.setter(f"composite[{self.index}]", val)
+        self.setter(f'composite[{self.index}]', val)
 
 
 class Insert(IRemote):
     @property
     def identifier(self) -> str:
-        return "patch"
+        return 'patch'
 
     @property
     def on(self) -> bool:
-        return self.getter(f"insert[{self.index}]") == 1
+        return self.getter(f'insert[{self.index}]') == 1
 
     @on.setter
     def on(self, val: bool):
-        self.setter(f"insert[{self.index}]", 1 if val else 0)
+        self.setter(f'insert[{self.index}]', 1 if val else 0)
 
 
 class Option(IRemote):
@@ -173,61 +173,61 @@ class Option(IRemote):
         Returns a Option class of a kind.
         """
         return type(
-            f"Option{remote.kind}",
+            f'Option{remote.kind}',
             (cls,),
             {
-                "delay": tuple(Delay(remote, i) for i in range(remote.kind.phys_out)),
+                'delay': tuple(Delay(remote, i) for i in range(remote.kind.phys_out)),
             },
         )(remote)
 
     def __str__(self):
-        return f"{type(self).__name__}"
+        return f'{type(self).__name__}'
 
     @property
     def identifier(self) -> str:
-        return "option"
+        return 'option'
 
     @property
     def sr(self) -> int:
-        return int(self.getter("sr"))
+        return int(self.getter('sr'))
 
     @sr.setter
     def sr(self, val: int):
         opts = (44100, 48000, 88200, 96000, 176400, 192000)
         if val not in opts:
-            self.logger.warning(f"sr got: {val} but expected a value in {opts}")
-        self.setter("sr", val)
+            self.logger.warning(f'sr got: {val} but expected a value in {opts}')
+        self.setter('sr', val)
 
     @property
     def asiosr(self) -> bool:
-        return self.getter("asiosr") == 1
+        return self.getter('asiosr') == 1
 
     @asiosr.setter
     def asiosr(self, val: bool):
-        self.setter("asiosr", 1 if val else 0)
+        self.setter('asiosr', 1 if val else 0)
 
     @property
     def monitoronsel(self) -> bool:
-        return self.getter("monitoronsel") == 1
+        return self.getter('monitoronsel') == 1
 
     @monitoronsel.setter
     def monitoronsel(self, val: bool):
-        self.setter("monitoronsel", 1 if val else 0)
+        self.setter('monitoronsel', 1 if val else 0)
 
     def buffer(self, driver, buffer):
-        self.setter(f"buffer.{driver}", buffer)
+        self.setter(f'buffer.{driver}', buffer)
 
 
 class Delay(IRemote):
     @property
     def identifier(self) -> str:
-        return "option"
+        return 'option'
 
     def get(self) -> int:
-        return int(self.getter(f"delay[{self.index}]"))
+        return int(self.getter(f'delay[{self.index}]'))
 
     def set(self, val: int):
-        self.setter(f"delay[{self.index}]", val)
+        self.setter(f'delay[{self.index}]', val)
 
 
 class Midi:

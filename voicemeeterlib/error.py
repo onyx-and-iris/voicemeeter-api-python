@@ -13,12 +13,12 @@ class CAPIError(VMError):
         self.fn_name = fn_name
         self.code = code
         if self.code == -9:
-            message = " ".join(
+            message = ' '.join(
                 (
-                    f"no bind for {self.fn_name}.",
-                    "are you using an old version of the API?",
+                    f'no bind for {self.fn_name}.',
+                    'are you using an old version of the API?',
                 )
             )
         else:
-            message = f"{self.fn_name} returned {self.code}"
+            message = f'{self.fn_name} returned {self.code}'
         super().__init__(message)

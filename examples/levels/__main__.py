@@ -7,16 +7,16 @@ logging.basicConfig(level=logging.INFO)
 
 
 def main():
-    KIND_ID = "potato"
+    KIND_ID = 'potato'
 
     vm = voicemeeterlib.api(KIND_ID)
     vm.login()
     for _ in range(500):
         print(
-            "\n".join(
+            '\n'.join(
                 [
-                    f"{vm.strip[5]}: {vm.strip[5].levels.postmute}",
-                    f"{vm.bus[0]}: {vm.bus[0].levels.all}",
+                    f'{vm.strip[5]}: {vm.strip[5].levels.postmute}',
+                    f'{vm.bus[0]}: {vm.bus[0].levels.all}',
                 ]
             )
         )
@@ -24,5 +24,5 @@ def main():
     vm.logout()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

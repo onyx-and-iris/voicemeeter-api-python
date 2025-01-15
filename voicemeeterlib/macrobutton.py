@@ -3,8 +3,8 @@ from enum import IntEnum
 from .iremote import IRemote
 
 ButtonModes = IntEnum(
-    "ButtonModes",
-    "state stateonly trigger",
+    'ButtonModes',
+    'state stateonly trigger',
     start=1,
 )
 
@@ -16,12 +16,12 @@ class Adapter(IRemote):
         pass
 
     def getter(self, mode):
-        self.logger.debug(f"getter: button[{self.index}].{ButtonModes(mode).name}")
+        self.logger.debug(f'getter: button[{self.index}].{ButtonModes(mode).name}')
         return self._remote.get_buttonstatus(self.index, mode)
 
     def setter(self, mode, val):
         self.logger.debug(
-            f"setter: button[{self.index}].{ButtonModes(mode).name}={val}"
+            f'setter: button[{self.index}].{ButtonModes(mode).name}={val}'
         )
         self._remote.set_buttonstatus(self.index, val, mode)
 
@@ -30,7 +30,7 @@ class MacroButton(Adapter):
     """Defines concrete implementation for macrobutton"""
 
     def __str__(self):
-        return f"{type(self).__name__}{self._remote.kind}{self.index}"
+        return f'{type(self).__name__}{self._remote.kind}{self.index}'
 
     @property
     def state(self) -> bool:

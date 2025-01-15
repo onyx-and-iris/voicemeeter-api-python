@@ -44,24 +44,24 @@ class ManyThings:
         self.vm = vm
 
     def things(self):
-        self.vm.strip[0].label = "podmic"
+        self.vm.strip[0].label = 'podmic'
         self.vm.strip[0].mute = True
         print(
-            f"strip 0 ({self.vm.strip[0].label}) mute has been set to {self.vm.strip[0].mute}"
+            f'strip 0 ({self.vm.strip[0].label}) mute has been set to {self.vm.strip[0].mute}'
         )
 
     def other_things(self):
         self.vm.bus[3].gain = -6.3
         self.vm.bus[4].eq.on = True
         info = (
-            f"bus 3 gain has been set to {self.vm.bus[3].gain}",
-            f"bus 4 eq has been set to {self.vm.bus[4].eq.on}",
+            f'bus 3 gain has been set to {self.vm.bus[3].gain}',
+            f'bus 4 eq has been set to {self.vm.bus[4].eq.on}',
         )
-        print("\n".join(info))
+        print('\n'.join(info))
 
 
 def main():
-    KIND_ID = "banana"
+    KIND_ID = 'banana'
 
     with voicemeeterlib.api(KIND_ID) as vm:
         do = ManyThings(vm)
@@ -71,18 +71,17 @@ def main():
         # set many parameters at once
         vm.apply(
             {
-                "strip-2": {"A1": True, "B1": True, "gain": -6.0},
-                "bus-2": {"mute": True, "eq": {"on": True}},
-                "button-0": {"state": True},
-                "vban-in-0": {"on": True},
-                "vban-out-1": {"name": "streamname"},
+                'strip-2': {'A1': True, 'B1': True, 'gain': -6.0},
+                'bus-2': {'mute': True, 'eq': {'on': True}},
+                'button-0': {'state': True},
+                'vban-in-0': {'on': True},
+                'vban-out-1': {'name': 'streamname'},
             }
         )
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
-
 ```
 
 Otherwise you must remember to call `vm.login()`, `vm.logout()` at the start/end of your code.
@@ -149,8 +148,8 @@ Set mute state as value for the app matching name.
 example:
 
 ```python
-vm.strip[5].appmute("Spotify", True)
-vm.strip[5].appgain("Spotify", 0.5)
+vm.strip[5].appmute('Spotify', True)
+vm.strip[5].appgain('Spotify', 0.5)
 ```
 
 #### Strip.Comp
@@ -366,7 +365,7 @@ example:
 
 ```python
 print(vm.strip[0].device.name)
-vm.bus[0].device.asio = "Audient USB Audio ASIO Driver"
+vm.bus[0].device.asio = 'Audient USB Audio ASIO Driver'
 ```
 
 strip|bus device parameters are defined for physical channels only.
@@ -425,7 +424,7 @@ vm.recorder.B2 = False
 vm.recorder.load(r'C:\music\mytune.mp3')
 
 # set the goto time to 1m 30s
-vm.recorder.goto("00:01:30")
+vm.recorder.goto('00:01:30')
 ```
 
 #### Recorder.Mode
@@ -679,11 +678,11 @@ get() may return None if no value for requested key in midi cache
 ```python
 vm.apply(
     {
-        "strip-2": {"A1": True, "B1": True, "gain": -6.0},
-        "bus-2": {"mute": True, "eq": {"on": True}},
-        "button-0": {"state": True},
-        "vban-in-0": {"on": True},
-        "vban-out-1": {"name": "streamname"},
+        'strip-2': {'A1': True, 'B1': True, 'gain': -6.0},
+        'bus-2': {'mute': True, 'eq': {'on': True}},
+        'button-0': {'state': True},
+        'vban-in-0': {'on': True},
+        'vban-out-1': {'name': 'streamname'},
     }
 )
 ```
@@ -691,8 +690,8 @@ vm.apply(
 Or for each class you may do:
 
 ```python
-vm.strip[0].apply({"mute": True, "gain": 3.2, "A1": True})
-vm.vban.outstream[0].apply({"on": True, "name": "streamname", "bit": 24})
+vm.strip[0].apply({'mute': True, 'gain': 3.2, 'A1': True})
+vm.vban.outstream[0].apply({'on': True, 'name': 'streamname', 'bit': 24})
 ```
 
 ## Config Files
@@ -793,7 +792,7 @@ The following methods are available:
 example:
 
 ```python
-vm.event.remove(["pdirty", "mdirty", "midi"])
+vm.event.remove(['pdirty', 'mdirty', 'midi'])
 
 # get a list of currently subscribed
 print(vm.event.get())
@@ -863,8 +862,8 @@ import voicemeeterlib
 
 logging.basicConfig(level=logging.DEBUG)
 
-with voicemeeterlib.api("banana") as vm:
-        ...
+with voicemeeterlib.api('banana') as vm:
+    ...
 ```
 
 

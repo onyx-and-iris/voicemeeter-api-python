@@ -19,19 +19,19 @@ class IRemote(metaclass=ABCMeta):
 
     def getter(self, param, **kwargs):
         """Gets a parameter value"""
-        self.logger.debug(f"getter: {self._cmd(param)}")
+        self.logger.debug(f'getter: {self._cmd(param)}')
         return self._remote.get(self._cmd(param), **kwargs)
 
     def setter(self, param, val):
         """Sets a parameter value"""
-        self.logger.debug(f"setter: {self._cmd(param)}={val}")
+        self.logger.debug(f'setter: {self._cmd(param)}={val}')
         self._remote.set(self._cmd(param), val)
 
     def _cmd(self, param):
         cmd = (self.identifier,)
         if param:
-            cmd += (f".{param}",)
-        return "".join(cmd)
+            cmd += (f'.{param}',)
+        return ''.join(cmd)
 
     @abstractmethod
     def identifier(self):
@@ -39,7 +39,7 @@ class IRemote(metaclass=ABCMeta):
 
     def apply(self, data: dict):
         def fget(attr, val):
-            if attr == "mode":
+            if attr == 'mode':
                 return (getattr(self, attr), val, 1)
             return (self, attr, val)
 
@@ -49,7 +49,7 @@ class IRemote(metaclass=ABCMeta):
                     target, attr, val = fget(attr, val)
                     setattr(target, attr, val)
                 else:
-                    self.logger.error(f"invalid attribute {attr} for {self}")
+                    self.logger.error(f'invalid attribute {attr} for {self}')
             else:
                 target = getattr(self, attr)
                 target.apply(val)

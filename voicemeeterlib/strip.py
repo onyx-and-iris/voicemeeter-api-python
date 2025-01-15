@@ -21,62 +21,62 @@ class Strip(IRemote):
 
     @property
     def identifier(self) -> str:
-        return f"strip[{self.index}]"
+        return f'strip[{self.index}]'
 
     @property
     def mono(self) -> bool:
-        return self.getter("mono") == 1
+        return self.getter('mono') == 1
 
     @mono.setter
     def mono(self, val: bool):
-        self.setter("mono", 1 if val else 0)
+        self.setter('mono', 1 if val else 0)
 
     @property
     def solo(self) -> bool:
-        return self.getter("solo") == 1
+        return self.getter('solo') == 1
 
     @solo.setter
     def solo(self, val: bool):
-        self.setter("solo", 1 if val else 0)
+        self.setter('solo', 1 if val else 0)
 
     @property
     def mute(self) -> bool:
-        return self.getter("mute") == 1
+        return self.getter('mute') == 1
 
     @mute.setter
     def mute(self, val: bool):
-        self.setter("mute", 1 if val else 0)
+        self.setter('mute', 1 if val else 0)
 
     @property
     def limit(self) -> int:
-        return int(self.getter("limit"))
+        return int(self.getter('limit'))
 
     @limit.setter
     def limit(self, val: int):
-        self.setter("limit", val)
+        self.setter('limit', val)
 
     @property
     def label(self) -> str:
-        return self.getter("Label", is_string=True)
+        return self.getter('Label', is_string=True)
 
     @label.setter
     def label(self, val: str):
-        self.setter("Label", str(val))
+        self.setter('Label', str(val))
 
     @property
     def gain(self) -> float:
-        return round(self.getter("gain"), 1)
+        return round(self.getter('gain'), 1)
 
     @gain.setter
     def gain(self, val: float):
-        self.setter("gain", val)
+        self.setter('gain', val)
 
     def fadeto(self, target: float, time_: int):
-        self.setter("FadeTo", f"({target}, {time_})")
+        self.setter('FadeTo', f'({target}, {time_})')
         time.sleep(self._remote.DELAY)
 
     def fadeby(self, change: float, time_: int):
-        self.setter("FadeBy", f"({change}, {time_})")
+        self.setter('FadeBy', f'({change}, {time_})')
         time.sleep(self._remote.DELAY)
 
 
@@ -90,203 +90,203 @@ class PhysicalStrip(Strip):
         """
         EFFECTS_cls = _make_effects_mixins(is_phys)[remote.kind.name]
         return type(
-            "PhysicalStrip",
+            'PhysicalStrip',
             (cls, EFFECTS_cls),
             {
-                "comp": StripComp(remote, i),
-                "gate": StripGate(remote, i),
-                "denoiser": StripDenoiser(remote, i),
-                "eq": StripEQ(remote, i),
-                "device": StripDevice.make(remote, i),
+                'comp': StripComp(remote, i),
+                'gate': StripGate(remote, i),
+                'denoiser': StripDenoiser(remote, i),
+                'eq': StripEQ(remote, i),
+                'device': StripDevice.make(remote, i),
             },
         )
 
     def __str__(self):
-        return f"{type(self).__name__}{self.index}"
+        return f'{type(self).__name__}{self.index}'
 
     @property
     def audibility(self) -> float:
-        return round(self.getter("audibility"), 1)
+        return round(self.getter('audibility'), 1)
 
     @audibility.setter
     def audibility(self, val: float):
-        self.setter("audibility", val)
+        self.setter('audibility', val)
 
 
 class StripComp(IRemote):
     @property
     def identifier(self) -> str:
-        return f"Strip[{self.index}].comp"
+        return f'Strip[{self.index}].comp'
 
     @property
     def knob(self) -> float:
-        return round(self.getter(""), 1)
+        return round(self.getter(''), 1)
 
     @knob.setter
     def knob(self, val: float):
-        self.setter("", val)
+        self.setter('', val)
 
     @property
     def gainin(self) -> float:
-        return round(self.getter("GainIn"), 1)
+        return round(self.getter('GainIn'), 1)
 
     @gainin.setter
     def gainin(self, val: float):
-        self.setter("GainIn", val)
+        self.setter('GainIn', val)
 
     @property
     def ratio(self) -> float:
-        return round(self.getter("Ratio"), 1)
+        return round(self.getter('Ratio'), 1)
 
     @ratio.setter
     def ratio(self, val: float):
-        self.setter("Ratio", val)
+        self.setter('Ratio', val)
 
     @property
     def threshold(self) -> float:
-        return round(self.getter("Threshold"), 1)
+        return round(self.getter('Threshold'), 1)
 
     @threshold.setter
     def threshold(self, val: float):
-        self.setter("Threshold", val)
+        self.setter('Threshold', val)
 
     @property
     def attack(self) -> float:
-        return round(self.getter("Attack"), 1)
+        return round(self.getter('Attack'), 1)
 
     @attack.setter
     def attack(self, val: float):
-        self.setter("Attack", val)
+        self.setter('Attack', val)
 
     @property
     def release(self) -> float:
-        return round(self.getter("Release"), 1)
+        return round(self.getter('Release'), 1)
 
     @release.setter
     def release(self, val: float):
-        self.setter("Release", val)
+        self.setter('Release', val)
 
     @property
     def knee(self) -> float:
-        return round(self.getter("Knee"), 2)
+        return round(self.getter('Knee'), 2)
 
     @knee.setter
     def knee(self, val: float):
-        self.setter("Knee", val)
+        self.setter('Knee', val)
 
     @property
     def gainout(self) -> float:
-        return round(self.getter("GainOut"), 1)
+        return round(self.getter('GainOut'), 1)
 
     @gainout.setter
     def gainout(self, val: float):
-        self.setter("GainOut", val)
+        self.setter('GainOut', val)
 
     @property
     def makeup(self) -> bool:
-        return self.getter("makeup") == 1
+        return self.getter('makeup') == 1
 
     @makeup.setter
     def makeup(self, val: bool):
-        self.setter("makeup", 1 if val else 0)
+        self.setter('makeup', 1 if val else 0)
 
 
 class StripGate(IRemote):
     @property
     def identifier(self) -> str:
-        return f"Strip[{self.index}].gate"
+        return f'Strip[{self.index}].gate'
 
     @property
     def knob(self) -> float:
-        return round(self.getter(""), 1)
+        return round(self.getter(''), 1)
 
     @knob.setter
     def knob(self, val: float):
-        self.setter("", val)
+        self.setter('', val)
 
     @property
     def threshold(self) -> float:
-        return round(self.getter("Threshold"), 1)
+        return round(self.getter('Threshold'), 1)
 
     @threshold.setter
     def threshold(self, val: float):
-        self.setter("Threshold", val)
+        self.setter('Threshold', val)
 
     @property
     def damping(self) -> float:
-        return round(self.getter("Damping"), 1)
+        return round(self.getter('Damping'), 1)
 
     @damping.setter
     def damping(self, val: float):
-        self.setter("Damping", val)
+        self.setter('Damping', val)
 
     @property
     def bpsidechain(self) -> int:
-        return int(self.getter("BPSidechain"))
+        return int(self.getter('BPSidechain'))
 
     @bpsidechain.setter
     def bpsidechain(self, val: int):
-        self.setter("BPSidechain", val)
+        self.setter('BPSidechain', val)
 
     @property
     def attack(self) -> float:
-        return round(self.getter("Attack"), 1)
+        return round(self.getter('Attack'), 1)
 
     @attack.setter
     def attack(self, val: float):
-        self.setter("Attack", val)
+        self.setter('Attack', val)
 
     @property
     def hold(self) -> float:
-        return round(self.getter("Hold"), 1)
+        return round(self.getter('Hold'), 1)
 
     @hold.setter
     def hold(self, val: float):
-        self.setter("Hold", val)
+        self.setter('Hold', val)
 
     @property
     def release(self) -> float:
-        return round(self.getter("Release"), 1)
+        return round(self.getter('Release'), 1)
 
     @release.setter
     def release(self, val: float):
-        self.setter("Release", val)
+        self.setter('Release', val)
 
 
 class StripDenoiser(IRemote):
     @property
     def identifier(self) -> str:
-        return f"Strip[{self.index}].denoiser"
+        return f'Strip[{self.index}].denoiser'
 
     @property
     def knob(self) -> float:
-        return round(self.getter(""), 1)
+        return round(self.getter(''), 1)
 
     @knob.setter
     def knob(self, val: float):
-        self.setter("", val)
+        self.setter('', val)
 
 
 class StripEQ(IRemote):
     @property
     def identifier(self) -> str:
-        return f"Strip[{self.index}].eq"
+        return f'Strip[{self.index}].eq'
 
     @property
     def on(self) -> bool:
-        return self.getter("on") == 1
+        return self.getter('on') == 1
 
     @on.setter
     def on(self, val: bool):
-        self.setter("on", 1 if val else 0)
+        self.setter('on', 1 if val else 0)
 
     @property
     def ab(self) -> bool:
-        return self.getter("ab") == 1
+        return self.getter('ab') == 1
 
     @ab.setter
     def ab(self, val: bool):
-        self.setter("ab", 1 if val else 0)
+        self.setter('ab', 1 if val else 0)
 
 
 class StripDevice(IRemote):
@@ -298,16 +298,16 @@ class StripDevice(IRemote):
         Returns a StripDevice class of a kind.
         """
         DEVICE_cls = type(
-            f"StripDevice{remote.kind}",
+            f'StripDevice{remote.kind}',
             (cls,),
             {
                 **{
                     param: device_prop(param)
                     for param in [
-                        "wdm",
-                        "ks",
-                        "mme",
-                        "asio",
+                        'wdm',
+                        'ks',
+                        'mme',
+                        'asio',
                     ]
                 },
             },
@@ -316,15 +316,15 @@ class StripDevice(IRemote):
 
     @property
     def identifier(self) -> str:
-        return f"Strip[{self.index}].device"
+        return f'Strip[{self.index}].device'
 
     @property
     def name(self) -> str:
-        return self.getter("name", is_string=True)
+        return self.getter('name', is_string=True)
 
     @property
     def sr(self) -> int:
-        return int(self.getter("sr"))
+        return int(self.getter('sr'))
 
 
 class VirtualStrip(Strip):
@@ -337,65 +337,65 @@ class VirtualStrip(Strip):
         """
         EFFECTS_cls = _make_effects_mixins(is_phys)[remote.kind.name]
         return type(
-            "VirtualStrip",
+            'VirtualStrip',
             (cls, EFFECTS_cls),
             {},
         )
 
     def __str__(self):
-        return f"{type(self).__name__}{self.index}"
+        return f'{type(self).__name__}{self.index}'
 
     @property
     def mc(self) -> bool:
-        return self.getter("mc") == 1
+        return self.getter('mc') == 1
 
     @mc.setter
     def mc(self, val: bool):
-        self.setter("mc", 1 if val else 0)
+        self.setter('mc', 1 if val else 0)
 
     mono = mc
 
     @property
     def k(self) -> int:
-        return int(self.getter("karaoke"))
+        return int(self.getter('karaoke'))
 
     @k.setter
     def k(self, val: int):
-        self.setter("karaoke", val)
+        self.setter('karaoke', val)
 
     @property
     def bass(self) -> float:
-        return round(self.getter("EQGain1"), 1)
+        return round(self.getter('EQGain1'), 1)
 
     @bass.setter
     def bass(self, val: float):
-        self.setter("EQGain1", val)
+        self.setter('EQGain1', val)
 
     @property
     def mid(self) -> float:
-        return round(self.getter("EQGain2"), 1)
+        return round(self.getter('EQGain2'), 1)
 
     @mid.setter
     def mid(self, val: float):
-        self.setter("EQGain2", val)
+        self.setter('EQGain2', val)
 
     med = mid
 
     @property
     def treble(self) -> float:
-        return round(self.getter("EQGain3"), 1)
+        return round(self.getter('EQGain3'), 1)
 
     high = treble
 
     @treble.setter
     def treble(self, val: float):
-        self.setter("EQGain3", val)
+        self.setter('EQGain3', val)
 
     def appgain(self, name: str, gain: float):
-        self.setter("AppGain", f'("{name}", {gain})')
+        self.setter('AppGain', f'("{name}", {gain})')
 
     def appmute(self, name: str, mute: bool = None):
-        self.setter("AppMute", f'("{name}", {1 if mute else 0})')
+        self.setter('AppMute', f'("{name}", {1 if mute else 0})')
 
 
 class StripLevel(IRemote):
@@ -416,7 +416,7 @@ class StripLevel(IRemote):
             return round(20 * log(x, 10), 1) if x > 0 else -200.0
 
         if not self._remote.stopped() and self._remote.event.ldirty:
-            vals = self._remote.cache["strip_level"][self.range[0] : self.range[-1]]
+            vals = self._remote.cache['strip_level'][self.range[0] : self.range[-1]]
         else:
             vals = [self._remote.get_level(mode, i) for i in range(*self.range)]
 
@@ -424,7 +424,7 @@ class StripLevel(IRemote):
 
     @property
     def identifier(self) -> str:
-        return f"Strip[{self.index}]"
+        return f'Strip[{self.index}]'
 
     @property
     def prefader(self) -> tuple:
@@ -477,24 +477,24 @@ class GainLayer(IRemote):
 
     @property
     def identifier(self) -> str:
-        return f"Strip[{self.index}]"
+        return f'Strip[{self.index}]'
 
     @property
     def gain(self):
-        return self.getter(f"GainLayer[{self._i}]")
+        return self.getter(f'GainLayer[{self._i}]')
 
     @gain.setter
     def gain(self, val):
-        self.setter(f"GainLayer[{self._i}]", val)
+        self.setter(f'GainLayer[{self._i}]', val)
 
 
 def _make_gainlayer_mixin(remote, index):
     """Creates a GainLayer mixin"""
     return type(
-        "GainlayerMixin",
+        'GainlayerMixin',
         (),
         {
-            "gainlayer": tuple(
+            'gainlayer': tuple(
                 GainLayer(remote, index, i) for i in range(remote.kind.num_bus)
             )
         },
@@ -504,11 +504,11 @@ def _make_gainlayer_mixin(remote, index):
 def _make_channelout_mixin(kind):
     """Creates a channel out property mixin"""
     return type(
-        f"ChannelOutMixin{kind}",
+        f'ChannelOutMixin{kind}',
         (),
         {
-            **{f"A{i}": bool_prop(f"A{i}") for i in range(1, kind.phys_out + 1)},
-            **{f"B{i}": bool_prop(f"B{i}") for i in range(1, kind.virt_out + 1)},
+            **{f'A{i}': bool_prop(f'A{i}') for i in range(1, kind.phys_out + 1)},
+            **{f'B{i}': bool_prop(f'B{i}') for i in range(1, kind.virt_out + 1)},
         },
     )
 
@@ -522,12 +522,12 @@ def _make_effects_mixin(kind, is_phys):
     """creates an effects mixin for a kind"""
 
     def _make_xy_cls():
-        pan = {param: float_prop(param) for param in ["pan_x", "pan_y"]}
-        color = {param: float_prop(param) for param in ["color_x", "color_y"]}
-        fx = {param: float_prop(param) for param in ["fx_x", "fx_y"]}
+        pan = {param: float_prop(param) for param in ['pan_x', 'pan_y']}
+        color = {param: float_prop(param) for param in ['color_x', 'color_y']}
+        fx = {param: float_prop(param) for param in ['fx_x', 'fx_y']}
         if is_phys:
             return type(
-                "XYPhys",
+                'XYPhys',
                 (),
                 {
                     **pan,
@@ -536,7 +536,7 @@ def _make_effects_mixin(kind, is_phys):
                 },
             )
         return type(
-            "XYVirt",
+            'XYVirt',
             (),
             {**pan},
         )
@@ -544,28 +544,28 @@ def _make_effects_mixin(kind, is_phys):
     def _make_fx_cls():
         if is_phys:
             return type(
-                "FX",
+                'FX',
                 (),
                 {
                     **{
                         param: float_prop(param)
-                        for param in ["reverb", "delay", "fx1", "fx2"]
+                        for param in ['reverb', 'delay', 'fx1', 'fx2']
                     },
                     **{
-                        f"post{param}": bool_prop(f"post{param}")
-                        for param in ["reverb", "delay", "fx1", "fx2"]
+                        f'post{param}': bool_prop(f'post{param}')
+                        for param in ['reverb', 'delay', 'fx1', 'fx2']
                     },
                 },
             )
-        return type("FX", (), {})
+        return type('FX', (), {})
 
-    if kind.name == "basic":
+    if kind.name == 'basic':
         steps = (_make_xy_cls,)
-    elif kind.name == "banana":
+    elif kind.name == 'banana':
         steps = (_make_xy_cls,)
-    elif kind.name == "potato":
+    elif kind.name == 'potato':
         steps = (_make_xy_cls, _make_fx_cls)
-    return type(f"Effects{kind}", tuple(step() for step in steps), {})
+    return type(f'Effects{kind}', tuple(step() for step in steps), {})
 
 
 def _make_effects_mixins(is_phys):
@@ -588,14 +588,14 @@ def strip_factory(is_phys_strip, remote, i) -> Union[PhysicalStrip, VirtualStrip
     CHANNELOUTMIXIN_cls = _make_channelout_mixins[remote.kind.name]
 
     _kls = (STRIP_cls, CHANNELOUTMIXIN_cls)
-    if remote.kind.name == "potato":
+    if remote.kind.name == 'potato':
         GAINLAYERMIXIN_cls = _make_gainlayer_mixin(remote, i)
         _kls += (GAINLAYERMIXIN_cls,)
     return type(
-        f"{STRIP_cls.__name__}{remote.kind}",
+        f'{STRIP_cls.__name__}{remote.kind}',
         _kls,
         {
-            "levels": StripLevel(remote, i),
+            'levels': StripLevel(remote, i),
         },
     )(remote, i)
 

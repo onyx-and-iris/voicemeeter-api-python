@@ -19,7 +19,7 @@ class App:
 
     def get_info(self):
         current = self.vm.midi.current
-        print(f"Value of midi button {current} is {self.vm.midi.get(current)}")
+        print(f'Value of midi button {current} is {self.vm.midi.get(current)}')
         return current
 
     def on_midi_press(self):
@@ -30,7 +30,7 @@ class App:
             and max(self.vm.strip[3].levels.postfader) > -40
         ):
             print(
-                f"Strip 3 level max is greater than -40 and midi button {self.MIDI_BUTTON} is pressed"
+                f'Strip 3 level max is greater than -40 and midi button {self.MIDI_BUTTON} is pressed'
             )
             self.vm.button[self.MACROBUTTON].trigger = True
         else:
@@ -38,14 +38,14 @@ class App:
 
 
 def main():
-    KIND_ID = "banana"
+    KIND_ID = 'banana'
 
     with voicemeeterlib.api(KIND_ID, midi=True) as vm:
         App(vm)
 
-        while _ := input("Press <Enter> to exit\n"):
+        while _ := input('Press <Enter> to exit\n'):
             pass
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

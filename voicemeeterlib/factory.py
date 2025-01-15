@@ -29,8 +29,8 @@ class FactoryBuilder:
     """
 
     BuilderProgress = IntEnum(
-        "BuilderProgress",
-        "strip bus command macrobutton vban device option recorder patch fx",
+        'BuilderProgress',
+        'strip bus command macrobutton vban device option recorder patch fx',
         start=0,
     )
 
@@ -38,22 +38,22 @@ class FactoryBuilder:
         self._factory = factory
         self.kind = kind
         self._info = (
-            f"Finished building strips for {self._factory}",
-            f"Finished building buses for {self._factory}",
-            f"Finished building commands for {self._factory}",
-            f"Finished building macrobuttons for {self._factory}",
-            f"Finished building vban in/out streams for {self._factory}",
-            f"Finished building device for {self._factory}",
-            f"Finished building option for {self._factory}",
-            f"Finished building recorder for {self._factory}",
-            f"Finished building patch for {self._factory}",
-            f"Finished building fx for {self._factory}",
+            f'Finished building strips for {self._factory}',
+            f'Finished building buses for {self._factory}',
+            f'Finished building commands for {self._factory}',
+            f'Finished building macrobuttons for {self._factory}',
+            f'Finished building vban in/out streams for {self._factory}',
+            f'Finished building device for {self._factory}',
+            f'Finished building option for {self._factory}',
+            f'Finished building recorder for {self._factory}',
+            f'Finished building patch for {self._factory}',
+            f'Finished building fx for {self._factory}',
         )
         self.logger = logger.getChild(self.__class__.__name__)
 
     def _pinfo(self, name: str) -> None:
         """prints progress status for each step"""
-        name = name.split("_")[1]
+        name = name.split('_')[1]
         self.logger.debug(self._info[int(getattr(self.BuilderProgress, name))])
 
     def make_strip(self):
@@ -108,17 +108,17 @@ class FactoryBase(Remote):
 
     def __init__(self, kind_id: str, **kwargs):
         defaultkwargs = {
-            "sync": False,
-            "ratelimit": 0.033,
-            "pdirty": False,
-            "mdirty": False,
-            "midi": False,
-            "ldirty": False,
-            "timeout": 2,
-            "bits": 64,
+            'sync': False,
+            'ratelimit': 0.033,
+            'pdirty': False,
+            'mdirty': False,
+            'midi': False,
+            'ldirty': False,
+            'timeout': 2,
+            'bits': 64,
         }
-        if "subs" in kwargs:
-            defaultkwargs |= kwargs.pop("subs")  # for backwards compatibility
+        if 'subs' in kwargs:
+            defaultkwargs |= kwargs.pop('subs')  # for backwards compatibility
         kwargs = defaultkwargs | kwargs
         self.kind = kindmap(kind_id)
         super().__init__(**kwargs)
@@ -135,7 +135,7 @@ class FactoryBase(Remote):
         self._configs = None
 
     def __str__(self) -> str:
-        return f"Voicemeeter {self.kind}"
+        return f'Voicemeeter {self.kind}'
 
     @property
     @abstractmethod
@@ -225,15 +225,15 @@ def remote_factory(kind_id: str, **kwargs) -> Remote:
     Returns a Remote class of a kind
     """
     match kind_id:
-        case "basic":
+        case 'basic':
             _factory = BasicFactory
-        case "banana":
+        case 'banana':
             _factory = BananaFactory
-        case "potato":
+        case 'potato':
             _factory = PotatoFactory
         case _:
             raise ValueError(f"Unknown Voicemeeter kind '{kind_id}'")
-    return type(f"Remote{kind_id.capitalize()}", (_factory,), {})(kind_id, **kwargs)
+    return type(f'Remote{kind_id.capitalize()}', (_factory,), {})(kind_id, **kwargs)
 
 
 def request_remote_obj(kind_id: str, **kwargs) -> Remote:
@@ -243,12 +243,12 @@ def request_remote_obj(kind_id: str, **kwargs) -> Remote:
     Returns a reference to a Remote class of a kind
     """
 
-    logger_entry = logger.getChild("request_remote_obj")
+    logger_entry = logger.getChild('request_remote_obj')
 
     REMOTE_obj = None
     try:
         REMOTE_obj = remote_factory(kind_id, **kwargs)
     except (ValueError, TypeError) as e:
-        logger_entry.exception(f"{type(e).__name__}: {e}")
+        logger_entry.exception(f'{type(e).__name__}: {e}')
         raise VMError(str(e)) from e
     return REMOTE_obj

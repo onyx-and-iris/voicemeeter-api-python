@@ -16,7 +16,7 @@ class CBindings(metaclass=ABCMeta):
     Maps expected ctype argument and res types for each binding.
     """
 
-    logger_cbindings = logger.getChild("CBindings")
+    logger_cbindings = logger.getChild('CBindings')
 
     bind_login = libc.VBVMR_Login
     bind_login.restype = LONG
@@ -38,17 +38,17 @@ class CBindings(metaclass=ABCMeta):
     bind_get_voicemeeter_version.restype = LONG
     bind_get_voicemeeter_version.argtypes = [ct.POINTER(LONG)]
 
-    if hasattr(libc, "VBVMR_MacroButton_IsDirty"):
+    if hasattr(libc, 'VBVMR_MacroButton_IsDirty'):
         bind_macro_button_is_dirty = libc.VBVMR_MacroButton_IsDirty
         bind_macro_button_is_dirty.restype = LONG
         bind_macro_button_is_dirty.argtypes = None
 
-    if hasattr(libc, "VBVMR_MacroButton_GetStatus"):
+    if hasattr(libc, 'VBVMR_MacroButton_GetStatus'):
         bind_macro_button_get_status = libc.VBVMR_MacroButton_GetStatus
         bind_macro_button_get_status.restype = LONG
         bind_macro_button_get_status.argtypes = [LONG, ct.POINTER(FLOAT), LONG]
 
-    if hasattr(libc, "VBVMR_MacroButton_SetStatus"):
+    if hasattr(libc, 'VBVMR_MacroButton_SetStatus'):
         bind_macro_button_set_status = libc.VBVMR_MacroButton_SetStatus
         bind_macro_button_set_status.restype = LONG
         bind_macro_button_set_status.argtypes = [LONG, FLOAT, LONG]
@@ -121,5 +121,5 @@ class CBindings(metaclass=ABCMeta):
                 raise CAPIError(func.__name__, res)
             return res
         except CAPIError as e:
-            self.logger_cbindings.exception(f"{type(e).__name__}: {e}")
+            self.logger_cbindings.exception(f'{type(e).__name__}: {e}')
             raise

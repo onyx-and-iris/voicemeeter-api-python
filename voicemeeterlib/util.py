@@ -22,16 +22,16 @@ def timeout(func):
             try:
                 time.sleep(0.1)  # ensure at least 0.1 delay before clearing dirty
                 remote.logger.info(
-                    f"{type(remote).__name__}: Successfully logged into {remote} version {remote.version}"
+                    f'{type(remote).__name__}: Successfully logged into {remote} version {remote.version}'
                 )
-                remote.logger.debug(f"login time: {round(time.time() - start, 2)}")
+                remote.logger.debug(f'login time: {round(time.time() - start, 2)}')
                 err = None
                 break
             except CAPIError as e:
                 err = e
                 continue
         if err:
-            raise VMError("Timeout logging into the api")
+            raise VMError('Timeout logging into the api')
         remote.clear_dirty()
 
     return wrapper
@@ -48,15 +48,15 @@ def polling(func):
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        get = func.__name__ == "get"
-        mb_get = func.__name__ == "get_buttonstatus"
+        get = func.__name__ == 'get'
+        mb_get = func.__name__ == 'get_buttonstatus'
         remote, *remaining = args
 
         if get:
             param, *rem = remaining
         elif mb_get:
             id, mode, *rem = remaining
-            param = f"mb_{id}_{mode}"
+            param = f'mb_{id}_{mode}'
 
         if param in remote.cache:
             return remote.cache.pop(param)
@@ -73,15 +73,15 @@ def script(func):
     def wrapper(*args):
         remote, script = args
         if isinstance(script, dict):
-            params = ""
+            params = ''
             for key, val in script.items():
-                obj, m2, *rem = key.split("-")
+                obj, m2, *rem = key.split('-')
                 index = int(m2) if m2.isnumeric() else int(*rem)
-                params += ";".join(
+                params += ';'.join(
                     f"{obj}{f'.{m2}stream' if not m2.isnumeric() else ''}[{index}].{k}={int(v) if isinstance(v, bool) else v}"
                     for k, v in val.items()
                 )
-                params += ";"
+                params += ';'
             script = params
         return func(remote, script)
 
