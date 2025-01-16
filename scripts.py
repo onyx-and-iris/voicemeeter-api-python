@@ -5,51 +5,51 @@ from pathlib import Path
 
 
 def ex_dsl():
-    subprocess.run(["tox", "r", "-e", "dsl"])
+    subprocess.run(['tox', 'r', '-e', 'dsl'])
 
 
-def ex_events():
-    scriptpath = Path.cwd() / "examples" / "events" / "."
+def ex_callbacks():
+    scriptpath = Path.cwd() / 'examples' / 'callbacks' / '.'
     subprocess.run([sys.executable, str(scriptpath)])
 
 
 def ex_gui():
-    scriptpath = Path.cwd() / "examples" / "gui" / "."
+    scriptpath = Path.cwd() / 'examples' / 'gui' / '.'
     subprocess.run([sys.executable, str(scriptpath)])
 
 
 def ex_levels():
-    scriptpath = Path.cwd() / "examples" / "levels" / "."
+    scriptpath = Path.cwd() / 'examples' / 'levels' / '.'
     subprocess.run([sys.executable, str(scriptpath)])
 
 
 def ex_midi():
-    scriptpath = Path.cwd() / "examples" / "midi" / "."
+    scriptpath = Path.cwd() / 'examples' / 'midi' / '.'
     subprocess.run([sys.executable, str(scriptpath)])
 
 
 def ex_obs():
-    subprocess.run(["tox", "r", "-e", "obs"])
+    subprocess.run(['tox', 'r', '-e', 'obs'])
 
 
 def ex_observer():
-    scriptpath = Path.cwd() / "examples" / "observer" / "."
+    scriptpath = Path.cwd() / 'examples' / 'observer' / '.'
     subprocess.run([sys.executable, str(scriptpath)])
 
 
 def test_basic():
-    os.environ["KIND"] = "basic"
-    subprocess.run(["tox"])
+    os.environ['KIND'] = 'basic'
+    subprocess.run(['tox'])
 
 
 def test_banana():
-    os.environ["KIND"] = "banana"
-    subprocess.run(["tox"])
+    os.environ['KIND'] = 'banana'
+    subprocess.run(['tox'])
 
 
 def test_potato():
-    os.environ["KIND"] = "potato"
-    subprocess.run(["tox"])
+    os.environ['KIND'] = 'potato'
+    subprocess.run(['tox'])
 
 
 def test_all():

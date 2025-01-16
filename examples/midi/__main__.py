@@ -10,31 +10,31 @@ class App:
     MACROBUTTON = 0
 
     def __init__(self, vm):
-        self.vm = vm
-        self.vm.observer.add(self.on_midi)
+        self._vm = vm
+        self._vm.observer.add(self.on_midi)
 
     def on_midi(self):
         if self.get_info() == self.MIDI_BUTTON:
             self.on_midi_press()
 
     def get_info(self):
-        current = self.vm.midi.current
-        print(f'Value of midi button {current} is {self.vm.midi.get(current)}')
+        current = self._vm.midi.current
+        print(f'Value of midi button {current} is {self._vm.midi.get(current)}')
         return current
 
     def on_midi_press(self):
         """if midi button 48 is pressed and strip 3 level max > -40, then set trigger for macrobutton 0"""
 
         if (
-            self.vm.midi.get(self.MIDI_BUTTON) == 127
-            and max(self.vm.strip[3].levels.postfader) > -40
+            self._vm.midi.get(self.MIDI_BUTTON) == 127
+            and max(self._vm.strip[3].levels.postfader) > -40
         ):
             print(
                 f'Strip 3 level max is greater than -40 and midi button {self.MIDI_BUTTON} is pressed'
             )
-            self.vm.button[self.MACROBUTTON].trigger = True
+            self._vm.button[self.MACROBUTTON].trigger = True
         else:
-            self.vm.button[self.MACROBUTTON].trigger = False
+            self._vm.button[self.MACROBUTTON].trigger = False
 
 
 def main():

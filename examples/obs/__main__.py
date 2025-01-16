@@ -21,15 +21,20 @@ config.dictConfig(
             }
         },
         'loggers': {
-            'voicemeeterlib.iremote': {'handlers': ['stream'], 'level': 'DEBUG'}
+            'voicemeeterlib.iremote': {
+                'handlers': ['stream'],
+                'level': 'DEBUG',
+                'propagate': False,
+            }
         },
+        'root': {'handlers': ['stream'], 'level': 'WARNING'},
     }
 )
 
 
 class MyClient:
     def __init__(self, vm, stop_event):
-        self.vm = vm
+        self._vm = vm
         self._stop_event = stop_event
         self._client = obsws.EventClient()
         self._client.callback.register(
@@ -46,16 +51,16 @@ class MyClient:
         self._client.disconnect()
 
     def on_start(self):
-        self.vm.strip[0].mute = True
-        self.vm.strip[1].B1 = True
-        self.vm.strip[2].B2 = True
+        self._vm.strip[0].mute = True
+        self._vm.strip[1].B1 = True
+        self._vm.strip[2].B2 = True
 
     def on_brb(self):
-        self.vm.strip[7].fadeto(0, 500)
-        self.vm.bus[0].mute = True
+        self._vm.strip[7].fadeto(0, 500)
+        self._vm.bus[0].mute = True
 
     def on_end(self):
-        self.vm.apply(
+        self._vm.apply(
             {
                 'strip-0': {'mute': True, 'comp': {'ratio': 4.3}},
                 'strip-1': {'mute': True, 'B1': False, 'gate': {'attack': 2.3}},
@@ -65,10 +70,10 @@ class MyClient:
         )
 
     def on_live(self):
-        self.vm.strip[0].mute = False
-        self.vm.strip[7].fadeto(-6, 500)
-        self.vm.strip[7].A3 = True
-        self.vm.vban.instream[0].on = True
+        self._vm.strip[0].mute = False
+        self._vm.strip[7].fadeto(-6, 500)
+        self._vm.strip[7].A3 = True
+        self._vm.vban.instream[0].on = True
 
     def on_current_program_scene_changed(self, data):
         scene = data.scene_name

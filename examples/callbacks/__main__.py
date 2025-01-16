@@ -8,18 +8,18 @@ logging.basicConfig(level=logging.INFO)
 
 class App:
     def __init__(self, vm):
-        self.vm = vm
+        self._vm = vm
         # register the callbacks for each event
-        self.vm.observer.add(
+        self._vm.observer.add(
             [self.on_pdirty, self.on_mdirty, self.on_ldirty, self.on_midi]
         )
 
     def __enter__(self):
-        self.vm.init_thread()
+        self._vm.init_thread()
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        self.vm.end_thread()
+        self._vm.end_thread()
 
     def on_pdirty(self):
         print('pdirty!')
@@ -28,13 +28,13 @@ class App:
         print('mdirty!')
 
     def on_ldirty(self):
-        for bus in self.vm.bus:
+        for bus in self._vm.bus:
             if bus.levels.isdirty:
                 print(bus, bus.levels.all)
 
     def on_midi(self):
-        current = self.vm.midi.current
-        print(f'Value of midi button {current} is {self.vm.midi.get(current)}')
+        current = self._vm.midi.current
+        print(f'Value of midi button {current} is {self._vm.midi.get(current)}')
 
 
 def main():
