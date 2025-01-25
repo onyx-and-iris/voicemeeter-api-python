@@ -31,10 +31,8 @@ class Data:
         return (2 * self.phys_in) + (8 * self.virt_in)
 
 
-# get KIND_ID from env var, otherwise set to random
-KIND_ID = os.environ.get(
-    "KIND", random.choice(tuple(kind_id.name.lower() for kind_id in KindId))
-)
+# get KIND from environment, if not set default to potato
+KIND_ID = os.environ.get('KIND', 'potato')
 vm = voicemeeterlib.api(KIND_ID)
 kind = kindmap(KIND_ID)
 
@@ -56,7 +54,7 @@ data = Data(
 
 
 def setup_module():
-    print(f"\nRunning tests for kind [{data.name}]\n", file=sys.stdout)
+    print(f'\nRunning tests for kind [{data.name}]\n', file=sys.stdout)
     vm.login()
     vm.command.reset()
 

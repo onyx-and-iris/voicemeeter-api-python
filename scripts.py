@@ -38,18 +38,15 @@ def ex_observer():
 
 
 def test_basic():
-    os.environ['KIND'] = 'basic'
-    subprocess.run(['tox'])
+    subprocess.run(['tox'], env=os.environ.copy() | {'KIND': 'basic'})
 
 
 def test_banana():
-    os.environ['KIND'] = 'banana'
-    subprocess.run(['tox'])
+    subprocess.run(['tox'], env=os.environ.copy() | {'KIND': 'banana'})
 
 
 def test_potato():
-    os.environ['KIND'] = 'potato'
-    subprocess.run(['tox'])
+    subprocess.run(['tox'], env=os.environ.copy() | {'KIND': 'potato'})
 
 
 def test_all():

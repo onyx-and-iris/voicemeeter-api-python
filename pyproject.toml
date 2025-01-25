@@ -37,10 +37,10 @@ levels.script = "scripts:ex_levels"
 midi.script = "scripts:ex_midi"
 obs.script = "scripts:ex_obs"
 observer.script = "scripts:ex_observer"
-basic.script = "scripts:test_basic"
-banana.script = "scripts:test_banana"
-potato.script = "scripts:test_potato"
-all.script = "scripts:test_all"
+test_basic.script = "scripts:test_basic"
+test_banana.script = "scripts:test_banana"
+test_potato.script = "scripts:test_potato"
+test_all.script = "scripts:test_all"
 
 [tool.tox]
 legacy_tox_ini = """
@@ -48,6 +48,7 @@ legacy_tox_ini = """
 envlist = py310,py311,py312
 
 [testenv]
+passenv = *
 setenv = VIRTUALENV_DISCOVERY=pyenv
 allowlist_externals = poetry
 commands =
@@ -105,14 +106,16 @@ target-version = "py310"
 
 [tool.ruff.lint]
 # Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
+# Enable flake8-errmsg (EM) warnings.
+# Enable flake8-bugbear (B) warnings.
 # Unlike Flake8, Ruff doesn't enable pycodestyle warnings (`W`) or
 # McCabe complexity (`C901`) by default.
-select = ["E4", "E7", "E9", "F"]
+select = ["E4", "E7", "E9", "EM", "F", "B"]
 ignore = []
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
 fixable = ["ALL"]
-unfixable = []
+unfixable = ["B"]
 
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
