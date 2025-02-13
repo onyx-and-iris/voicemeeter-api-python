@@ -869,10 +869,12 @@ with voicemeeterlib.api('banana') as vm:
 
 ### Run tests
 
-To run all tests:
+Install [poetry](https://python-poetry.org/docs/#installation) and then:
 
-```
-pytest -v
+```powershell
+poetry poe test-basic
+poetry poe test-banana
+poetry poe test-potato
 ```
 
 ### Official Documentation

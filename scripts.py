@@ -51,4 +51,5 @@ def test_potato():
 
 def test_all():
     steps = [test_basic, test_banana, test_potato]
-    [step() for step in steps]
+    for step in steps:
+        step()
