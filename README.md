@@ -2,9 +2,9 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/onyx-and-iris/voicemeeter-api-python/blob/dev/LICENSE)
 [![Poetry](https://img.shields.io/endpoint?url=https://python-poetry.org/badge/v0.json)](https://python-poetry.org/)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![Tests Status](./tests/reports/badge-basic.svg?dummy=8484744)](./tests/reports/junit-basic.html)
-[![Tests Status](./tests/reports/badge-banana.svg?dummy=8484744)](./tests/reports/junit-banana.html)
-[![Tests Status](./tests/reports/badge-potato.svg?dummy=8484744)](./tests/reports/junit-potato.html)
+[![Tests Status](./tests/reports/badge-basic.svg?dummy=8484744)](./tests/reports/basic.html)
+[![Tests Status](./tests/reports/badge-banana.svg?dummy=8484744)](./tests/reports/banana.html)
+[![Tests Status](./tests/reports/badge-potato.svg?dummy=8484744)](./tests/reports/potato.html)
 
 # Python Wrapper for Voicemeeter API
 
