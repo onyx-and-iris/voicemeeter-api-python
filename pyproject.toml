@@ -41,39 +41,8 @@ test-basic.script = "scripts:test_basic"
 test-banana.script = "scripts:test_banana"
 test-potato.script = "scripts:test_potato"
 test-all.script = "scripts:test_all"
+generate-badges.script = "scripts:generate_badges"
 
-[tool.tox]
-legacy_tox_ini = """
-    [tox]
-    envlist = py310,py311,py312,py313
-
-    [testenv]
-    passenv = *
-    setenv = VIRTUALENV_DISCOVERY=pyenv
-    allowlist_externals = poetry
-    commands_pre =
-      poetry install --no-interaction --no-root
-    commands =
-      poetry run pytest tests
-
-    [testenv:dsl]
-    setenv = VIRTUALENV_DISCOVERY=pyenv
-    allowlist_externals = poetry
-    deps = pyparsing
-    commands_pre =
-      poetry install --no-interaction --no-root --without dev
-    commands =
-      poetry run python examples/dsl
-
-    [testenv:obs]
-    setenv = VIRTUALENV_DISCOVERY=pyenv
-    allowlist_externals = poetry
-    deps = obsws-python
-    commands_pre =
-      poetry install --no-interaction --no-root --without dev
-    commands =
-      poetry run python examples/obs
-"""
 
 [tool.ruff]
 exclude = [

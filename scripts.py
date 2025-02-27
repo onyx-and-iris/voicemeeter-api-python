@@ -9,7 +9,7 @@ def ex_dsl():
 
 
 def ex_callbacks():
-    scriptpath = Path.cwd() / 'examples' / 'callbacks' / '.'
+    scriptpath = Path.cwd() / 'examples' / 'events' / 'callbacks' / '.'
     subprocess.run([sys.executable, str(scriptpath)])
 
 
@@ -33,7 +33,7 @@ def ex_obs():
 
 
 def ex_observer():
-    scriptpath = Path.cwd() / 'examples' / 'observer' / '.'
+    scriptpath = Path.cwd() / 'examples' / 'events' / 'observer' / '.'
     subprocess.run([sys.executable, str(scriptpath)])
 
 
@@ -53,3 +53,10 @@ def test_all():
     steps = [test_basic, test_banana, test_potato]
     for step in steps:
         step()
+
+
+def generate_badges():
+    for kind in ['basic', 'banana', 'potato']:
+        subprocess.run(
+            ['tox', 'r', '-e', 'genbadges'], env=os.environ.copy() | {'KIND': kind}
+        )

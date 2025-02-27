@@ -128,10 +128,11 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+# test reports
+tests/reports/junit-*.xml
+
 # test/config
-quick.py
+test-*.py
 config.toml
-vm-api.log
-logging.json
 
 .vscode/
