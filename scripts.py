@@ -58,5 +58,5 @@ def test_all():
 def generate_badges():
     for kind in ['basic', 'banana', 'potato']:
         subprocess.run(
-            ['tox', 'r', '-e', 'genbadges'], env=os.environ.copy() | {'KIND': kind}
+            ['tox', 'r', '-e', 'genbadge'], env=os.environ.copy() | {'KIND': kind}
         )
