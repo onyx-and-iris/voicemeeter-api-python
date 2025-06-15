@@ -12,11 +12,9 @@ class IRemote(metaclass=ABCMeta):
     Provides some default implementation
     """
 
-    def __init__(self, remote, index=None):#, jndex = None, kndex = None):
+    def __init__(self, remote, index=None):
         self._remote = remote
         self.index = index
-        #self.jndex = jndex
-        #self.kndex = kndex
         self.logger = logger.getChild(self.__class__.__name__)
 
     def getter(self, param, **kwargs):

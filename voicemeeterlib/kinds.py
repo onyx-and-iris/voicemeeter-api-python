@@ -65,14 +65,6 @@ class KindMapClass(metaclass=SingletonType):
     @property
     def num_bus_levels(self) -> int:
         return 8 * (self.phys_out + self.virt_out)
-    
-    @property
-    def num_bus_channels(self) -> int:
-        return self.channels
-    
-    @property
-    def num_bus_cells(self) -> int:
-        return self.cells
 
     def __str__(self) -> str:
         return self.name.capitalize()
@@ -86,8 +78,8 @@ class BasicMap(KindMapClass):
     asio: tuple = (0, 0)
     insert: int = 0
     composite: int = 0
-    channels: int = 8
-    cells: int = 7
+    channels: int = 0
+    cells: int = 0
 
 
 @dataclass(frozen=True)
@@ -110,8 +102,8 @@ class PotatoMap(KindMapClass):
     asio: tuple = (10, 8)
     insert: int = 34
     composite: int = 8
-    channels: int = 0
-    cells: int = 0
+    channels: int = 9
+    cells: int = 7
 
 
 def kind_factory(kind_id):

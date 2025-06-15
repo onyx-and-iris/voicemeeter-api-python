@@ -88,6 +88,25 @@ class Bus(IRemote):
 
 
 class BusEQ(IRemote):
+    @classmethod
+    def make(cls, remote, i):
+        """
+        Factory method for BusEQ.
+
+        Returns a BusEQ class.
+        """
+        kls = (cls,)
+        return type(
+            'BusEQ',
+            kls,
+            {
+                'channel': tuple(
+                    BusEQCh.make(remote, j)
+                    for j in range(remote.kind.channels)
+                )
+            },
+        )
+
     @property
     def identifier(self) -> str:
         return f'Bus[{self.index}].eq'
@@ -109,15 +128,34 @@ class BusEQ(IRemote):
         self.setter('ab', 1 if val else 0)
 
 class BusEQCh(IRemote):
+    @classmethod
+    def make(cls, remote, i):
+        """
+        Factory method for Bus EQ channel.
+
+        Returns a BusEQCh class.
+        """
+        kls = (cls,)
+        return type(
+            'BusEQCh',
+            kls,
+            {
+                'cell': tuple(
+                    BusEQChCell(remote, k)
+                    for k in range(remote.kind.cells)
+                )
+            },
+        )
+
     @property
     def identifier(self) -> str:
-        return f'Bus[{self.index}].eq.channel[{self.index}]'
+        return f'channel[{self.index}]'
 
 
 class BusEQChCell(IRemote):
     @property
     def identifier(self) -> str:
-        return f'Bus[{self.index}].eq.channel[{self.index}].cell[{self.kndex}]'
+        return f'cell[{self.index}]'
     
     @property
     def on(self) -> bool:
@@ -300,20 +338,6 @@ def make_bus_level_map(kind):
 
 _make_bus_level_maps = {kind.name: make_bus_level_map(kind) for kind in kinds.all}
 
-def _make_bus_eq(remote, i):
-    """
-    Factory function for bus.eq.
-
-    Returns a BusEQ class of a kind.
-    """
-    return type(
-        'BusEQ',
-        (),
-        {
-            'channel': BusEQCh(remote, i)
-        },
-    )
-
 
 def _make_bus_mode_mixin():
     """Creates a mixin of Bus Modes."""
@@ -379,14 +403,13 @@ def bus_factory(is_phys_bus, remote, i) -> Union[PhysicalBus, VirtualBus]:
         else VirtualBus.make(remote, i, remote.kind)
     )
     BUSMODEMIXIN_cls = _make_bus_mode_mixin()
-    BUSEQ_cls = _make_bus_eq(remote, i)
     return type(
         f'{BUS_cls.__name__}{remote.kind}',
         (BUS_cls,),
         {
             'levels': BusLevel(remote, i),
             'mode': BUSMODEMIXIN_cls(remote, i),
-            'eq': BUSEQ_cls,
+            'eq': BusEQ.make(remote, i),
         },
     )(remote, i)
 
@@ -398,29 +421,3 @@ def request_bus_obj(phys_bus, remote, i) -> Bus:
     Returns a reference to a bus subclass of a kind
     """
     return bus_factory(phys_bus, remote, i)
-
-def request_busCh_obj(channel, remote, i) -> BusEQCh:
-    """
-    Bus EQ Channel entry point. Wraps factory method
-
-    Returns a reference to a bus EQ channel subcless of a kind
-    """
-    kls = ()
-    BusEQChCls = type('channel',kls,{})
-    return type(
-        f'{BusEQChCls.__name__}{remote.kind}',
-        (BusEQChCls,){},
-    )()
-
-def request_busChCe_obj(cell, remote, i) -> BusEQChCell:
-    """
-    Bus EQ Channel Cell entry point. Wraps factory method
-
-    Returns a reference to a bus EQ channel cell subcless of a kind
-    """
-    kls = ()
-    BusEQCellCls = type('cell',kls,{})
-    return type(
-        f'{BusEQCellCls.__name__}{remote.kind}',
-        (BusEQCellCls,){},
-    )()
