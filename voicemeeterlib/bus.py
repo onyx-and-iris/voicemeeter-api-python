@@ -101,8 +101,7 @@ class BusEQ(IRemote):
             kls,
             {
                 'channel': tuple(
-                    BusEQCh.make(remote, j)
-                    for j in range(remote.kind.channels)
+                    BusEQCh.make(remote, i, j) for j in range(remote.kind.channels)
                 )
             },
         )
@@ -127,9 +126,10 @@ class BusEQ(IRemote):
     def ab(self, val: bool):
         self.setter('ab', 1 if val else 0)
 
+
 class BusEQCh(IRemote):
     @classmethod
-    def make(cls, remote, i):
+    def make(cls, remote, i, j):
         """
         Factory method for Bus EQ channel.
 
@@ -141,61 +141,70 @@ class BusEQCh(IRemote):
             kls,
             {
                 'cell': tuple(
-                    BusEQChCell(remote, k)
-                    for k in range(remote.kind.cells)
+                    BusEQChCell(remote, i, j, k) for k in range(remote.kind.cells)
                 )
             },
         )
 
+    def __init__(self, remote, i, j):
+        super().__init__(remote, i)
+        self.channel_index = j
+
     @property
     def identifier(self) -> str:
-        return f'channel[{self.index}]'
+        return f'Bus[{self.index}].eq.channel[{self.channel_index}]'
 
 
 class BusEQChCell(IRemote):
+    def __init__(self, remote, i, j, k):
+        super().__init__(remote, i)
+        self.channel_index = j
+        self.cell_index = k
+
     @property
     def identifier(self) -> str:
-        return f'cell[{self.index}]'
-    
+        return f'Bus[{self.index}].eq.channel[{self.channel_index}].cell[{self.cell_index}]'
+
     @property
     def on(self) -> bool:
         return self.getter('on') == 1
-    
+
     @on.setter
-    def on(self,val: bool):
+    def on(self, val: bool):
         self.setter('on', 1 if val else 0)
 
     @property
     def type(self) -> int:
         return int(self.getter('type'))
-    
+
     @type.setter
     def type(self, val: int):
         self.setter('type', val)
 
     @property
     def f(self) -> float:
-        return round(self.getter('f'),1)
-    
+        return round(self.getter('f'), 1)
+
     @f.setter
-    def f(self,val: float):
+    def f(self, val: float):
         self.setter('f', val)
 
     @property
     def gain(self) -> float:
-        return round(self.getter('gain'),1)
-    
+        return round(self.getter('gain'), 1)
+
     @gain.setter
-    def gain(self,val: float):
+    def gain(self, val: float):
         self.setter('gain', val)
 
     @property
     def q(self) -> float:
-        return round(self.getter('q'),1)
-    
+        return round(self.getter('q'), 1)
+
     @q.setter
-    def q(self,val: float):
+    def q(self, val: float):
         self.setter('q', val)
+
 
 class PhysicalBus(Bus):
     @classmethod
