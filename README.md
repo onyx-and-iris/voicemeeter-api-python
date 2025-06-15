@@ -292,6 +292,23 @@ example:
 vm.bus[3].eq.on = True
 ```
 
+##### Bus.EQ.Channel.Cell
+
+The following properties are available.
+
+-   `on`: boolean
+-   `type`: int
+-   `f`: float
+-   `gain`: float
+-   `q`: quality
+
+example:
+
+```python
+vm.bus[3].eq.channel[0].cell[2].on = True
+vm.bus[3].eq.channel[0].cell[2].f = 5000
+```
+
 ##### Bus.Modes
 
 The following properties are available.

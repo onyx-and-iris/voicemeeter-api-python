@@ -90,7 +90,7 @@ class BananaMap(KindMapClass):
     asio: tuple = (6, 8)
     insert: int = 22
     composite: int = 8
-    channels: int = 9
+    channels: int = 8
     cells: int = 6
 
 
@@ -102,7 +102,7 @@ class PotatoMap(KindMapClass):
     asio: tuple = (10, 8)
     insert: int = 34
     composite: int = 8
-    channels: int = 9
+    channels: int = 8
     cells: int = 6
 
 

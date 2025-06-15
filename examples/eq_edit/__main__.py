@@ -23,14 +23,18 @@ def main():
         for i in channels_idx:
             vm.bus[0].eq.channel[i].cell[0].on = True
             vm.bus[0].eq.channel[i].cell[0].f = 500
+            vm.bus[0].eq.channel[i].cell[0].gain = -10
             vm.bus[0].eq.channel[i].cell[0].type = 3 # Should correspond to LPF
+            vm.bus[0].eq.channel[i].cell[0].q = 10
 
         time.sleep(3)
         vm.bus[0].eq.on = False
         for i in channels_idx:
             vm.bus[0].eq.channel[i].cell[0].on = False
             vm.bus[0].eq.channel[i].cell[0].f = 50
+            vm.bus[0].eq.channel[i].cell[0].gain = 0
             vm.bus[0].eq.channel[i].cell[0].type = 0
+            vm.bus[0].eq.channel[i].cell[0].q = 3
 
 if __name__ == '__main__':
     main()
