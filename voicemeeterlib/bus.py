@@ -96,7 +96,7 @@ class BusEQ(IRemote):
         Returns a BusEQ class.
         """
         kls = (cls,)
-        return type(
+        BusEQ_cls = type(
             'BusEQ',
             kls,
             {
@@ -105,6 +105,7 @@ class BusEQ(IRemote):
                 )
             },
         )
+        return BusEQ_cls(remote, i)
 
     @property
     def identifier(self) -> str:
@@ -136,7 +137,7 @@ class BusEQCh(IRemote):
         Returns a BusEQCh class.
         """
         kls = (cls,)
-        return type(
+        BusEQCh_cls = type(
             'BusEQCh',
             kls,
             {
@@ -145,6 +146,7 @@ class BusEQCh(IRemote):
                 )
             },
         )
+        return BusEQCh_cls(remote, i, j)
 
     def __init__(self, remote, i, j):
         super().__init__(remote, i)

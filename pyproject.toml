@@ -16,7 +16,7 @@ dependencies = [
 packages = [{ include = "voicemeeterlib" }]
 
 [tool.poetry.requires-plugins]
-poethepoet = "^0.32.1"
+poethepoet = "^0.35.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.4"
