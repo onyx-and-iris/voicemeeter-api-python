@@ -6,6 +6,8 @@ from typing import Iterable
 
 from . import misc
 from .bus import request_bus_obj as bus
+from .bus import request_busCh_obj as channel
+from .bus import request_busChCe_obj as cell
 from .command import Command
 from .config import request_config as configs
 from .device import Device
@@ -30,7 +32,7 @@ class FactoryBuilder:
 
     BuilderProgress = IntEnum(
         'BuilderProgress',
-        'strip bus command macrobutton vban device option recorder patch fx',
+        'strip bus channels cells command macrobutton vban device option recorder patch fx',
         start=0,
     )
 
@@ -40,6 +42,8 @@ class FactoryBuilder:
         self._info = (
             f'Finished building strips for {self._factory}',
             f'Finished building buses for {self._factory}',
+            f'Finished building channels for {self._factory}',
+            f'Finished building cells for {self._factory}',
             f'Finished building commands for {self._factory}',
             f'Finished building macrobuttons for {self._factory}',
             f'Finished building vban in/out streams for {self._factory}',
@@ -67,6 +71,20 @@ class FactoryBuilder:
         self._factory.bus = tuple(
             bus(i < self.kind.phys_out, self._factory, i)
             for i in range(self.kind.num_bus)
+        )
+        return self
+
+    def make_channels(self):
+        self._factory.channels = tuple(
+            channel(i < self.kind.channels, self._factory, i)
+            for i in range(self.kind.channels)
+        )
+        return self
+ 
+    def make_cells(self):
+        self._factory.cells = tuple(
+            cell(i < self.kind.cells, self._factory, i)
+            for i in range(self.kind.cells)
         )
         return self
 
@@ -126,6 +144,8 @@ class FactoryBase(Remote):
         self._steps = (
             self.builder.make_strip,
             self.builder.make_bus,
+            self.builder.make_channels,
+            self.builder.make_cells,
             self.builder.make_command,
             self.builder.make_macrobutton,
             self.builder.make_vban,
