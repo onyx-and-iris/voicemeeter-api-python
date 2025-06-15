@@ -91,7 +91,7 @@ class BananaMap(KindMapClass):
     insert: int = 22
     composite: int = 8
     channels: int = 9
-    cells: int = 7
+    cells: int = 6
 
 
 @dataclass(frozen=True)
@@ -103,7 +103,7 @@ class PotatoMap(KindMapClass):
     insert: int = 34
     composite: int = 8
     channels: int = 9
-    cells: int = 7
+    cells: int = 6
 
 
 def kind_factory(kind_id):
