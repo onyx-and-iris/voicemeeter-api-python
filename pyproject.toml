@@ -1,6 +1,6 @@
 [project]
 name = "voicemeeter-api"
-version = "2.6.1"
+version = "2.7.0"
 description = "A Python wrapper for the Voiceemeter API"
 authors = [
     {name = "Onyx and Iris",email = "code@onyxandiris.online"}
@@ -37,6 +37,7 @@ levels.script = "scripts:ex_levels"
 midi.script = "scripts:ex_midi"
 obs.script = "scripts:ex_obs"
 observer.script = "scripts:ex_observer"
+eqedit.script = "scripts:ex_eqedit"
 test-basic.script = "scripts:test_basic"
 test-banana.script = "scripts:test_banana"
 test-potato.script = "scripts:test_potato"
