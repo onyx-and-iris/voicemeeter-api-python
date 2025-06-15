@@ -15,14 +15,14 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 
 ### Added
 
--   Bus.EQ Channel Cell commands added, see [Bus.EQ.Channel.Cell]().
+-   Bus.EQ Channel Cell commands added, see [Bus.EQ.Channel.Cell](https://github.com/onyx-and-iris/voicemeeter-api-python?tab=readme-ov-file#buseqchannelcell).
     - Added by [PR #16](https://github.com/onyx-and-iris/voicemeeter-api-python/pull/16)
 
 ## [2.6.0] - 2024-06-29
 
 ### Added
 
--   bits kwarg for overriding the type of GUI that is launched on startup. 
+-   bits kwarg for overriding the type of GUI that is launched on startup.
     -   Defaults to 64, set it to either 32 or 64.
 
 ### Fixed
