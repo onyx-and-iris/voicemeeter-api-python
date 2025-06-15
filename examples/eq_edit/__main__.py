@@ -2,39 +2,49 @@ import time
 
 import voicemeeterlib
 
-# Creates an array of channels you want to edit
-# s is the channel to start on, n is how many channels to edit
-def create_channel_array(s, n):
-    return list(range(s, s+n))
 
 def main():
     KIND_ID = 'banana'
+    BUS_INDEX = 0  # Index of the bus to edit, can be changed as needed
+    CHANNEL_INDEX = 0  # Index of the channel to edit, can be changed as needed
 
     with voicemeeterlib.api(KIND_ID) as vm:
-        print( 'Check getting values' )
-        print( f'Bus[0].EQ.on: {vm.bus[0].eq.on}')
-        print( f'Bus[0].EQ.channel[0].cell[0].on: {vm.bus[0].eq.channel[0].cell[0].on}')
+        print(f'Bus[{BUS_INDEX}].EQ.on: {vm.bus[BUS_INDEX].eq.on}')
+        print(
+            f'Bus[{BUS_INDEX}].EQ.channel[{CHANNEL_INDEX}].cell[0].on: {vm.bus[BUS_INDEX].eq.channel[CHANNEL_INDEX].cell[0].on}'
+        )
 
-        print( 'Check sending commands (should affect your VM Banana window)')
-        channels_idx = create_channel_array(0, 2)
-        vm.bus[0].eq.on = True
-        vm.bus[0].eq.ab = 0 # corresponds to A EQ memory slot
-        vm.bus[0].mute = False
-        for i in channels_idx:
-            vm.bus[0].eq.channel[i].cell[0].on = True
-            vm.bus[0].eq.channel[i].cell[0].f = 500
-            vm.bus[0].eq.channel[i].cell[0].gain = -10
-            vm.bus[0].eq.channel[i].cell[0].type = 3 # Should correspond to LPF
-            vm.bus[0].eq.channel[i].cell[0].q = 10
+        print('Check sending commands (should affect your VM Banana window)')
 
-        time.sleep(3)
-        vm.bus[0].eq.on = False
-        for i in channels_idx:
-            vm.bus[0].eq.channel[i].cell[0].on = False
-            vm.bus[0].eq.channel[i].cell[0].f = 50
-            vm.bus[0].eq.channel[i].cell[0].gain = 0
-            vm.bus[0].eq.channel[i].cell[0].type = 0
-            vm.bus[0].eq.channel[i].cell[0].q = 3
+        vm.bus[BUS_INDEX].eq.on = True
+        vm.bus[BUS_INDEX].eq.ab = 0  # corresponds to A EQ memory slot
+        vm.bus[BUS_INDEX].mute = False
+
+        for j, cell in enumerate(vm.bus[BUS_INDEX].eq.channel[CHANNEL_INDEX].cell):
+            cell.on = True
+            cell.f = 500
+            cell.gain = -10
+            cell.type = 3  # Should correspond to LPF
+            cell.q = 10
+
+            print(
+                f'Channel {CHANNEL_INDEX}, Cell {j}: on={cell.on}, f={cell.f}, type={cell.type}, gain={cell.gain}, q={cell.q}'
+            )
+
+            time.sleep(1)  # Sleep to simulate processing time
+
+            cell.on = False
+            cell.f = 50
+            cell.gain = 0
+            cell.type = 0
+            cell.q = 3
+
+            print(
+                f'Channel {CHANNEL_INDEX}, Cell {j}: on={cell.on}, f={cell.f}, type={cell.type} , gain={cell.gain}, q={cell.q}'
+            )
+
+        vm.bus[BUS_INDEX].eq.on = False
+
 
 if __name__ == '__main__':
     main()
