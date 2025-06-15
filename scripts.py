@@ -37,6 +37,11 @@ def ex_observer():
     subprocess.run([sys.executable, str(scriptpath)])
 
 
+def ex_eqedit():
+    scriptpath = Path.cwd() / 'examples' / 'eq_edit' / '.'
+    subprocess.run([sys.executable, str(scriptpath)])
+
+
 def test_basic():
     subprocess.run(['tox'], env=os.environ.copy() | {'KIND': 'basic'})
 

@@ -11,6 +11,13 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 
 -   [x]
 
+## [2.7.0] - 2025-06-15
+
+### Added
+
+-   Bus.EQ Channel Cell commands added, see [Bus.EQ.Channel.Cell]().
+    - Added by [PR #16](https://github.com/onyx-and-iris/voicemeeter-api-python/pull/16)
+
 ## [2.6.0] - 2024-06-29
 
 ### Added

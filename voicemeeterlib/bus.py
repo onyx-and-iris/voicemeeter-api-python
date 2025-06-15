@@ -88,6 +88,25 @@ class Bus(IRemote):
 
 
 class BusEQ(IRemote):
+    @classmethod
+    def make(cls, remote, i):
+        """
+        Factory method for BusEQ.
+
+        Returns a BusEQ class.
+        """
+        kls = (cls,)
+        BusEQ_cls = type(
+            'BusEQ',
+            kls,
+            {
+                'channel': tuple(
+                    BusEQCh.make(remote, i, j) for j in range(remote.kind.channels)
+                )
+            },
+        )
+        return BusEQ_cls(remote, i)
+
     @property
     def identifier(self) -> str:
         return f'Bus[{self.index}].eq'
@@ -107,6 +126,86 @@ class BusEQ(IRemote):
     @ab.setter
     def ab(self, val: bool):
         self.setter('ab', 1 if val else 0)
+
+
+class BusEQCh(IRemote):
+    @classmethod
+    def make(cls, remote, i, j):
+        """
+        Factory method for Bus EQ channel.
+
+        Returns a BusEQCh class.
+        """
+        kls = (cls,)
+        BusEQCh_cls = type(
+            'BusEQCh',
+            kls,
+            {
+                'cell': tuple(
+                    BusEQChCell(remote, i, j, k) for k in range(remote.kind.cells)
+                )
+            },
+        )
+        return BusEQCh_cls(remote, i, j)
+
+    def __init__(self, remote, i, j):
+        super().__init__(remote, i)
+        self.channel_index = j
+
+    @property
+    def identifier(self) -> str:
+        return f'Bus[{self.index}].eq.channel[{self.channel_index}]'
+
+
+class BusEQChCell(IRemote):
+    def __init__(self, remote, i, j, k):
+        super().__init__(remote, i)
+        self.channel_index = j
+        self.cell_index = k
+
+    @property
+    def identifier(self) -> str:
+        return f'Bus[{self.index}].eq.channel[{self.channel_index}].cell[{self.cell_index}]'
+
+    @property
+    def on(self) -> bool:
+        return self.getter('on') == 1
+
+    @on.setter
+    def on(self, val: bool):
+        self.setter('on', 1 if val else 0)
+
+    @property
+    def type(self) -> int:
+        return int(self.getter('type'))
+
+    @type.setter
+    def type(self, val: int):
+        self.setter('type', val)
+
+    @property
+    def f(self) -> float:
+        return round(self.getter('f'), 1)
+
+    @f.setter
+    def f(self, val: float):
+        self.setter('f', val)
+
+    @property
+    def gain(self) -> float:
+        return round(self.getter('gain'), 1)
+
+    @gain.setter
+    def gain(self, val: float):
+        self.setter('gain', val)
+
+    @property
+    def q(self) -> float:
+        return round(self.getter('q'), 1)
+
+    @q.setter
+    def q(self, val: float):
+        self.setter('q', val)
 
 
 class PhysicalBus(Bus):
@@ -321,7 +420,7 @@ def bus_factory(is_phys_bus, remote, i) -> Union[PhysicalBus, VirtualBus]:
         {
             'levels': BusLevel(remote, i),
             'mode': BUSMODEMIXIN_cls(remote, i),
-            'eq': BusEQ(remote, i),
+            'eq': BusEQ.make(remote, i),
         },
     )(remote, i)
 

@@ -31,6 +31,8 @@ class KindMapClass(metaclass=SingletonType):
     asio: tuple
     insert: int
     composite: int
+    channels: int
+    cells: int
 
     @property
     def phys_in(self) -> int:
@@ -76,6 +78,8 @@ class BasicMap(KindMapClass):
     asio: tuple = (0, 0)
     insert: int = 0
     composite: int = 0
+    channels: int = 0
+    cells: int = 0
 
 
 @dataclass(frozen=True)
@@ -86,6 +90,8 @@ class BananaMap(KindMapClass):
     asio: tuple = (6, 8)
     insert: int = 22
     composite: int = 8
+    channels: int = 8
+    cells: int = 6
 
 
 @dataclass(frozen=True)
@@ -96,6 +102,8 @@ class PotatoMap(KindMapClass):
     asio: tuple = (10, 8)
     insert: int = 34
     composite: int = 8
+    channels: int = 8
+    cells: int = 6
 
 
 def kind_factory(kind_id):
