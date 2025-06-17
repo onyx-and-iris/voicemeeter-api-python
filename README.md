@@ -231,7 +231,7 @@ The following properties are available.
 
 -   `on`: boolean
 -   `type`: int, from 0 up to 6
--   `f`: float, from 2.0 up to 20_000.0
+-   `f`: float, from 20.0 up to 20_000.0
 -   `gain`: float, from -36.0 up to 18.0
     -   currently there is a bug with the remote API, only values -12 up to +12 are settable, this will be fixed in an upcoming patch.
 -   `q`: float, from 0.3 up to 100
@@ -316,7 +316,7 @@ The following properties are available.
 
 -   `on`: boolean
 -   `type`: int, from 0 up to 6
--   `f`: float, from 2.0 up to 20_000.0
+-   `f`: float, from 20.0 up to 20_000.0
 -   `gain`: float, from -36.0 up to 18.0
     -   currently there is a bug with the remote API, only values -12 up to +12 are settable, this will be fixed in an upcoming patch.
 -   `q`: float, from 0.3 up to 100.0
