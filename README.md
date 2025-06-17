@@ -225,6 +225,24 @@ example:
 vm.strip[0].eq.ab = True
 ```
 
+##### Strip.EQ.Channel.Cell
+
+The following properties are available.
+
+-   `on`: boolean
+-   `type`: int, from 0 up to 6
+-   `f`: float, from 2.0 up to 20_000.0
+-   `gain`: float, from -36.0 up to 18.0
+    -   currently there is a bug with the remote API, only values -12 up to +12 are settable, this will be fixed in an upcoming patch.
+-   `q`: float, from 0.3 up to 100
+
+example:
+
+```python
+vm.strip[0].eq.channel[0].cell[2].on = True
+vm.strip[1].eq.channel[0].cell[2].f = 5000
+```
+
 Strip EQ parameters are defined for PhysicalStrips, potato version only.
 
 ##### Strip.Gainlayers
@@ -297,10 +315,11 @@ vm.bus[3].eq.on = True
 The following properties are available.
 
 -   `on`: boolean
--   `type`: int
--   `f`: float
--   `gain`: float
--   `q`: quality
+-   `type`: int, from 0 up to 6
+-   `f`: float, from 2.0 up to 20_000.0
+-   `gain`: float, from -36.0 up to 18.0
+    -   currently there is a bug with the remote API, only values -12 up to +12 are settable, this will be fixed in an upcoming patch.
+-   `q`: float, from 0.3 up to 100.0
 
 example:
 
