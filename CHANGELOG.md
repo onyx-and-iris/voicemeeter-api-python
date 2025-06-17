@@ -11,9 +11,12 @@ Before any major/minor/patch bump all unit tests will be run to verify they pass
 
 -   [x]
 
-## [2.7.0] - 2025-06-15
+## [2.7.1] - 2025-06-15
 
 ### Added
+
+-   Strip.EQ Channel Cell commands added, see [Strip.EQ.Channel.Cell](https://github.com/onyx-and-iris/voicemeeter-api-python?tab=readme-ov-file#stripeqchannelcell)
+    - They are only available for potato version.
 
 -   Bus.EQ Channel Cell commands added, see [Bus.EQ.Channel.Cell](https://github.com/onyx-and-iris/voicemeeter-api-python?tab=readme-ov-file#buseqchannelcell).
     - Added by [PR #16](https://github.com/onyx-and-iris/voicemeeter-api-python/pull/16)
