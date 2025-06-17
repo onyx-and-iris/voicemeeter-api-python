@@ -96,7 +96,7 @@ class PhysicalStrip(Strip):
                 'comp': StripComp(remote, i),
                 'gate': StripGate(remote, i),
                 'denoiser': StripDenoiser(remote, i),
-                'eq': StripEQ(remote, i),
+                'eq': StripEQ.make(remote, i),
                 'device': StripDevice.make(remote, i),
             },
         )
@@ -268,6 +268,25 @@ class StripDenoiser(IRemote):
 
 
 class StripEQ(IRemote):
+    @classmethod
+    def make(cls, remote, i):
+        """
+        Factory method for Strip EQ.
+
+        Returns a StripEQ class.
+        """
+        STRIPEQ_cls = type(
+            'StripEQ',
+            (cls,),
+            {
+                'channel': tuple(
+                    StripEQCh.make(remote, i, j)
+                    for j in range(remote.kind.strip_channels)
+                )
+            },
+        )
+        return STRIPEQ_cls(remote, i)
+
     @property
     def identifier(self) -> str:
         return f'Strip[{self.index}].eq'
@@ -287,6 +306,85 @@ class StripEQ(IRemote):
     @ab.setter
     def ab(self, val: bool):
         self.setter('ab', 1 if val else 0)
+
+
+class StripEQCh(IRemote):
+    @classmethod
+    def make(cls, remote, i, j):
+        """
+        Factory method for Strip EQ channel.
+
+        Returns a StripEQCh class.
+        """
+        StripEQCh_cls = type(
+            'StripEQCh',
+            (cls,),
+            {
+                'cell': tuple(
+                    StripEQChCell(remote, i, j, k) for k in range(remote.kind.cells)
+                )
+            },
+        )
+        return StripEQCh_cls(remote, i, j)
+
+    def __init__(self, remote, i, j):
+        super().__init__(remote, i)
+        self.channel_index = j
+
+    @property
+    def identifier(self) -> str:
+        return f'Strip[{self.index}].eq.channel[{self.channel_index}]'
+
+
+class StripEQChCell(IRemote):
+    def __init__(self, remote, i, j, k):
+        super().__init__(remote, i)
+        self.channel_index = j
+        self.cell_index = k
+
+    @property
+    def identifier(self) -> str:
+        return f'Strip[{self.index}].eq.channel[{self.channel_index}].cell[{self.cell_index}]'
+
+    @property
+    def on(self) -> bool:
+        return self.getter('on') == 1
+
+    @on.setter
+    def on(self, val: bool):
+        self.setter('on', 1 if val else 0)
+
+    @property
+    def type(self) -> int:
+        return int(self.getter('type'))
+
+    @type.setter
+    def type(self, val: int):
+        self.setter('type', val)
+
+    @property
+    def f(self) -> float:
+        return round(self.getter('f'), 1)
+
+    @f.setter
+    def f(self, val: float):
+        self.setter('f', val)
+
+    @property
+    def gain(self) -> float:
+        return round(self.getter('gain'), 1)
+
+    @gain.setter
+    def gain(self, val: float):
+        self.setter('gain', val)
+
+    @property
+    def q(self) -> float:
+        return round(self.getter('q'), 1)
+
+    @q.setter
+    def q(self, val: float):
+        self.setter('q', val)
 
 
 class StripDevice(IRemote):

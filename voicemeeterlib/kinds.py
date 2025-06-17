@@ -31,7 +31,8 @@ class KindMapClass(metaclass=SingletonType):
     asio: tuple
     insert: int
     composite: int
-    channels: int
+    strip_channels: int
+    bus_channels: int
     cells: int
 
     @property
@@ -78,7 +79,8 @@ class BasicMap(KindMapClass):
     asio: tuple = (0, 0)
     insert: int = 0
     composite: int = 0
-    channels: int = 0
+    strip_channels: int = 0
+    bus_channels: int = 0
     cells: int = 0
 
 
@@ -90,7 +92,8 @@ class BananaMap(KindMapClass):
     asio: tuple = (6, 8)
     insert: int = 22
     composite: int = 8
-    channels: int = 8
+    strip_channels: int = 0
+    bus_channels: int = 8
     cells: int = 6
 
 
@@ -102,7 +105,8 @@ class PotatoMap(KindMapClass):
     asio: tuple = (10, 8)
     insert: int = 34
     composite: int = 8
-    channels: int = 8
+    strip_channels: int = 2
+    bus_channels: int = 8
     cells: int = 6
 
 

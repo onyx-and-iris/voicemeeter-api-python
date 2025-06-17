@@ -95,13 +95,12 @@ class BusEQ(IRemote):
 
         Returns a BusEQ class.
         """
-        kls = (cls,)
         BusEQ_cls = type(
             'BusEQ',
-            kls,
+            (cls,),
             {
                 'channel': tuple(
-                    BusEQCh.make(remote, i, j) for j in range(remote.kind.channels)
+                    BusEQCh.make(remote, i, j) for j in range(remote.kind.bus_channels)
                 )
             },
         )
@@ -136,10 +135,9 @@ class BusEQCh(IRemote):
 
         Returns a BusEQCh class.
         """
-        kls = (cls,)
         BusEQCh_cls = type(
             'BusEQCh',
-            kls,
+            (cls,),
             {
                 'cell': tuple(
                     BusEQChCell(remote, i, j, k) for k in range(remote.kind.cells)
