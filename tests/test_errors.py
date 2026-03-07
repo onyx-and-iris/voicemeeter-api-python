@@ -3,7 +3,7 @@ import re
 import pytest
 
 import voicemeeterlib
-from tests import data, vm
+from tests import vm
 
 
 class TestErrors:
@@ -14,36 +14,36 @@ class TestErrors:
             voicemeeterlib.error.VMError,
             match="Unknown Voicemeeter kind 'unknown_kind'",
         ):
-            voicemeeterlib.api("unknown_kind")
+            voicemeeterlib.api('unknown_kind')
 
     def test_it_tests_an_unknown_parameter(self):
         with pytest.raises(
             voicemeeterlib.error.CAPIError,
-            match="VBVMR_SetParameterFloat returned -3",
+            match='VBVMR_SetParameterFloat returned -3',
         ) as exc_info:
-            vm.set("unknown.parameter", 1)
+            vm.set('unknown.parameter', 1)
 
         e = exc_info.value
         assert e.code == -3
-        assert e.fn_name == "VBVMR_SetParameterFloat"
+        assert e.fn_name == 'VBVMR_SetParameterFloat'
 
     def test_it_tests_an_unknown_config_name(self):
         EXPECTED_MSG = (
             "No config with name 'unknown' is loaded into memory",
-            f"Known configs: {list(vm.configs.keys())}",
+            f'Known configs: {list(vm.configs.keys())}',
         )
 
         with pytest.raises(
-            voicemeeterlib.error.VMError, match=re.escape("\n".join(EXPECTED_MSG))
+            voicemeeterlib.error.VMError, match=re.escape('\n'.join(EXPECTED_MSG))
         ):
-            vm.apply_config("unknown")
+            vm.apply_config('unknown')
 
     def test_it_tests_an_invalid_config_key(self):
         CONFIG = {
-            "strip-0": {"A1": True, "B1": True, "gain": -6.0},
-            "bus-0": {"mute": True, "eq": {"on": True}},
-            "unknown-0": {"state": True},
-            "vban-out-1": {"name": "streamname"},
+            'strip-0': {'A1': True, 'B1': True, 'gain': -6.0},
+            'bus-0': {'mute': True, 'eq': {'on': True}},
+            'unknown-0': {'state': True},
+            'vban-out-1': {'name': 'streamname'},
         }
         with pytest.raises(ValueError, match="invalid config key 'unknown-0'"):
             vm.apply(CONFIG)
