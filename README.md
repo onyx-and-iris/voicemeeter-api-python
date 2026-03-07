@@ -277,7 +277,7 @@ Level properties will return -200.0 if no audio detected.
 
 The following properties are available.
 
--   `mono`: boolean
+-   `mono`: int, from 0 up to 2
 -   `mute`: boolean
 -   `sel`: boolean
 -   `gain`: float, from -60.0 to 12.0
@@ -294,7 +294,7 @@ example:
 vm.bus[3].gain = 3.7
 print(vm.bus[0].label)
 
-vm.bus[4].mono = True
+vm.bus[4].mono = 2
 ```
 
 ##### Bus.EQ

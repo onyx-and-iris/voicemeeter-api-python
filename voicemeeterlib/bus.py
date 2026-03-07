@@ -39,12 +39,12 @@ class Bus(IRemote):
         self.setter('mute', 1 if val else 0)
 
     @property
-    def mono(self) -> bool:
-        return self.getter('mono') == 1
+    def mono(self) -> int:
+        return int(self.getter('mono'))
 
     @mono.setter
-    def mono(self, val: bool):
-        self.setter('mono', 1 if val else 0)
+    def mono(self, val: int):
+        self.setter('mono', val)
 
     @property
     def sel(self) -> bool:

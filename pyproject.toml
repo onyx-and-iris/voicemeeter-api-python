@@ -1,6 +1,6 @@
 [project]
 name = "voicemeeter-api"
-version = "2.7.1"
+version = "2.7.2"
 description = "A Python wrapper for the Voiceemeter API"
 authors = [
     {name = "Onyx and Iris",email = "code@onyxandiris.online"}
