@@ -1,5 +1,4 @@
 import logging
-from abc import abstractmethod
 from enum import IntEnum
 from functools import cached_property
 from typing import Iterable
@@ -136,11 +135,6 @@ class FactoryBase(Remote):
 
     def __str__(self) -> str:
         return f'Voicemeeter {self.kind}'
-
-    @property
-    @abstractmethod
-    def steps(self):
-        pass
 
     @cached_property
     def configs(self):

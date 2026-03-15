@@ -1,4 +1,4 @@
-from abc import abstractmethod
+import abc
 
 from . import kinds
 from .iremote import IRemote
@@ -11,7 +11,7 @@ class VbanStream(IRemote):
     Defines concrete implementation for vban stream
     """
 
-    @abstractmethod
+    @abc.abstractmethod
     def __str__(self):
         pass
 

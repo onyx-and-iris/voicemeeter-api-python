@@ -1,4 +1,4 @@
-from abc import abstractmethod
+import abc
 from typing import Union
 
 from .iremote import IRemote
@@ -7,19 +7,19 @@ from .iremote import IRemote
 class Adapter(IRemote):
     """Adapter to the common interface."""
 
-    @abstractmethod
+    @abc.abstractmethod
     def ins(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def outs(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def input(self):
         pass
 
-    @abstractmethod
+    @abc.abstractmethod
     def output(self):
         pass
 

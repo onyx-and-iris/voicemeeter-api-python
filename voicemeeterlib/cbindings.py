@@ -1,6 +1,5 @@
 import ctypes as ct
 import logging
-from abc import ABCMeta
 from ctypes.wintypes import CHAR, FLOAT, LONG, WCHAR
 
 from .error import CAPIError
@@ -9,11 +8,10 @@ from .inst import libc
 logger = logging.getLogger(__name__)
 
 
-class CBindings(metaclass=ABCMeta):
-    """
-    C bindings defined here.
+class CBindings:
+    """Class responsible for defining C function bindings.
 
-    Maps expected ctype argument and res types for each binding.
+    Wrapper methods are provided for each C function to handle error checking and logging.
     """
 
     logger_cbindings = logger.getChild('CBindings')
@@ -111,7 +109,8 @@ class CBindings(metaclass=ABCMeta):
     bind_get_midi_message.restype = LONG
     bind_get_midi_message.argtypes = [ct.POINTER(CHAR * 1024), LONG]
 
-    def call(self, func, *args, ok=(0,), ok_exp=None):
+    def _call(self, func, *args, ok=(0,), ok_exp=None):
+        """Call a C function and handle errors."""
         try:
             res = func(*args)
             if ok_exp is None:
@@ -123,3 +122,93 @@ class CBindings(metaclass=ABCMeta):
         except CAPIError as e:
             self.logger_cbindings.exception(f'{type(e).__name__}: {e}')
             raise
+
+    def login(self, **kwargs):
+        """Login to Voicemeeter API"""
+        return self._call(self.bind_login, **kwargs)
+
+    def logout(self):
+        """Logout from Voicemeeter API"""
+        return self._call(self.bind_logout)
+
+    def run_voicemeeter(self, value):
+        """Run Voicemeeter with specified type"""
+        return self._call(self.bind_run_voicemeeter, value)
+
+    def get_voicemeeter_type(self, type_ref):
+        """Get Voicemeeter type"""
+        return self._call(self.bind_get_voicemeeter_type, type_ref)
+
+    def get_voicemeeter_version(self, version_ref):
+        """Get Voicemeeter version"""
+        return self._call(self.bind_get_voicemeeter_version, version_ref)
+
+    def is_parameters_dirty(self, **kwargs):
+        """Check if parameters are dirty"""
+        return self._call(self.bind_is_parameters_dirty, **kwargs)
+
+    def macro_button_is_dirty(self, **kwargs):
+        """Check if macro button parameters are dirty"""
+        if hasattr(self, 'bind_macro_button_is_dirty'):
+            return self._call(self.bind_macro_button_is_dirty, **kwargs)
+        raise AttributeError('macro_button_is_dirty not available')
+
+    def get_parameter_float(self, param_name, value_ref):
+        """Get float parameter value"""
+        return self._call(self.bind_get_parameter_float, param_name, value_ref)
+
+    def set_parameter_float(self, param_name, value):
+        """Set float parameter value"""
+        return self._call(self.bind_set_parameter_float, param_name, value)
+
+    def get_parameter_string_w(self, param_name, buffer_ref):
+        """Get string parameter value (Unicode)"""
+        return self._call(self.bind_get_parameter_string_w, param_name, buffer_ref)
+
+    def set_parameter_string_w(self, param_name, value):
+        """Set string parameter value (Unicode)"""
+        return self._call(self.bind_set_parameter_string_w, param_name, value)
+
+    def macro_button_get_status(self, id_, state_ref, mode):
+        """Get macro button status"""
+        if hasattr(self, 'bind_macro_button_get_status'):
+            return self._call(self.bind_macro_button_get_status, id_, state_ref, mode)
+        raise AttributeError('macro_button_get_status not available')
+
+    def macro_button_set_status(self, id_, state, mode):
+        """Set macro button status"""
+        if hasattr(self, 'bind_macro_button_set_status'):
+            return self._call(self.bind_macro_button_set_status, id_, state, mode)
+        raise AttributeError('macro_button_set_status not available')
+
+    def get_level(self, type_, index, value_ref):
+        """Get audio level"""
+        return self._call(self.bind_get_level, type_, index, value_ref)
+
+    def input_get_device_number(self, **kwargs):
+        """Get number of input devices"""
+        return self._call(self.bind_input_get_device_number, **kwargs)
+
+    def output_get_device_number(self, **kwargs):
+        """Get number of output devices"""
+        return self._call(self.bind_output_get_device_number, **kwargs)
+
+    def input_get_device_desc_w(self, index, type_ref, name_ref, hwid_ref):
+        """Get input device description"""
+        return self._call(
+            self.bind_input_get_device_desc_w, index, type_ref, name_ref, hwid_ref
+        )
+
+    def output_get_device_desc_w(self, index, type_ref, name_ref, hwid_ref):
+        """Get output device description"""
+        return self._call(
+            self.bind_output_get_device_desc_w, index, type_ref, name_ref, hwid_ref
+        )
+
+    def get_midi_message(self, buffer_ref, length, **kwargs):
+        """Get MIDI message"""
+        return self._call(self.bind_get_midi_message, buffer_ref, length, **kwargs)
+
+    def set_parameters(self, script):
+        """Set multiple parameters via script"""
+        return self._call(self.bind_set_parameters, script)
