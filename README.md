@@ -14,9 +14,9 @@ For an outline of past/future changes refer to: [CHANGELOG](CHANGELOG.md)
 
 ## Tested against
 
--   Basic 1.1.1.1
--   Banana 2.1.1.1
--   Potato 3.1.1.1
+-   Basic 1.1.2.2
+-   Banana 2.1.2.2
+-   Potato 3.1.2.2
 
 ## Requirements
 
