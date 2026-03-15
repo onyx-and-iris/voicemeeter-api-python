@@ -5,3 +5,9 @@ repos:
       - id: check-yaml
       - id: end-of-file-fixer
       - id: trailing-whitespace
+
+  - repo: https://github.com/python-poetry/poetry
+    rev: '2.3.2'
+    hooks:
+      - id: poetry-check
+      - id: poetry-lock
