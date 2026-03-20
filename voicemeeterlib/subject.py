@@ -7,7 +7,7 @@ class Subject:
     def __init__(self):
         """Adds support for observers and callbacks"""
 
-        self._observers = list()
+        self._observers = []
         self.logger = logger.getChild(self.__class__.__name__)
 
     @property
@@ -34,15 +34,13 @@ class Subject:
             for o in iterator:
                 if o not in self._observers:
                     self._observers.append(o)
-                    self.logger.info(f'{o} added to event observers')
                 else:
-                    self.logger.error(f'Failed to add {o} to event observers')
+                    self.logger.debug(f'Observer {o} already in observers list')
         except TypeError:
             if observer not in self._observers:
                 self._observers.append(observer)
-                self.logger.info(f'{observer} added to event observers')
             else:
-                self.logger.error(f'Failed to add {observer} to event observers')
+                self.logger.debug(f'Observer {observer} already in observers list')
 
     register = add
 
@@ -54,15 +52,13 @@ class Subject:
             for o in iterator:
                 try:
                     self._observers.remove(o)
-                    self.logger.info(f'{o} removed from event observers')
                 except ValueError:
-                    self.logger.error(f'Failed to remove {o} from event observers')
+                    self.logger.debug(f'Observer {o} not found in observers list')
         except TypeError:
             try:
                 self._observers.remove(observer)
-                self.logger.info(f'{observer} removed from event observers')
             except ValueError:
-                self.logger.error(f'Failed to remove {observer} from event observers')
+                self.logger.debug(f'Observer {observer} not found in observers list')
 
     deregister = remove
 
