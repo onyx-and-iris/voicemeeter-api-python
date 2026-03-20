@@ -1,14 +1,21 @@
 import ctypes as ct
 import platform
-import winreg
 from pathlib import Path
 
-from .error import InstallError
+from .error import InstallError, VMError
+
+try:
+    import winreg
+except ImportError as e:
+    ERR_MSG = 'winreg module not found, only Windows OS supported'
+    raise VMError(ERR_MSG) from e
+
+# Defense against edge cases where winreg imports but we're not on Windows
+if platform.system() != 'Windows':
+    ERR_MSG = f'Unsupported OS: {platform.system()}, only Windows OS supported'
+    raise VMError(ERR_MSG)
 
 BITS = 64 if ct.sizeof(ct.c_void_p) == 8 else 32
-
-if platform.system() != 'Windows':
-    raise InstallError('Only Windows OS supported')
 
 
 VM_KEY = 'VB:Voicemeeter {17359A74-1236-5467}'
@@ -37,12 +44,14 @@ def get_vmpath():
 try:
     vm_parent = Path(get_vmpath()).parent
 except FileNotFoundError as e:
-    raise InstallError('Unable to fetch DLL path from the registry') from e
+    ERR_MSG = 'Unable to fetch DLL path from the registry'
+    raise InstallError(ERR_MSG) from e
 
 DLL_NAME = f'VoicemeeterRemote{"64" if BITS == 64 else ""}.dll'
 
 dll_path = vm_parent.joinpath(DLL_NAME)
 if not dll_path.is_file():
-    raise InstallError(f'Could not find {dll_path}')
+    ERR_MSG = f'Could not find {dll_path}'
+    raise InstallError(ERR_MSG)
 
-libc = ct.CDLL(str(dll_path))
+libc = ct.WinDLL(str(dll_path))
